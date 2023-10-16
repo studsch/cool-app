@@ -4,4 +4,5 @@ db-up:
 db-rm:
 	docker-compose stop \
 	&& docker-compose rm \
-	&& rm -rf ./db/postgres
+	&& rm -rf ./db/postgres \
+	&& rm -rf ./db/mongodb
