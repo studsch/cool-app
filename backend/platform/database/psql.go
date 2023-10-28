@@ -11,11 +11,11 @@ import (
 func PGXPoolConnection() (*pgxpool.Pool, error) {
 	url := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
-		"localhost",
+		configs.Config("POSTGRES_HOST"),
 		configs.Config("POSTGRES_PORT"),
 		configs.Config("POSTGRES_USER"),
 		configs.Config("POSTGRES_PASSWORD"),
-		"postgres",
+		configs.Config("POSTGRES_DB_NAME"),
 		configs.Config("POSTGRES_SSL_MODE"),
 	)
 
