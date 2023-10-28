@@ -4,6 +4,15 @@
 
 @layer base {
   :root {
+    --btn-primary-background-color: #FF60A3;
+    --btn-primary-text-color: #fff;
+    --btn-primary-backround-color-hover: #FF89BB;
+    --btn-secondary-background-color: #fff;
+    --btn-secondary-text-color: #9B9B9B;
+    --btn-secondary-outline-color: #CBCED3;
+    --btn-secondary-backround-color-hover: #6A778D;
+    --active-text-color: #FF75AF;
+    
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
 
@@ -63,6 +72,76 @@
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
+  }
+}
+
+
+@layer components {
+
+  .btn, .input {
+    width: auto;
+    font-family: var(--noto-sans), sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    min-height: 36px;
+    min-width: 120px;
+    transition: all 0.4s ease-in-out;
+  }
+
+  /* КНОПКИ */
+  .btn {
+    border-radius: 6px;
+    box-sizing: border-box;
+    text-align: center;
+  } 
+
+  .btn-primary {
+    background: var(--btn-primary-background-color);
+    color: var(--btn-primary-text-color);
+    border: solid 2px transparent;
+  }
+
+  .btn-primary:hover{
+    background: var(--btn-primary-text-color);
+    color: var(--btn-primary-background-color);
+    border-color: var(--btn-primary-background-color);
+  }
+
+  .btn-secondary {
+    background: var(--btn-secondary-background-color);
+    color: var(--btn-secondary-text-color);
+    border: solid 2px var(--btn-secondary-outline-color);
+  }
+
+  .btn-secondary:hover {
+    color: var(--btn-secondary-backround-color-hover);
+    border: solid 2px var(--btn-secondary-backround-color-hover);
+  }
+
+  /* ИМПУТ */
+
+  .input {
+    border: solid 2px var(--btn-secondary-outline-color);
+    border-radius: 6px;
+    color: var(--btn-secondary-text-color);
+    padding: 0 14px;
+  }
+
+  .input::placeholder{
+    color: var(--btn-secondary-outline-color);
+  }
+
+
+  .input-primary:focus {
+    outline: none;
+    border-color: var(--btn-primary-background-color);
+    color: var(--btn-primary-background-color);
+  }
+
+  .input-secondary:focus {
+    outline: none;
+    border-color: var(--btn-secondary-backround-color-hover);
+    color: var(--btn-secondary-backround-color-hover);
   }
 }
 
