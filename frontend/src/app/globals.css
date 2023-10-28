@@ -75,12 +75,14 @@
   }
 }
 
+body {
+  font-family: var(--noto-sans), sans-serif;
+}
 
 @layer components {
 
-  .btn, .input {
+  .btn, .input, .PhoneInputInput {
     width: auto;
-    font-family: var(--noto-sans), sans-serif;
     font-size: 16px;
     font-weight: 400;
     min-height: 36px;
@@ -120,14 +122,14 @@
 
   /* ИМПУТ */
 
-  .input {
+  .input, .PhoneInputInput {
     border: solid 2px var(--btn-secondary-outline-color);
     border-radius: 6px;
     color: var(--btn-secondary-text-color);
     padding: 0 14px;
   }
 
-  .input::placeholder{
+  .input::placeholder, .PhoneInputInput::placeholder {
     color: var(--btn-secondary-outline-color);
   }
 
@@ -138,12 +140,36 @@
     color: var(--btn-primary-background-color);
   }
 
-  .input-secondary:focus {
+  .input-secondary:focus, .PhoneInputInput:focus {
     outline: none;
     border-color: var(--btn-secondary-backround-color-hover);
     color: var(--btn-secondary-backround-color-hover);
   }
+
+  /* Тексты */
+
+  .error-text {
+    color: var(--btn-secondary-backround-color-hover);
+
+    padding-left: 10px;
+  }
+
+  .st {
+    font-size: 10px
+  }
+
+  .lt {
+    font-weight: 300
+  }
 }
+
+/* checkbox */
+
+input[type='checkbox'] > i{
+  
+}
+
+
 
 @layer base {
   * {

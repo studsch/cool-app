@@ -3,6 +3,12 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Noto_Sans } from "next/font/google";
 
+// Иконки
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
+config.autoAddCss = false;
+
+// шрифты
 const notoSans = Noto_Sans({
   subsets: ["latin", "cyrillic"],
   variable: "--noto-sans",

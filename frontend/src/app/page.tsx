@@ -1,5 +1,7 @@
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/ui/input/Input";
+import PhoneNumberInput from "@/components/ui/phone-number/phone-number";
+import Checkbox from "@/components/ui/checkbox/checkbox";
 
 export default function Home() {
   return (
@@ -17,6 +19,12 @@ export default function Home() {
           placeholder="number"
           type="tel"
         />
+      </div>
+      <div>
+        <PhoneNumberInput />
+      </div>
+      <div>
+        <Checkbox className="" />
       </div>
     </div>
   );
