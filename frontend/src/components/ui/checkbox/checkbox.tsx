@@ -1,15 +1,31 @@
-import Checkbox from "@/interfaces/Checkbox";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import React from "react";
+import { Checkbox, cn } from "@nextui-org/react";
 
-const Checkbox = (props: Checkbox) => {
+const CheckboxDemo = () => {
   return (
-    <div className="checkbox flex">
-      <input type="checkbox" className={props.className} />
-      <label className={props.textClassName}>{props.text}</label>
-      <FontAwesomeIcon icon={faCheck} />
+    <div>
+      <Checkbox
+        classNames={{
+          wrapper: "checkbox-wrapper-secondary",
+          icon: "checkbox-icon-secondary",
+        }}
+        radius="sm"
+        size="sm"
+      >
+        Option
+      </Checkbox>
+      <Checkbox
+        classNames={{
+          wrapper: "checkbox-wrapper-primary",
+        }}
+        radius="sm"
+        color="secondary"
+        size="sm"
+      >
+        Option
+      </Checkbox>
     </div>
   );
 };
 
-export default Checkbox;
+export default CheckboxDemo;

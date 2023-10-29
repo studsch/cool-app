@@ -11,6 +11,7 @@
     --btn-secondary-text-color: #9B9B9B;
     --btn-secondary-outline-color: #CBCED3;
     --btn-secondary-backround-color-hover: #6A778D;
+
     --active-text-color: #FF75AF;
     
     --background: 0 0% 100%;
@@ -73,6 +74,7 @@
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
   }
+ 
 }
 
 body {
@@ -146,6 +148,27 @@ body {
     color: var(--btn-secondary-backround-color-hover);
   }
 
+  /* чекбоксы */
+
+  .checkbox-wrapper-primary, .checkbox-wrapper-secondary {
+    border-radius: 3px !important;
+  }
+
+  .checkbox-wrapper-primary::after{
+    background-color: var(--btn-primary-background-color) !important;
+  }
+  
+  .checkbox-wrapper-secondary::after {
+    background-color: var(--btn-secondary-background-color) !important;
+    border: solid 2px  var(--btn-secondary-backround-color-hover);
+    transition:  none !important;
+  }
+
+  .checkbox-icon-secondary {
+    color: var(--btn-secondary-backround-color-hover);
+  }
+
+
   /* Тексты */
 
   .error-text {
@@ -161,13 +184,9 @@ body {
   .lt {
     font-weight: 300
   }
+
 }
 
-/* checkbox */
-
-input[type='checkbox'] > i{
-  
-}
 
 
 

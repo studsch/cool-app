@@ -2,6 +2,7 @@ import Button from "@/components/ui/button/Button";
 import Input from "@/components/ui/input/Input";
 import PhoneNumberInput from "@/components/ui/phone-number/phone-number";
 import Checkbox from "@/components/ui/checkbox/checkbox";
+import Radiobutton from "@/components/ui/button/radiobutton/radiobutton";
 
 export default function Home() {
   return (
@@ -24,7 +25,10 @@ export default function Home() {
         <PhoneNumberInput />
       </div>
       <div>
-        <Checkbox className="" />
+        <Checkbox />
+      </div>
+      <div>
+        <Radiobutton />
       </div>
     </div>
   );

@@ -22,9 +22,9 @@ const PhoneNumberInput = () => {
             setValue(value);
           }}
         />
-        <p className="error-text st lt hidden">
+        {/* <p className="error-text st lt hidden">
           Ошибка, введен некорректный номер
-        </p>
+        </p> */}
       </div>
     </>
   );
