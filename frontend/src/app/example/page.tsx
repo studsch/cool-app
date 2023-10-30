@@ -8,33 +8,35 @@ import NonRegLayout from "@/components/layouts/layout-main-nonreg/NonRegLayout";
 
 export default function Home() {
   return (
-    <NonRegLayout>
-      <Button className="btn btn-primary" type="button" text="Search" />
-      <Button className="btn btn-secondary" type="button" text="Popular" />
-      <Input
-        className="input input-primary"
-        placeholder="Password"
-        type="password"
-      />
-      <div>
+    <>
+      <NonRegLayout>
+        <Button className="btn btn-primary" type="button" text="Search" />
+        <Button className="btn btn-secondary" type="button" text="Popular" />
         <Input
-          className="input input-secondary"
-          placeholder="number"
-          type="tel"
+          className="input input-primary"
+          placeholder="Password"
+          type="password"
         />
-      </div>
-      <div>
-        <PhoneNumberInput />
-      </div>
-      <div>
-        <Checkbox />
-      </div>
-      <div>
-        <Radiobutton />
-      </div>
-      <div>
-        <MemoriesSign />
-      </div>
-    </NonRegLayout>
+        <div>
+          <Input
+            className="input input-secondary"
+            placeholder="number"
+            type="tel"
+          />
+        </div>
+        <div>
+          <PhoneNumberInput />
+        </div>
+        <div>
+          <Checkbox />
+        </div>
+        <div>
+          <Radiobutton />
+        </div>
+        <div>
+          <MemoriesSign />
+        </div>
+      </NonRegLayout>
+    </>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import "./NonRegLayout.scss";
 // шрифты
 
 export const metadata: Metadata = {
@@ -13,24 +14,24 @@ export default function NonRegLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="overflow-hidden">
-        <div className="absolute w-full h-full">
-          <Image
-            src="http://localhost:3000/reg-gray-linear.png"
-            fill
-            alt="reg-gray-linear"
-          />
-        </div>
-        <main className="relative">{children}</main>
-        <div className="absolute md:w-[110vw] w-[770px] md:h-[25vh] h-[15vh] bottom-0 left-[-10px]">
-          <Image
-            src="http://localhost:3000/reg-pink-linear.png"
-            fill
-            alt="reg-pink-linear"
-          />
-        </div>
-      </body>
-    </html>
+    <div className="bg-[url('/reg-gray-linear.png')] h-full">
+      {/* <div className="absolute w-full h-full z-0">
+        <Image
+          src="http://localhost:3000/reg-gray-linear.png"
+          fill
+          priority
+          alt="reg-gray-linear"
+        />
+      </div> */}
+      <main className="relative">{children}</main>
+      <div className="absolute md:w-[110vw] w-[770px] z-0 md:h-[15vh] xl:h-[25vh] h-[10vh] bottom-0 left-[-10px]">
+        <Image
+          priority
+          src="http://localhost:3000/reg-pink-linear.png"
+          fill
+          alt="reg-pink-linear"
+        />
+      </div>
+    </div>
   );
 }
