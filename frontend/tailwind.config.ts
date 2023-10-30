@@ -26,6 +26,7 @@ module.exports = {
         'button-primary-color': '#FF60A3',
         'button-secondary-color': '#F17382',
         'link-primary-color': '#FF75AF',
+        'text-rep-primary-color': '#F07281',
         'gradient-pink-start': '#FF75AF',
         'gradient-pink-end': '#F17382',
         'gradient-gray-start': '#F1F1F1',
