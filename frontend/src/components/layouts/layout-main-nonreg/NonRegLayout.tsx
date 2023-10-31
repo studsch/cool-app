@@ -14,7 +14,7 @@ export default function NonRegLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-[url('/reg-gray-linear.png')] h-full">
+    <main className="bg-[url('/reg-gray-linear.png')] h-full">
       {/* <div className="absolute w-full h-full z-0">
         <Image
           src="http://localhost:3000/reg-gray-linear.png"
@@ -23,8 +23,10 @@ export default function NonRegLayout({
           alt="reg-gray-linear"
         />
       </div> */}
-      <main className="relative">{children}</main>
-      <div className="absolute md:w-[110vw] w-[770px] z-0 md:h-[15vh] xl:h-[25vh] h-[10vh] bottom-0 left-[-10px]">
+      <div className="container relative h-full w-full m-auto py-1 flex justify-center">
+        {children}
+      </div>
+      <div className="absolute md:w-[110vw] w-[490px]  z-0 md:h-[12vh] xl:h-[25vh] h-[10vh] min-h-[100px] bottom-0 left-[-10px]">
         <Image
           priority
           src="http://localhost:3000/reg-pink-linear.png"
@@ -32,6 +34,6 @@ export default function NonRegLayout({
           alt="reg-pink-linear"
         />
       </div>
-    </div>
+    </main>
   );
 }

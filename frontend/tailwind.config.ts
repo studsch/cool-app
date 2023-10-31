@@ -19,6 +19,9 @@ module.exports = {
       },
     },
     extend: {
+      boxShadow: {
+        '3xl': '0px 10px 50px 15px rgba(0, 0, 0, 0.1)',
+      },
       colors: {
         'text-primary-color': "#6A6A6A",
         'text-secondary-color': '#9B9B9B',
@@ -26,9 +29,10 @@ module.exports = {
         'button-primary-color': '#FF60A3',
         'button-secondary-color': '#F17382',
         'link-primary-color': '#FF75AF',
-        'text-rep-primary-color': '#F07281',
+        'text-reg-primary-color': '#F07281',
         'gradient-pink-start': '#FF75AF',
         'gradient-pink-end': '#F17382',
+        'reg-gradient-down': '#FA749E',
         'gradient-gray-start': '#F1F1F1',
         'gradient-gray-end': '#F9F9F9',
         'selected-item': '#F17382',

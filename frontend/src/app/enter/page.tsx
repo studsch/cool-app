@@ -8,9 +8,9 @@ import NonRegLayout from "@/components/layouts/layout-main-nonreg/NonRegLayout";
 
 export default function Enter() {
   return (
-    <div className="container h-full flex relative">
-      <div className="w-3/6 h-4/6 bg-white"></div>
-      <div className="w-3/6 h-4/6 bg-pink"></div>
+    <div className="w-full h-[65vh] sm:min-w-[700px] sm:min-h-[400px] sm:h-[50vh] m-auto lg:w-4/6 lg:h-[50vh] flex relative z-10 shadow-3xl rounded-md overflow-hidden">
+      <div className="w-full h-full bg-white relative"></div>
+      <div className="w-full sm:block hidden h-full bg-gradient-to-b from-text-reg-primary-color to-reg-gradient-down relative"></div>
     </div>
   );
 }
