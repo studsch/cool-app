@@ -6,6 +6,7 @@ const CheckboxDemo = () => {
     <div>
       <Checkbox
         classNames={{
+          base: "test",
           wrapper: "checkbox-wrapper-secondary",
           icon: "checkbox-icon-secondary",
         }}

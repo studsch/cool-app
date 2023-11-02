@@ -83,11 +83,11 @@ body {
 
 @layer components {
 
-  .btn, .input, .PhoneInputInput {
-    width: auto;
+  .btn, .input, .phone > .PhoneInputInput {
+    @apply sm:min-h-[20px] h-[34px] md:min-h-[40px] w-full;
     font-size: 16px;
     font-weight: 400;
-    min-height: 36px;
+    /* min-height: 40px; */
     min-width: 120px;
     transition: all 0.4s ease-in-out;
   }
@@ -124,14 +124,14 @@ body {
 
   /* ИМПУТ */
 
-  .input, .PhoneInputInput {
+  .input, .phone > .PhoneInputInput {
     border: solid 2px var(--btn-secondary-outline-color);
     border-radius: 6px;
     color: var(--btn-secondary-text-color);
     padding: 0 14px;
   }
 
-  .input::placeholder, .PhoneInputInput::placeholder {
+  .input::placeholder, .phone > .PhoneInputInput::placeholder {
     color: var(--btn-secondary-outline-color);
   }
 
@@ -142,7 +142,7 @@ body {
     color: var(--btn-primary-background-color);
   }
 
-  .input-secondary:focus, .PhoneInputInput:focus {
+  .input-secondary:focus, .phone-secondary > .PhoneInputInput:focus {
     outline: none;
     border-color: var(--btn-secondary-backround-color-hover);
     color: var(--btn-secondary-backround-color-hover);
@@ -154,6 +154,11 @@ body {
     border-radius: 3px !important;
   }
 
+  .checkbox-wrapper-secondary::before {
+    background-color: white;
+    border-radius: 3px !important;
+  }
+
   .checkbox-wrapper-primary::after{
     background-color: var(--btn-primary-background-color) !important;
   }
@@ -162,6 +167,7 @@ body {
     background-color: var(--btn-secondary-background-color) !important;
     border: solid 2px  var(--btn-secondary-backround-color-hover);
     transition:  none !important;
+    border-radius: 3px !important;
   }
 
   .checkbox-icon-secondary {

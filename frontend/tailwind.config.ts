@@ -13,7 +13,7 @@ module.exports = {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: "1rem",
       screens: {
         "2xl": "1400px",
       },
@@ -28,8 +28,11 @@ module.exports = {
         'text-form-primary-color': '#6A778D',
         'button-primary-color': '#FF60A3',
         'button-secondary-color': '#F17382',
+        'place-holder-color': '#F2F2F2',
         'link-primary-color': '#FF75AF',
         'text-reg-primary-color': '#F07281',
+        'text-reg-secondary-color': '#6A6A6A',
+        'text-reg-white-color': '#FFFFFF',
         'gradient-pink-start': '#FF75AF',
         'gradient-pink-end': '#F17382',
         'reg-gradient-down': '#FA749E',
