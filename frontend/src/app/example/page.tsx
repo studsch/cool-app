@@ -6,13 +6,6 @@ import Radiobutton from "@/components/ui/radiobutton/radiobutton";
 import MemoriesSign from "@/components/memories-sign/memoriesSign";
 import NonRegLayout from "@/components/layouts/layout-main-nonreg/NonRegLayout";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-
 export default function Home() {
   return (
     <>
