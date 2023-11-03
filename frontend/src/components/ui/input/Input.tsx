@@ -6,6 +6,7 @@ const Input = (props: InputProps) => {
       type={props.type}
       placeholder={props.placeholder}
       className={props.className}
+      {...props}
     />
   );
 };

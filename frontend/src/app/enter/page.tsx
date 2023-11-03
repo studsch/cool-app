@@ -37,7 +37,7 @@ export default function Enter() {
                 type="password"
               />
             </div>
-            <div className=" mb-2 px-1 flex justify-between items-end md:h-auto sm:mb-1 sm:h-14 md:mb-2 md:mt-8 py-2">
+            <div className="mb-2 px-1 flex justify-between items-end md:h-auto sm:mb-1 sm:h-14 md:mb-2 md:mt-8 py-2">
               <h5 className="hover:underline cursor-pointer text-link-primary-color text-sm font-light">
                 Forgot password?
               </h5>
@@ -64,7 +64,7 @@ export default function Enter() {
             Register to have more functionality and post photos
           </h4>
           <div className="w-full flex flex-col">
-            <hr className="mx-auto w-2/6 md:h-6 sm:h-4" />
+            <hr className="mx-auto w-2/6 md:h-6 sm:h-4 h-5" />
             <h3
               id="create-acc-link"
               className="h-12 md:h-16 sm:h-12 text-center text-2xl text-text-reg-white-color"
@@ -83,7 +83,7 @@ export default function Enter() {
             </div>
             <Checkbox
               classNames={{
-                base: "test m-0 md:mb-2 md:mt-8 sm:h-14 sm:mb-1 md:h-auto",
+                base: "test m-0 md:mb-2 md:mt-8 sm:h-14 sm:mb-1 md:h-auto px-1 mb-2 flex items-end",
                 wrapper: "checkbox-wrapper-secondary",
                 icon: "checkbox-icon-secondary",
                 label:
@@ -101,7 +101,7 @@ export default function Enter() {
             />
             <EnterToggleLink
               text="Login"
-              className="sm:hidden sm:h-6 md:h-12 flex sm:items-end md:items-center hover:underline cursor-pointer text-text-reg-white-color  text-sm font-light"
+              className="sm:hidden h-[6vh] flex sm:h-6 md:h-12 items-end md:items-center hover:underline cursor-pointer text-text-reg-white-color  text-sm font-light"
             />
           </div>
         </div>
