@@ -50,7 +50,7 @@ func UserSignUp(c *fiber.Ctx) error {
 	user.PasswordHash = utils.GeneratePassword(signUp.Password)
 	user.Name = signUp.Name
 	user.Surname = signUp.Surname
-	user.DateOfBirth, err = time.Parse("02-01-2006", signUp.DateOfBirth)
+	user.DateOfBirth, _ = time.Parse("02-01-2006", signUp.DateOfBirth)
 	user.Gender = signUp.Gender
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
