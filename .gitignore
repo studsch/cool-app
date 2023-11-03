@@ -4,3 +4,4 @@
 
 # backend
 ./backend/db/postgres
+./backend/db/*
