@@ -15,18 +15,23 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Input from "../ui/input/Input";
+import PhoneNumberInput from "../phone-number/phone-number";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
 function LoginForm() {
   const formSchema = z.object({
-    username: z.string().min(2, {
-      message: "Username must be at least 2 characters.",
-    }),
+    number: z
+      .string()
+      .optional()
+      .refine(val => typeof val != "undefined" && isValidPhoneNumber(val), {
+        message: "Введен некорректный номер",
+      }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      number: "+7",
     },
   });
 
@@ -34,19 +39,19 @@ function LoginForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+    // console.log(isValidPhoneNumber(values.number));
   }
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="username"
+          name="number"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <PhoneNumberInput field={field} />
               </FormControl>
               <FormDescription>
                 This is your public display name.

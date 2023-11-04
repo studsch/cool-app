@@ -1,20 +1,19 @@
-"use client";
-
 import "react-phone-number-input/style.css";
 import { useState } from "react";
 import PhoneInput, { formatPhoneNumber } from "react-phone-number-input";
 import "./phone.scss";
+import Input from "../ui/input/Input";
 
 type Props = {
   className?: string;
 };
 
-const PhoneNumberInput: React.FC<Props> = ({ className }) => {
+const PhoneNumberInput: React.FC<Props | any> = props => {
   const [value, setValue] = useState<any>();
   return (
     <>
       <PhoneInput
-        className={className}
+        className={props.className}
         defaultCountry="RU"
         placeholder="Enter phone number"
         international
@@ -23,6 +22,7 @@ const PhoneNumberInput: React.FC<Props> = ({ className }) => {
         onChange={value => {
           setValue(value);
         }}
+        {...props.field}
       />
       {/* <p className="error-text st lt hidden">
           Ошибка, введен некорректный номер
