@@ -2,12 +2,13 @@ package controllers
 
 import (
 	"context"
-	"fmt"
+	"time"
+
 	"github.com/gofiber/fiber/v2"
+
 	"github.com/studsch/cool-app/backend/app/models"
 	"github.com/studsch/cool-app/backend/pkg/utils"
 	"github.com/studsch/cool-app/backend/platform/database"
-	"time"
 )
 
 func UserSignUp(c *fiber.Ctx) error {
@@ -22,7 +23,6 @@ func UserSignUp(c *fiber.Ctx) error {
 
 	validate := utils.NewValidator()
 	if err := validate.Struct(signUp); err != nil {
-		fmt.Println("parsing")
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": true,
 			"msg":   utils.ValidatorErrors(err),
@@ -76,5 +76,58 @@ func UserSignUp(c *fiber.Ctx) error {
 		"error": false,
 		"msg":   nil,
 		"user":  user,
+	})
+}
+
+func UserSignIn(c *fiber.Ctx) error {
+	signIn := &models.SignIn{}
+
+	if err := c.BodyParser(signIn); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	validate := utils.NewValidator()
+	if err := validate.Struct(signIn); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": true,
+			"msg":   utils.ValidatorErrors(err),
+		})
+	}
+
+	db, err := database.OpenDBConnection()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	foundedUser, err := db.GetUserByPhone(context.Background(), signIn.Phone)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": true,
+			"msg":   "user with the given phone is not found",
+		})
+	}
+
+	comparePassword := utils.ComparePasswords(foundedUser.PasswordHash, signIn.Password)
+	if !comparePassword {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": true,
+			"msg":   "wrong user phone or password",
+		})
+	}
+
+	// TODO: generate a new pair of access and refresh tokens
+
+	// TODO: save refresh token to Redis
+
+	return c.JSON(fiber.Map{
+		"error": false,
+		"msg":   nil,
+		"data":  foundedUser,
 	})
 }

@@ -9,3 +9,8 @@ type SignUp struct {
 	Gender      string `validate:"required,lte=10,oneof=Male Female" json:"gender,omitempty"`
 	UserRole    string `validate:"required,lte=10" json:"userRole,omitempty"`
 }
+
+type SignIn struct {
+	Phone    string `validate:"e164" json:"phone"`
+	Password string `validate:"required,lte=20,gte=8" json:"password"`
+}
