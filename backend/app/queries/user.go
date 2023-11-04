@@ -4,9 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgxpool"
+
 	"github.com/studsch/cool-app/backend/app/models"
 )
 
@@ -50,13 +51,19 @@ func (q *UserQueries) CreateUser(ctx context.Context, u *models.User) error {
 	return nil
 }
 
-// func (q *UserQueries) GetUserByID(ctx context.Context, id uuid.UUID) (models.User, error) {
-// 	user := models.User{}
-// 	query := `SELECT * FROM users WHERE id = $1`
+func (q *UserQueries) GetUserByPhone(ctx context.Context, p string) (models.User, error) {
+	query := `
+		SELECT
+			(id, phone, password_hash, name, surname, date_of_birth, gender, created_at, updated_at, user_role, deleted)
+		from users
+		WHERE phone = $1
+	`
+	user := models.User{}
 
-// 	err := q.QueryRow(ctx, query, id).Scan(&user)
-// 	if err != nil {
-// 		return user, err
-// 	}
-// 	return user, nil
-// }
+	err := q.QueryRow(ctx, query, p).Scan(&user)
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
