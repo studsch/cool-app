@@ -2,10 +2,10 @@ import Button from "@/components/ui/button/Button";
 import Input from "@/components/ui/input/Input";
 import PhoneNumberInput from "@/components/phone-number/phone-number";
 import { Checkbox } from "@nextui-org/react";
-import Radiobutton from "@/components/ui/radiobutton/radiobutton";
 import MemoriesSign from "@/components/memories-sign/memoriesSign";
-import NonRegLayout from "@/components/layouts/layout-main-nonreg/NonRegLayout";
 import EnterToggleLink from "@/components/ui/links/enter-toggle-link";
+import LogForm from "@/components/log-form/log-form";
+import RegForm from "@/components/reg-form/reg-form";
 
 export default function Enter() {
   return (
@@ -24,8 +24,17 @@ export default function Enter() {
             <p className="h-12 md:h-16 sm:h-12 text-center text-2xl text-text-reg-secondary-color">
               Welcome back!
             </p>
-
-            <div className="w-full flex flex-col gap-4">
+            <LogForm>
+              <div className="mb-2 px-1 flex justify-between items-end md:h-auto sm:mb-1 sm:h-14 md:mb-2 md:mt-8 py-2">
+                <h5 className="hover:underline cursor-pointer text-link-primary-color text-sm font-light">
+                  Forgot password?
+                </h5>
+                <h5 className="text-end hover:underline cursor-pointer text-link-primary-color text-sm font-light">
+                  Sign in with phone
+                </h5>
+              </div>
+            </LogForm>
+            {/* <div className="w-full flex flex-col gap-4">
               <Input
                 className="input input-primary w-full"
                 placeholder="Login"
@@ -36,8 +45,8 @@ export default function Enter() {
                 placeholder="Password"
                 type="password"
               />
-            </div>
-            <div className="mb-2 px-1 flex justify-between items-end md:h-auto sm:mb-1 sm:h-14 md:mb-2 md:mt-8 py-2">
+            </div> */}
+            {/* <div className="mb-2 px-1 flex justify-between items-end md:h-auto sm:mb-1 sm:h-14 md:mb-2 md:mt-8 py-2">
               <h5 className="hover:underline cursor-pointer text-link-primary-color text-sm font-light">
                 Forgot password?
               </h5>
@@ -49,7 +58,7 @@ export default function Enter() {
               className="btn btn-primary w-full"
               type="button"
               text="Sigh in"
-            />
+            /> */}
             <EnterToggleLink
               text="Create account"
               className="sm:hidden h-[6vh] sm:h-6 md:h-12 flex items-end md:items-center hover:underline cursor-pointer text-link-primary-color text-sm font-light"
@@ -71,7 +80,22 @@ export default function Enter() {
             >
               Create account!
             </h3>
-            <div className="flex flex-col gap-4 ">
+            <RegForm>
+              <Checkbox
+                classNames={{
+                  base: "test m-0 md:mb-2 md:mt-8 sm:h-14 sm:mb-1 md:h-auto px-1 mb-2 flex items-end",
+                  wrapper: "checkbox-wrapper-secondary",
+                  icon: "checkbox-icon-secondary",
+                  label:
+                    "text-text-reg-white-color text-sm font-light hover:text-place-holder-color",
+                }}
+                radius="none"
+                size="sm"
+              >
+                Accept confident will push to all people
+              </Checkbox>
+            </RegForm>
+            {/* <div className="flex flex-col gap-4 ">
               <PhoneNumberInput className="phone phone-secondary" />
               <div>
                 <Input
@@ -80,8 +104,8 @@ export default function Enter() {
                   className="input input-secondary w-full"
                 />
               </div>
-            </div>
-            <Checkbox
+            </div> */}
+            {/* <Checkbox
               classNames={{
                 base: "test m-0 md:mb-2 md:mt-8 sm:h-14 sm:mb-1 md:h-auto px-1 mb-2 flex items-end",
                 wrapper: "checkbox-wrapper-secondary",
@@ -98,7 +122,7 @@ export default function Enter() {
               text="Sign up"
               type="button"
               className="btn btn-secondary w-full"
-            />
+            /> */}
             <EnterToggleLink
               text="Login"
               className="sm:hidden h-[6vh] flex sm:h-6 md:h-12 items-end md:items-center hover:underline cursor-pointer text-text-reg-white-color  text-sm font-light"

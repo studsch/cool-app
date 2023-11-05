@@ -19,7 +19,7 @@ import PhoneNumberInput from "../phone-number/phone-number";
 import { isValidPhoneNumber } from "react-phone-number-input";
 // import { isValidPhoneNumber } from "react-phone-number-input";
 
-function RegForm() {
+function RegForm({ children }: { children: React.ReactNode }) {
   const formSchema = z.object({
     login: z.string().min(5, { message: "Логин должен длинее 5 символов" }),
     number: z
@@ -63,13 +63,13 @@ function RegForm() {
                 <Input
                   className="input input-secondary"
                   type="text"
-                  placeholder="login"
+                  placeholder="Login"
                   field={field}
                   required
                 ></Input>
                 {/* <PhoneNumberInput field={field} /> */}
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-white" />
             </FormItem>
           )}
         />
@@ -85,10 +85,11 @@ function RegForm() {
                 />
                 {/* <PhoneNumberInput field={field} /> */}
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-white" />
             </FormItem>
           )}
         />
+        {children}
         <Button type="submit" text="Submite" className="btn btn-secondary" />
       </form>
     </Form>

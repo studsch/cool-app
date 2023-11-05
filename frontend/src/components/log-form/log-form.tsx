@@ -55,7 +55,7 @@ function LogForm({ children }: { children: React.ReactNode }) {
                 <Input
                   className="input input-primary"
                   type="text"
-                  placeholder="login"
+                  placeholder="Login"
                   field={field}
                   required
                 ></Input>
@@ -73,7 +73,7 @@ function LogForm({ children }: { children: React.ReactNode }) {
                 <Input
                   className="input input-primary"
                   type="password"
-                  placeholder="password"
+                  placeholder="Password"
                   field={field}
                   required
                 ></Input>
@@ -83,7 +83,7 @@ function LogForm({ children }: { children: React.ReactNode }) {
           )}
         />
         {children}
-        <Button type="submit" text="Submite" className="btn btn-primary" />
+        <Button type="submit" text="Sign in" className="btn btn-primary" />
       </form>
     </Form>
   );
