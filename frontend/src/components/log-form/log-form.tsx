@@ -45,12 +45,12 @@ function LogForm({ children }: { children: React.ReactNode }) {
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="login"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="space-y-1 my-1">
               <FormControl>
                 <Input
                   className="input input-primary"
@@ -68,7 +68,7 @@ function LogForm({ children }: { children: React.ReactNode }) {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="space-y-1 my-1">
               <FormControl>
                 <Input
                   className="input input-primary"

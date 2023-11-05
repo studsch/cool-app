@@ -21,12 +21,14 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 
 function RegForm({ children }: { children: React.ReactNode }) {
   const formSchema = z.object({
-    login: z.string().min(5, { message: "Логин должен длинее 5 символов" }),
+    login: z
+      .string()
+      .min(5, { message: "Логин должен быть длинее 5 символов" }),
     number: z
       .string()
       .optional()
       .refine(val => typeof val != "undefined" && isValidPhoneNumber(val), {
-        message: "Введен некорректный номер",
+        message: "Введен некорректный номер, попробуйте исправить",
       }),
   });
 
@@ -53,12 +55,12 @@ function RegForm({ children }: { children: React.ReactNode }) {
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="login"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="space-y-1 my-1">
               <FormControl>
                 <Input
                   className="input input-secondary"
@@ -69,7 +71,7 @@ function RegForm({ children }: { children: React.ReactNode }) {
                 ></Input>
                 {/* <PhoneNumberInput field={field} /> */}
               </FormControl>
-              <FormMessage className="text-white" />
+              <FormMessage className=" text-white" />
             </FormItem>
           )}
         />
@@ -77,7 +79,7 @@ function RegForm({ children }: { children: React.ReactNode }) {
           control={form.control}
           name="number"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="space-y-1 my-1">
               <FormControl>
                 <PhoneNumberInput
                   className={"phone phone-secondary"}

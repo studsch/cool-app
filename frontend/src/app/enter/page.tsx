@@ -10,7 +10,7 @@ import RegForm from "@/components/reg-form/reg-form";
 export default function Enter() {
   return (
     <>
-      <div className="w-full h-[80vh] 2xl:w-[1000px]  2xl:h-[640px] md:h-[500px] sm:h-[400px] lg:w-[800px] m-auto flex relative z-10 shadow-3xl rounded-xl sm:rounded-md overflow-hidden">
+      <div className="w-full h-[80vh] 2xl:w-[1000px]  2xl:h-[640px] md:h-[500px] sm:h-[460px] lg:w-[800px] m-auto flex relative z-10 shadow-3xl rounded-xl sm:rounded-md overflow-hidden">
         <div
           id="log-window"
           className="py-10 w-full px-unit-sm sm:px-unit-xl lg:px-unit-2xl h-full bg-white relative flex flex-col justify-center items-center overflow-auto "
@@ -83,11 +83,11 @@ export default function Enter() {
             <RegForm>
               <Checkbox
                 classNames={{
-                  base: "test m-0 md:mb-2 md:mt-8 sm:h-14 sm:mb-1 md:h-auto px-1 mb-2 flex items-end",
+                  base: "m-0 md:mb-2 md:mt-8 sm:h-14 sm:mb-1 md:h-auto px-1 mb-2 flex items-end",
                   wrapper: "checkbox-wrapper-secondary",
                   icon: "checkbox-icon-secondary",
                   label:
-                    "text-text-reg-white-color text-sm font-light hover:text-place-holder-color",
+                    "text-text-reg-white-color text-sm font-light hover:text-place-holder-color my-auto",
                 }}
                 radius="none"
                 size="sm"

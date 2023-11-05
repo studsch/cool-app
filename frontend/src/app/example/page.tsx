@@ -11,8 +11,6 @@ import LogForm from "@/components/log-form/log-form";
 export default function Home() {
   return (
     <>
-      <RegForm></RegForm>
-      <LogForm>ds</LogForm>
       {/* <NonRegLayout>
         <Button className="btn btn-primary" type="button" text="Search" />
         <Button className="btn btn-secondary" type="button" text="Popular" />
