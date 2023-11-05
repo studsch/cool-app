@@ -16,22 +16,30 @@ import {
 } from "@/components/ui/form";
 import Input from "../ui/input/Input";
 import PhoneNumberInput from "../phone-number/phone-number";
-import { isValidPhoneNumber } from "react-phone-number-input";
+// import { isValidPhoneNumber } from "react-phone-number-input";
 
 function LoginForm() {
+  // const formSchema = z.object({
+  //   number: z
+  //     .string()
+  //     .optional()
+  //     .refine(val => typeof val != "undefined" && isValidPhoneNumber(val), {
+  //       message: "Введен некорректный номер",
+  //     }),
+  // });
+
   const formSchema = z.object({
-    number: z
-      .string()
-      .optional()
-      .refine(val => typeof val != "undefined" && isValidPhoneNumber(val), {
-        message: "Введен некорректный номер",
-      }),
+    email: z.string().email({ message: "Invalid email address" }),
+    login: z.string().min(6, {
+      message: "Login must be at least 6 characters.",
+    }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      number: "+7",
+      email: "",
+      login: "",
     },
   });
 
@@ -46,16 +54,38 @@ function LoginForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="number"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
               <FormControl>
-                <PhoneNumberInput field={field} />
+                <Input
+                  className="input input-secondary"
+                  type="email"
+                  placeholder="email"
+                  field={field}
+                  required
+                ></Input>
+                {/* <PhoneNumberInput field={field} /> */}
               </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="login"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  className="input input-secondary"
+                  type="text"
+                  placeholder="login"
+                  field={field}
+                  required
+                ></Input>
+                {/* <PhoneNumberInput field={field} /> */}
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

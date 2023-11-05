@@ -6,7 +6,8 @@ const Input = (props: InputProps) => {
       type={props.type}
       placeholder={props.placeholder}
       className={props.className}
-      {...props}
+      required={props.required}
+      {...props.field}
     />
   );
 };
