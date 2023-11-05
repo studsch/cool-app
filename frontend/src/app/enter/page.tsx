@@ -25,7 +25,7 @@ export default function Enter() {
               Welcome back!
             </p>
             <LogForm>
-              <div className="mb-2 px-1 flex justify-between items-end md:h-auto sm:mb-1 sm:h-14 md:mb-2 md:mt-8 py-2">
+              <div className="mb-2 px-1 flex justify-between items-center md:h-auto sm:mb-1 sm:h-14 md:mb-2 md:mt-8 py-2">
                 <h5 className="hover:underline cursor-pointer text-link-primary-color text-sm font-light">
                   Forgot password?
                 </h5>
@@ -83,7 +83,7 @@ export default function Enter() {
             <RegForm>
               <Checkbox
                 classNames={{
-                  base: "m-0 md:mb-2 md:mt-8 sm:h-14 sm:mb-1 md:h-auto px-1 mb-2 flex items-end",
+                  base: "m-0 md:mb-2 md:mt-8 sm:h-14 sm:mb-1 md:h-auto px-1 mb-2 flex items-center",
                   wrapper: "checkbox-wrapper-secondary",
                   icon: "checkbox-icon-secondary",
                   label:
