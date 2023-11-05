@@ -125,7 +125,7 @@ body {
   /* ИМПУТ */
 
   .input, .phone > .PhoneInputInput {
-    border: solid 2px var(--btn-secondary-outline-color) !important;
+    border: solid 2px var(--btn-secondary-outline-color);
     border-radius: 6px !important;
     color: var(--btn-secondary-text-color);
     padding: 0 14px;

@@ -1,3 +1,4 @@
+"use client";
 import "react-phone-number-input/style.css";
 import { useState } from "react";
 import PhoneInput, { formatPhoneNumber } from "react-phone-number-input";
