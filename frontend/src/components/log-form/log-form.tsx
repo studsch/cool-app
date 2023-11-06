@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { signIn } from "next-auth/react";
 
 import Button from "../ui/button/Button";
 import {
@@ -18,8 +19,11 @@ import Input from "../ui/input/Input";
 import PhoneNumberInput from "../phone-number/phone-number";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { ReactNode } from "react";
+import { useRouter } from "next/navigation";
 
 function LogForm({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+
   const formSchema = z.object({
     login: z
       .string()
@@ -38,7 +42,17 @@ function LogForm({ children }: { children: React.ReactNode }) {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const res = await signIn("credentials", {
+      login: form.getValues("login"),
+      password: form.getValues("password"),
+      redirect: false,
+    });
+    if (res && !res.error) {
+      router.push("/example");
+    } else {
+      console.log(res);
+    }
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     // console.log(isValidPhoneNumber(values.number));
