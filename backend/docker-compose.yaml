@@ -18,27 +18,27 @@ services:
       - postgres
     restart: unless-stopped
 
-  mongodb:
-    container_name: mongodb_container
-    image: mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-mongo}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-mongo}
-      MONGO_INITDB_DATABASE: mongodb
-    volumes:
-      - ./db/mongodb:/data/db
-      # - ./db/mongo-entrypoint:/docker-entrypoit-initdb.d
-    ports:
-      - "${MONGODB_PORT:-27017}:27017"
-    networks:
-      - mongodb
+#  mongodb:
+#    container_name: mongodb_container
+#    image: mongo
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-mongo}
+#      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-mongo}
+#      MONGO_INITDB_DATABASE: mongodb
+#    volumes:
+#      - ./db/mongodb:/data/db
+#      # - ./db/mongo-entrypoint:/docker-entrypoit-initdb.d
+#    ports:
+#      - "${MONGODB_PORT:-27017}:27017"
+#    networks:
+#      - mongodb
 
 networks:
   postgres:
     driver: bridge
-  mongodb:
-    driver: bridge
+#  mongodb:
+#    driver: bridge
 
 volumes:
   postgres:
-  mongodb:
+#  mongodb:

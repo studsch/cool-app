@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
+
 	"github.com/studsch/cool-app/backend/pkg/configs"
 	"github.com/studsch/cool-app/backend/pkg/middleware"
 	"github.com/studsch/cool-app/backend/pkg/routes"
