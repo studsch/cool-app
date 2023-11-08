@@ -174,7 +174,7 @@ func UserSignInLogin(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": true,
-			"msg":   "user with the given phone is not found",
+			"msg":   "user with the given login is not found",
 		})
 	}
 

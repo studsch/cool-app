@@ -8,8 +8,8 @@ import (
 
 type User struct {
 	ID           uuid.UUID
-	Phone        string
 	Login        string
+	Phone        string
 	PasswordHash string
 	Name         string
 	Surname      string
