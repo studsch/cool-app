@@ -6,6 +6,7 @@ SET TIMEZONE = "Europe/Moscow";
 CREATE TABLE users
 (
     id            UUID                     DEFAULT uuid_generate_v4() PRIMARY KEY,
+    login         varchar(40)  NOT NULL,
     phone         varchar(16)  NOT NULL,
     password_hash varchar(255) NOT NULL,
     name          varchar(80)  NOT NULL,

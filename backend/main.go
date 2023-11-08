@@ -16,6 +16,7 @@ func main() {
 
 	middleware.Fiber(app)
 
+	routes.Private(app)
 	routes.Public(app)
 	routes.NotFound(app)
 

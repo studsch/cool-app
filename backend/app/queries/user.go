@@ -18,15 +18,16 @@ type UserQueries struct {
 func (q *UserQueries) CreateUser(ctx context.Context, u *models.User) error {
 	query := `
 		INSERT INTO users
-			(phone, password_hash, name, surname, date_of_birth, gender, created_at, updated_at, user_role, deleted)
+			(login, phone, password_hash, name, surname, date_of_birth, gender, created_at, updated_at, user_role, deleted)
 		VALUES
-			($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+			($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 		RETURNING id
 	`
 
 	row := q.QueryRow(
 		ctx,
 		query,
+		u.Login,
 		u.Phone,
 		u.PasswordHash,
 		u.Name,
@@ -54,13 +55,30 @@ func (q *UserQueries) CreateUser(ctx context.Context, u *models.User) error {
 func (q *UserQueries) GetUserByPhone(ctx context.Context, p string) (models.User, error) {
 	query := `
 		SELECT
-			(id, phone, password_hash, name, surname, date_of_birth, gender, created_at, updated_at, user_role, deleted)
+			(id, login, phone, password_hash, name, surname, date_of_birth, gender, created_at, updated_at, user_role, deleted)
 		from users
-		WHERE phone = $1
+		WHERE phone = $1 AND deleted<>true
 	`
 	user := models.User{}
 
 	err := q.QueryRow(ctx, query, p).Scan(&user)
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
+
+func (q *UserQueries) GetUserByLogin(ctx context.Context, l string) (models.User, error) {
+	query := `
+		SELECT
+			(id, login, phone, password_hash, name, surname, date_of_birth, gender, created_at, updated_at, user_role, deleted)
+		from users
+		WHERE login = $1 AND deleted<>true
+	`
+	user := models.User{}
+
+	err := q.QueryRow(ctx, query, l).Scan(&user)
 	if err != nil {
 		return user, err
 	}
