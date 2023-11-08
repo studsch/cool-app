@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Noto_Sans } from "next/font/google";
+import { Providers } from "@/components/providers/providers";
 
 // Иконки
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -27,7 +28,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={notoSans.className}>{children}</body>
+      <Providers>
+        <body className={notoSans.className}>{children}</body>
+      </Providers>
     </html>
   );
 }

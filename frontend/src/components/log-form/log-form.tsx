@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 import Button from "../ui/button/Button";
 import {
@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 
 function LogForm({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const session = useSession();
 
   const formSchema = z.object({
     login: z
@@ -49,7 +50,8 @@ function LogForm({ children }: { children: React.ReactNode }) {
       redirect: false,
     });
     if (res && !res.error) {
-      router.push("/example");
+      console.log(session);
+      // router.push("/example");
     } else {
       console.log(res);
     }
