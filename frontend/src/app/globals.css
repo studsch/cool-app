@@ -126,7 +126,7 @@ body {
 
   .input, .phone > .PhoneInputInput {
     border: solid 2px var(--btn-secondary-outline-color);
-    border-radius: 6px;
+    border-radius: 6px !important;
     color: var(--btn-secondary-text-color);
     padding: 0 14px;
   }
@@ -137,13 +137,13 @@ body {
 
 
   .input-primary:focus {
-    outline: none;
+    outline: none ;
     border-color: var(--btn-primary-background-color);
     color: var(--btn-primary-background-color);
   }
 
   .input-secondary:focus, .phone-secondary > .PhoneInputInput:focus {
-    outline: none;
+    outline: none ;
     border-color: var(--btn-secondary-backround-color-hover);
     color: var(--btn-secondary-backround-color-hover);
   }
@@ -152,6 +152,7 @@ body {
 
   .checkbox-wrapper-primary, .checkbox-wrapper-secondary {
     border-radius: 3px !important;
+    margin: auto;
   }
 
   .checkbox-wrapper-secondary::before {
@@ -173,6 +174,7 @@ body {
   .checkbox-icon-secondary {
     color: var(--btn-secondary-backround-color-hover);
   }
+
 
 
   /* Тексты */

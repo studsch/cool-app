@@ -5,11 +5,13 @@ import Checkbox from "@/components/ui/checkbox/checkbox";
 import Radiobutton from "@/components/ui/radiobutton/radiobutton";
 import MemoriesSign from "@/components/memories-sign/memoriesSign";
 import NonRegLayout from "@/components/layouts/layout-main-nonreg/NonRegLayout";
+import RegForm from "@/components/reg-form/reg-form";
+import LogForm from "@/components/log-form/log-form";
 
 export default function Home() {
   return (
     <>
-      <NonRegLayout>
+      {/* <NonRegLayout>
         <Button className="btn btn-primary" type="button" text="Search" />
         <Button className="btn btn-secondary" type="button" text="Popular" />
         <Input
@@ -37,7 +39,7 @@ export default function Home() {
           <MemoriesSign />
         </div>
         <div></div>
-      </NonRegLayout>
+      </NonRegLayout> */}
     </>
   );
 }

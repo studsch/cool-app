@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import "./NonRegLayout.scss";
+import { Toaster } from "@/components/ui/toaster";
 // шрифты
 
 export const metadata: Metadata = {
@@ -34,6 +35,7 @@ export default function NonRegLayout({
           alt="reg-pink-linear"
         />
       </div>
+      <Toaster />
     </main>
   );
 }

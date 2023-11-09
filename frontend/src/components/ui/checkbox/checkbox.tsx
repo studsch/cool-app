@@ -9,6 +9,7 @@ const CheckboxDemo = () => {
           base: "test",
           wrapper: "checkbox-wrapper-secondary",
           icon: "checkbox-icon-secondary",
+          label: "checkbox-label",
         }}
         radius="sm"
         size="sm"
@@ -18,6 +19,7 @@ const CheckboxDemo = () => {
       <Checkbox
         classNames={{
           wrapper: "checkbox-wrapper-primary",
+          label: "m-auto",
         }}
         radius="sm"
         color="secondary"
