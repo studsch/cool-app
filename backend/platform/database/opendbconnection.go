@@ -2,11 +2,13 @@ package database
 
 import (
 	"github.com/jackc/pgx/v5/pgxpool"
+
 	"github.com/studsch/cool-app/backend/app/queries"
 )
 
 type Queries struct {
 	*queries.UserQueries
+	*queries.PostQueries
 }
 
 func OpenDBConnection() (*Queries, error) {
@@ -23,5 +25,6 @@ func OpenDBConnection() (*Queries, error) {
 
 	return &Queries{
 		UserQueries: &queries.UserQueries{Pool: db},
+		PostQueries: &queries.PostQueries{Pool: db},
 	}, nil
 }

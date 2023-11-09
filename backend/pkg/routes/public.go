@@ -17,5 +17,9 @@ func Public(a *fiber.App) {
 	})
 
 	router.Post("/user/sign/up", controllers.UserSignUp)
-	router.Post("/user/sign/in", controllers.UserSignIn)
+	router.Post("/user/sign/in/phone", controllers.UserSignInPhone)
+	router.Post("/user/sign/in/login", controllers.UserSignInLogin)
+
+	router.Get("/user/phone/:phone", controllers.UserWithPhoneExist)
+	router.Get("/user/login/:login", controllers.UserWithLoginExist)
 }
