@@ -178,15 +178,15 @@ func UserSignInLogin(c *fiber.Ctx) error {
 			"msg":   "user with the given login is not found",
 		})
 	}
-	foundedUser.PasswordHash = ""
 
 	comparePassword := utils.ComparePasswords(foundedUser.PasswordHash, signIn.Password)
 	if !comparePassword {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": true,
-			"msg":   "wrong user phone or password",
+			"msg":   "wrong user login or password",
 		})
 	}
+	foundedUser.PasswordHash = ""
 
 	tokens, err := utils.GenerateNewTokens(foundedUser.ID.String())
 	if err != nil {
