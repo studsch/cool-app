@@ -34,31 +34,6 @@ export default function Enter() {
                 </h5>
               </div>
             </LogForm>
-            {/* <div className="w-full flex flex-col gap-4">
-              <Input
-                className="input input-primary w-full"
-                placeholder="Login"
-                type="text"
-              />
-              <Input
-                className="input input-primary w-full"
-                placeholder="Password"
-                type="password"
-              />
-            </div> */}
-            {/* <div className="mb-2 px-1 flex justify-between items-end md:h-auto sm:mb-1 sm:h-14 md:mb-2 md:mt-8 py-2">
-              <h5 className="hover:underline cursor-pointer text-link-primary-color text-sm font-light">
-                Forgot password?
-              </h5>
-              <h5 className="text-end hover:underline cursor-pointer text-link-primary-color text-sm font-light">
-                Sign in with phone
-              </h5>
-            </div>
-            <Button
-              className="btn btn-primary w-full"
-              type="button"
-              text="Sigh in"
-            /> */}
             <EnterToggleLink
               text="Create account"
               className="sm:hidden h-[6vh] sm:h-6 md:h-12 flex items-end md:items-center hover:underline cursor-pointer text-link-primary-color text-sm font-light"
@@ -95,34 +70,6 @@ export default function Enter() {
                 Accept confident will push to all people
               </Checkbox>
             </RegForm>
-            {/* <div className="flex flex-col gap-4 ">
-              <PhoneNumberInput className="phone phone-secondary" />
-              <div>
-                <Input
-                  type="text"
-                  placeholder="Login"
-                  className="input input-secondary w-full"
-                />
-              </div>
-            </div> */}
-            {/* <Checkbox
-              classNames={{
-                base: "test m-0 md:mb-2 md:mt-8 sm:h-14 sm:mb-1 md:h-auto px-1 mb-2 flex items-end",
-                wrapper: "checkbox-wrapper-secondary",
-                icon: "checkbox-icon-secondary",
-                label:
-                  "text-text-reg-white-color text-sm font-light hover:text-place-holder-color",
-              }}
-              radius="none"
-              size="sm"
-            >
-              Accept confident will push to all people
-            </Checkbox>
-            <Button
-              text="Sign up"
-              type="button"
-              className="btn btn-secondary w-full"
-            /> */}
             <EnterToggleLink
               text="Login"
               className="sm:hidden h-[6vh] flex sm:h-6 md:h-12 items-end md:items-center hover:underline cursor-pointer text-text-reg-white-color  text-sm font-light"

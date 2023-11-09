@@ -1,6 +1,7 @@
-import type { AuthOptions, User } from "next-auth"
+import { getServerSession, type AuthOptions, type User } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import { use } from "react";
+import { string } from "zod";
 export const authConfig: AuthOptions = {
     providers: [Credentials({
         credentials: {
@@ -9,20 +10,20 @@ export const authConfig: AuthOptions = {
         },
         async authorize(credentials) {
             if (!credentials?.login || !credentials?.password || process.env.NEXT_PUBLIC_DOMEN_URL === undefined ||
-                process.env.NEXT_PUBLIC_URL === undefined) return null;
+                process.env.NEXT_PUBLIC_URL === undefined) return {name:"pizda"} as User;
             const response = await fetch(process.env.NEXT_PUBLIC_DOMEN_URL + process.env.NEXT_PUBLIC_URL, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({phone: credentials.login, password: credentials.password}),
+                body: JSON.stringify({login: credentials.login, password: credentials.password}),
               })
               const responeJson = await response.json();
               const {data, ...errorData} = responeJson;
               if (errorData.error) return {msg: errorData.msg, error: errorData.error} as User
             return {id: data['ID'], phone: data['Phone'], name: data['Name'], surname: data['Surname'],
             date_of_birth: data['DateOfBirth'], gender: data['Gender'], created_at: data['CreatedAt'],
-            updated_at: data['UpdatedAt'], user_role: data['UserRole'], deleted: data['Deleted']
+            updated_at: data['UpdatedAt'], user_role: data['UserRole'], deleted: data['Deleted'], login: data['Login']
         } as User
         }}
     )],
@@ -69,8 +70,19 @@ export const authConfig: AuthOptions = {
         },
             async signIn({ user, account, profile, email, credentials }) {
               const isAllowedToSignIn = true
-              if (user.error) {
-                throw new Error(user.msg)
+              const session = await getServerSession(authConfig)
+              // console.log(session)
+              if (session) {
+                throw new Error("User already sign in")
+              }
+              const msgs = ["user with the given login is not found", "wrong user login or password"]
+              if (user.error && user.msg) {
+                if (!msgs.includes(user.msg)){
+                  throw new Error("Something went wrong")
+                }
+                else{
+                  user.msg = user.msg[0].toUpperCase() + user.msg.slice(1)
+                throw new Error(user.msg)}
               }
               if (isAllowedToSignIn) {
                 return true

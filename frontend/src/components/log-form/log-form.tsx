@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { signIn, useSession } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 
 import Button from "../ui/button/Button";
 import {
@@ -19,11 +19,15 @@ import Input from "../ui/input/Input";
 import PhoneNumberInput from "../phone-number/phone-number";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { useToast } from "../ui/use-toast";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { authConfig } from "@/config/auth";
 
 function LogForm({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const session = useSession();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const { toast } = useToast();
 
   const formSchema = z.object({
     login: z
@@ -49,11 +53,17 @@ function LogForm({ children }: { children: React.ReactNode }) {
       password: form.getValues("password"),
       redirect: false,
     });
-    if (res && !res.error) {
-      console.log(session);
-      // router.push("/example");
+    console.log(res);
+    if (res && res.error == null) {
+      // console.log(await getSession());
+      router.refresh();
+      router.push(callbackUrl);
     } else {
-      console.log(res);
+      toast({
+        title: "Sign in Error",
+        description: res?.error,
+      });
+      // console.log(res);
     }
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
