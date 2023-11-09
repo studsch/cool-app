@@ -10,7 +10,7 @@ export const authConfig: AuthOptions = {
         },
         async authorize(credentials) {
             if (!credentials?.login || !credentials?.password || process.env.NEXT_PUBLIC_DOMEN_URL === undefined ||
-                process.env.NEXT_PUBLIC_URL === undefined) return {name:"pizda"} as User;
+                process.env.NEXT_PUBLIC_URL === undefined) return null;
             const response = await fetch(process.env.NEXT_PUBLIC_DOMEN_URL + process.env.NEXT_PUBLIC_URL, {
                 method: 'POST',
                 headers: {

@@ -53,7 +53,7 @@ function LogForm({ children }: { children: React.ReactNode }) {
       password: form.getValues("password"),
       redirect: false,
     });
-    console.log(res);
+    // console.log(res);
     if (res && res.error == null) {
       // console.log(await getSession());
       router.refresh();
