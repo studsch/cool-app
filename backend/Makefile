@@ -1,20 +1,20 @@
-MIGRATIONS_FOLDER = $(PWD)/platform/migrations
-PSQL_URL = postgres://M:cool-app@localhost:5432/postgres?sslmode=disable
+migrate-up:
+	docker-compose --env-file="api/.env" --profile tools run --rm migrate up
 
-migrate.up:
-	migrate -path $(MIGRATIONS_FOLDER) -database "$(PSQL_URL)" up
+migrate-down:
+	docker-compose --env-file="api/.env" --profile tools run --rm migrate down 1
 
-migrate.down:
-	migrate -path $(MIGRATIONS_FOLDER) -database "$(PSQL_URL)" down
+migrate-create:
+	docker-compose --env-file="api/.env" --profile tools run --rm migrate create -ext sql -dir /migrations $(name)
 
-migrate.force:
-	migrate -path $(MIGRATIONS_FOLDER) -database "$(PSQL_URL)" force
+build:
+	docker build -t backend:local .
 
-db.up:
-	docker-compose up
+docker-up:
+	docker-compose --env-file="api/.env" up
 
-db.rm:
-	docker-compose stop \
-	&& docker-compose rm \
-	&& rm -rf ./db/postgres \
-	&& rm -rf ./db/mongodb
+docker-rm:
+	docker-compose --env-file="api/.env" rm
+
+psql-rm:
+	rm -rf ./data/postgres
