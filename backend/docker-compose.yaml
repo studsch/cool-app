@@ -1,44 +1,59 @@
 version: "3.8"
 
 services:
-  postgres:
-    container_name: postgres_container
-    image: postgres
+  app:
+    image: backend:local
+    container_name: backend-app
+    depends_on:
+      - postgresql
+    ports:
+      - "8000:8000"
+    networks:
+      - backend
+
+  postgresql:
+    container_name: backend-psql
+    image: postgres:16-alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: postgres
+      POSTGRES_DB: ${POSTGRES_DB_NAME:-postgres}
       PGDATA: /data/postgres
     volumes:
-      - ./db/postgres:/data/postgres
-      # - ./db/db.sql:/docker-entrypoint-initdb.d/001.sql
+      - ./data/postgres:/data/postgres
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     networks:
-      - postgres
-    restart: unless-stopped
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-#  mongodb:
-#    container_name: mongodb_container
-#    image: mongo
-#    environment:
-#      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-mongo}
-#      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-mongo}
-#      MONGO_INITDB_DATABASE: mongodb
-#    volumes:
-#      - ./db/mongodb:/data/db
-#      # - ./db/mongo-entrypoint:/docker-entrypoit-initdb.d
-#    ports:
-#      - "${MONGODB_PORT:-27017}:27017"
-#    networks:
-#      - mongodb
+  migrate:
+    image: migrate/migrate:v4.16.2
+    profiles: ["tools"]
+    networks:
+      - backend
+    volumes:
+      - ./api/platform/migrations:/migrations
+    entrypoint:
+      [
+        "migrate",
+        "-path",
+        "/migrations",
+        "-database",
+        "postgres://M:cool-app@postgresql:5432/postgres?sslmode=disable",
+      ]
+    command: ["up"]
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    restart: on-failure
 
 networks:
-  postgres:
-    driver: bridge
-#  mongodb:
-#    driver: bridge
+  backend:
 
 volumes:
   postgres:
-#  mongodb:
