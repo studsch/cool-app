@@ -49,8 +49,8 @@ function LogForm({ children }: { children: React.ReactNode }) {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const res = await signIn("credentials", {
-      login: form.getValues("login"),
-      password: form.getValues("password"),
+      login: values.login,
+      password: values.password,
       redirect: false,
     });
     // console.log(res);
