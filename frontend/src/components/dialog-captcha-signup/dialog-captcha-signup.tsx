@@ -34,7 +34,7 @@ export default function DialogCaptchaSignup({
         window.recaptchaVerifier = undefined;
       }}
     >
-      <ModalContent className="h-auto px-4">
+      <ModalContent className="h-auto px-4 my-8">
         {onClose => (
           <div className="my-8">
             <ModalHeader className="primary text-lg ">

@@ -6,6 +6,7 @@ import MemoriesSign from "@/components/memories-sign/memoriesSign";
 import EnterToggleLink from "@/components/ui/links/enter-toggle-link";
 import LogForm from "@/components/log-form/log-form";
 import RegForm from "@/components/reg-form/reg-form";
+import Link from "next/link";
 
 export default function Enter() {
   return (
@@ -26,12 +27,18 @@ export default function Enter() {
             </p>
             <LogForm>
               <div className="mb-2 px-1 flex justify-between items-center md:h-auto sm:mb-1 sm:h-14 md:mb-2 md:mt-8 py-2">
-                <h5 className="hover:underline cursor-pointer text-link-primary-color text-sm font-light">
+                <Link
+                  href="/enter/forgot_pass"
+                  className="hover:underline cursor-pointer text-link-primary-color text-sm font-light"
+                >
                   Forgot password?
-                </h5>
-                <h5 className="text-end hover:underline cursor-pointer text-link-primary-color text-sm font-light">
+                </Link>
+                <Link
+                  href="/enter/phone"
+                  className="text-end hover:underline cursor-pointer text-link-primary-color text-sm font-light"
+                >
                   Sign in with phone
-                </h5>
+                </Link>
               </div>
             </LogForm>
             <EnterToggleLink

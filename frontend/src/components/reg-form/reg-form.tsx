@@ -28,12 +28,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { NextUIProvider } from "@nextui-org/react";
 import Input from "../ui/input/Input";
 import PhoneNumberInput from "../phone-number/phone-number";
 import { isValidPhoneNumber } from "react-phone-number-input";
-import { animate } from "framer-motion";
 import { auth } from "@/config/firebase.config";
-import { time } from "console";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Spinner } from "@nextui-org/react";
@@ -73,8 +72,7 @@ function RegForm({ children }: { children: React.ReactNode }) {
           callback: (response: any) => {
             // reCAPTCHA solved, allow signInWithPhoneNumber.
             // ...
-
-            onCheckNumber(form.getValues("number"));
+            // onCheckNumber(form.getValues("number"));
             // router.push("/register");
           },
           "expired-callback": () => {
@@ -104,6 +102,7 @@ function RegForm({ children }: { children: React.ReactNode }) {
         .catch(error => {
           // Error; SMS not sent
           // ...
+          onCheckNumber(form.getValues("number"));
           console.log(error);
         });
   };
@@ -136,7 +135,7 @@ function RegForm({ children }: { children: React.ReactNode }) {
     //   console.log(window.recaptchaVerifier);
   }
   return (
-    <>
+    <NextUIProvider {...router.push}>
       <DialogCaptchaSignup
         setCaptchaLoading={setCaptchaLoading}
         captchaLoading={captchaLoading}
@@ -185,7 +184,7 @@ function RegForm({ children }: { children: React.ReactNode }) {
           <Button type="submit" text="Sign up" className="btn btn-secondary" />
         </form>
       </Form>
-    </>
+    </NextUIProvider>
   );
 }
 
