@@ -1,17 +1,5 @@
-'use client'
-import {DatePicker} from "@/components/ui/calendari/calendar";
-import "@/components/ui/calendari/page.css";
-import NonRegLayout from "@/components/layouts/layout-main-nonreg/NonRegLayout";
+import React from "react";
 
-export default function Home() {
-  return (
-    <>
-      <NonRegLayout>
-        <div>
-          <DatePicker />
-        </div>
-        <div></div>
-      </NonRegLayout>
-    </>
-  );
+export default function page() {
+  return <div>page</div>;
 }
