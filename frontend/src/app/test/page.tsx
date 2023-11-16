@@ -1,5 +1,5 @@
 'use client'
-import {DatePicker} from "@/components/ui/calendari/calendar";
+import DatePicker from "@/components/ui/calendari/calendar";
 import "@/components/ui/calendari/page.css";
 import NonRegLayout from "@/components/layouts/layout-main-nonreg/NonRegLayout";
 
