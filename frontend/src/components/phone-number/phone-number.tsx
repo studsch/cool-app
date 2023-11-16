@@ -7,10 +7,12 @@ import Input from "../ui/input/Input";
 
 type Props = {
   className?: string;
+  disabled?: boolean;
+  defaultValue?: string;
 };
 
 const PhoneNumberInput: React.FC<Props | any> = props => {
-  const [value, setValue] = useState<any>();
+  const [value, setValue] = useState<any>(props.defaultValue);
   return (
     <>
       <PhoneInput
@@ -20,6 +22,7 @@ const PhoneNumberInput: React.FC<Props | any> = props => {
         international
         withCountryCallingCode
         value={value}
+        disabled={props.disabled}
         onChange={value => {
           setValue(value);
         }}
