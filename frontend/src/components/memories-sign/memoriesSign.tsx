@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 type Props = {
   className?: string;
@@ -7,7 +8,10 @@ type Props = {
 
 const MemoriesSign: React.FC<Props> = props => {
   return (
-    <article className={`${props.className} flex md:gap-1 gap-0.5 items-start`}>
+    <Link
+      href="/"
+      className={`${props.className} flex md:gap-1 gap-0.5 items-start`}
+    >
       <span className="md:pt-[10px] md:text-4xl sm:text-2xl text-3xl font-bold text-text-reg-primary-color">
         Mem
       </span>
@@ -21,7 +25,7 @@ const MemoriesSign: React.FC<Props> = props => {
       <span className="md:pt-[10px] md:text-4xl sm:text-2xl text-3xl font-bold text-text-reg-primary-color">
         ries
       </span>
-    </article>
+    </Link>
   );
 };
 
