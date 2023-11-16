@@ -11,7 +11,7 @@ build:
 	docker build -t backend:local .
 
 docker-up:
-	docker-compose --env-file="api/.env" up
+	docker-compose --env-file="api/.env" up --build
 
 docker-rm:
 	docker-compose --env-file="api/.env" rm

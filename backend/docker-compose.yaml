@@ -2,7 +2,8 @@ version: "3.8"
 
 services:
   app:
-    image: backend:local
+    build:
+      context: .
     container_name: backend-app
     depends_on:
       - postgresql
@@ -44,7 +45,7 @@ services:
         "-path",
         "/migrations",
         "-database",
-        "postgres://M:cool-app@postgresql:5432/postgres?sslmode=disable",
+        "postgres://postgres:cool-app@postgresql:5432/postgres?sslmode=disable",
       ]
     command: ["up"]
     depends_on:

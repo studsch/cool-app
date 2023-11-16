@@ -2,10 +2,7 @@ package queries
 
 import (
 	"context"
-	"errors"
-	"fmt"
 
-	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/studsch/cool-app/backend/app/models"
@@ -40,12 +37,12 @@ func (q *UserQueries) CreateUser(ctx context.Context, u *models.User) error {
 		u.Deleted,
 	)
 	if err := row.Scan(&u.ID); err != nil {
-		var pgErr *pgconn.PgError
-		if errors.As(err, &pgErr) {
-			newErr := fmt.Errorf("SQL Error: %s, Detail: %s, Where %s, Code: %s, SQLState: %s", pgErr.Message, pgErr.Detail, pgErr.Where, pgErr.Code, pgErr.SQLState())
-			fmt.Println(newErr)
-			return nil
-		}
+		// var pgErr *pgconn.PgError
+		// if errors.As(err, &pgErr) {
+		// 	newErr := fmt.Errorf("SQL Error: %s, Detail: %s, Where %s, Code: %s, SQLState: %s", pgErr.Message, pgErr.Detail, pgErr.Where, pgErr.Code, pgErr.SQLState())
+		// 	fmt.Println(newErr)
+		// 	return nil
+		// }
 		return err
 	}
 
