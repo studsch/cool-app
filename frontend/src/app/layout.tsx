@@ -1,8 +1,20 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { Noto_Sans } from "next/font/google";
+import { Providers } from "@/components/providers/providers";
 
-const inter = Inter({ subsets: ["latin"] });
+// Иконки
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
+config.autoAddCss = false;
+
+// шрифты
+const notoSans = Noto_Sans({
+  subsets: ["latin", "cyrillic"],
+  variable: "--noto-sans",
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +28,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <Providers>
+        <body className={notoSans.className}>{children}</body>
+      </Providers>
     </html>
   );
 }

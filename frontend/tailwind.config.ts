@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const {nextui} = require("@nextui-org/react");
+
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -6,29 +8,49 @@ module.exports = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: "1rem",
       screens: {
         "2xl": "1400px",
       },
     },
     extend: {
+      boxShadow: {
+        '3xl': '0px 10px 50px 15px rgba(0, 0, 0, 0.1)',
+      },
       colors: {
+        'text-primary-color': "#6A6A6A",
+        'text-secondary-color': '#9B9B9B',
+        'text-form-primary-color': '#6A778D',
+        'button-primary-color': '#FF60A3',
+        'button-secondary-color': '#F17382',
+        'place-holder-color': '#F2F2F2',
+        'link-primary-color': '#FF75AF',
+        'text-reg-primary-color': '#F07281',
+        'text-reg-secondary-color': '#6A6A6A',
+        'text-reg-white-color': '#FFFFFF',
+        'gradient-pink-start': '#FF75AF',
+        'gradient-pink-end': '#F17382',
+        'reg-gradient-down': '#FA749E',
+        'gradient-gray-start': '#F1F1F1',
+        'gradient-gray-end': '#F9F9F9',
+        'selected-item': '#F17382',
+        'historys-background': 'rgba(36, 15, 33, 0.85)',
+        'outline history': '#3D2C3A',
+        'history-background': '#433040',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "var(--btn-primary-background-color)",
+          foreground: "var(--btn-primary-background-color)",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -72,5 +94,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), nextui()], 
 };
