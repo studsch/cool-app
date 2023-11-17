@@ -12,15 +12,24 @@ import ResentSmsButton from "@/components/resent-sms-button/resent-sms-button";
 
 export default function Enter() {
   return (
-    <div className="w-full h-[80vh] sm:w-1/2 2xl:w-[500px]  2xl:h-[640px]  sm:h-auto lg:w-[400px] m-auto flex relative z-10 shadow-3xl rounded-xl sm:rounded-md overflow-hidden">
-      <div className="py-20 w-full px-unit-sm sm:px-unit-xl lg:px-unit-2xl h-full bg-white relative flex flex-col  overflow-auto ">
+    <div className="w-full h-[80vh] sm:w-[460px] 2xl:w-[540px]  2xl:h-auto  sm:h-auto md:w-[500px] m-auto flex relative z-10 shadow-3xl rounded-xl sm:rounded-md overflow-hidden">
+      <div className="py-20 w-full px-unit-sm sm:px-unit-xl lg:px-unit-2xl h-full relative flex flex-col justify-center  bg-white  overflow-auto ">
         <h1 className="w-0 h-0 overflow-hidden">Memories</h1>
-        <MemoriesSign className="md:h-24 h-16 mx-auto" />
-        <p>Check your phone for SMS</p>
-        <h2>Phone notification</h2>
+        <MemoriesSign className="h-24 mx-auto" />
+        <p className="text-text-primary-color h-8 font-light">
+          Check your phone for SMS
+        </p>
+        <h2 className="text-text-primary-color h-14 text-xl">
+          Phone notification
+        </h2>
         <OtpForm>
-          <ResentSmsButton />
-          <Link href={"/support/sms_code"}>Did not recieve</Link>
+          <ResentSmsButton className="hover:underline cursor-pointer text-link-primary-color text-base font-light" />
+          <Link
+            href={"/support/sms_code"}
+            className="hover:underline cursor-pointer text-link-primary-color text-base font-light"
+          >
+            Did not recieve
+          </Link>
         </OtpForm>
       </div>
     </div>

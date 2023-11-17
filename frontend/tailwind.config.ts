@@ -38,6 +38,7 @@ module.exports = {
         'reg-gradient-down': '#FA749E',
         'gradient-gray-start': '#F1F1F1',
         'gradient-gray-end': '#F9F9F9',
+        'background-color-reg-light-gray': '#F9F9F9',
         'selected-item': '#F17382',
         'historys-background': 'rgba(36, 15, 33, 0.85)',
         'outline history': '#3D2C3A',

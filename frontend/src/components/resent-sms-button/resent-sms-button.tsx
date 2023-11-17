@@ -1,6 +1,10 @@
 import React from "react";
 import Button from "../ui/button/Button";
 
-export default function ResentSmsButton() {
-  return <Button type="button" text="resent" />;
+interface IResetSmsButton {
+  className?: string;
+}
+
+export default function ResentSmsButton(props: IResetSmsButton) {
+  return <Button type="button" text="Resent" className={props.className} />;
 }
