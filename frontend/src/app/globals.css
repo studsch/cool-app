@@ -111,11 +111,12 @@ body {
     border-color: var(--btn-primary-background-color);
   }
 
-  .btn-secondary {
+  .btn-secondary, .btn-disabled {
     background: var(--btn-secondary-background-color);
     color: var(--btn-secondary-text-color);
     border: solid 2px var(--btn-secondary-outline-color);
   }
+
 
   .btn-secondary:hover {
     color: var(--btn-secondary-backround-color-hover);

@@ -1,5 +1,6 @@
 "use client";
-import React, { ReactNode, forwardRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import Timer from "../timer/timer";
 import {
   Form,
   FormControl,
@@ -17,16 +18,6 @@ import Button from "../ui/button/Button";
 import OtpInput from "react18-input-otp";
 import PhoneNumberInput from "../phone-number/phone-number";
 import { type } from "os";
-import { render } from "react-dom";
-
-const subButtonRef = forwardRef<HTMLButtonElement>(function subButtonRef(
-  props,
-  ref,
-) {
-  return (
-    <Button type="submit" text="Accept" className="btn btn-primary" ref={ref} />
-  );
-});
 
 const formSchema = z.object({
   code: z
@@ -50,19 +41,19 @@ export default function OtpForm({ children }: { children: React.ReactNode }) {
     // ✅ This will be type-safe and validated.
     console.log("values");
   }
-
-  // useEffect(() => {
-  //   const result = formSchema.safeParse({ code: form.getValues("code") });
-  //   if (subButtonRef.current != null) {
-  //     if (!result.success) {
-  //       console.log("ERROR");
-  //       subButtonRef.current.disabled = true;
-  //     } else {
-  //       console.log("SUCcESS");
-  //       subButtonRef.current.disabled = false;
-  //     }
-  //   }
-  // }, [form.getValues("code")]);
+  const changeLogic = () => {
+    const result = formSchema.safeParse({ code: form.getValues("code") });
+    const button = document.querySelector("#accept");
+    if (button) {
+      if (!result.success) {
+        // console.log("ERROR");
+        button.setAttribute("disabled", "true");
+      } else {
+        // console.log("SUCcESS");
+        button.removeAttribute("disabled");
+      }
+    }
+  };
   return (
     <div>
       <PhoneNumberInput
@@ -85,7 +76,10 @@ export default function OtpForm({ children }: { children: React.ReactNode }) {
                 <FormControl>
                   <OtpInput
                     className="mb-0 mt-10"
-                    onChange={field.onChange}
+                    onChange={(event: any[]) => {
+                      field.onChange(event);
+                      changeLogic();
+                    }}
                     value={field.value}
                     ref={ref => {
                       field.ref({
@@ -107,14 +101,15 @@ export default function OtpForm({ children }: { children: React.ReactNode }) {
               </FormItem>
             )}
           />
+          <Timer time={60} className="mx-auto" />
           <div className="flex justify-between  "> {children}</div>
-          {subButtonRef}
-          {/* <Button
-            ref={subButtonRef}
+          <Button
+            disabled
+            id="accept"
             type="submit"
             text="Accept"
-            className="btn btn-primary"
-          /> */}
+            className="btn btn-primary disabled:btn-disabled"
+          />
         </form>
       </Form>
     </div>

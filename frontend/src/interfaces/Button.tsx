@@ -4,6 +4,7 @@ interface ButtonProps {
   type: "submit" | "reset" | "button" | undefined;
   className?: string;
   text?: string;
+  id?: string;
   ref?: LegacyRef<HTMLButtonElement> | undefined;
   disabled?: boolean;
   onClick?: () => void;
