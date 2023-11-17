@@ -8,9 +8,15 @@ import (
 )
 
 func Private(a *fiber.App) {
-	route := a.Group("/api/v1")
+	router := a.Group("/api/v1")
 
 	// TODO: RENEW TOKENS
 
-	route.Post("/user/sign/out", middleware.JWTProtected(), controllers.UserSignOut)
+	router.Post("/user/sign/out", middleware.JWTProtected(), controllers.UserSignOut)
+
+	// Posts
+	router.Post("/post", middleware.JWTProtected(), controllers.CreatePost)
+	router.Put("/post/:id", middleware.JWTProtected(), controllers.UpdatePost)
+	router.Delete("/post/:id", middleware.JWTProtected(), controllers.DeletePost)
+	router.Patch("/post/:id", middleware.JWTProtected(), controllers.ArchivePost)
 }
