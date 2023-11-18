@@ -54,6 +54,8 @@ export default function OtpForm({ children }: { children: React.ReactNode }) {
       }
     }
   };
+  console.log("dsds");
+  const [completedTimer, setCompletedTimer] = useState(false);
   return (
     <div>
       <PhoneNumberInput
@@ -75,20 +77,28 @@ export default function OtpForm({ children }: { children: React.ReactNode }) {
                 </FormLabel>
                 <FormControl>
                   <OtpInput
-                    className="mb-0 mt-10"
+                    className="mb-0 sm:mt-10 mt-2"
                     onChange={(event: any[]) => {
+                      console.log(event.toString());
                       field.onChange(event);
                       changeLogic();
                     }}
                     value={field.value}
                     ref={ref => {
-                      field.ref({
-                        focus: ref?.focusInput,
-                      });
+                      console.log(ref?.getOtpValue());
+                      if (field.value?.length) {
+                        if (field.value.length == 6) field.onBlur();
+                        else
+                          field.ref({
+                            focus: ref?.focusInput(field.value?.length),
+                          });
+                      }
                     }}
-                    inputProps={{ type: "text" }}
+                    inputProps={{
+                      type: "number",
+                    }}
                     containerStyle="justify-center"
-                    inputStyle="input input-primary min-w-[34px] md:min-w-[40px] mx-1"
+                    inputStyle="input input-primary min-w-[34px] mx-1 md:min-w-[40px]"
                     numInputs={6}
                     separator={
                       <span className="hidden lg:block text-text-secondary-color">
@@ -101,15 +111,28 @@ export default function OtpForm({ children }: { children: React.ReactNode }) {
               </FormItem>
             )}
           />
-          <Timer time={60} className="mx-auto" />
-          <div className="flex justify-between  "> {children}</div>
-          <Button
-            disabled
-            id="accept"
-            type="submit"
-            text="Accept"
-            className="btn btn-primary disabled:btn-disabled"
-          />
+          {/* <Timer
+            time={2}
+            className="mx-auto"
+            completed={completedTimer}
+            setCompletedTimer={setCompletedTimer}
+          /> */}
+          {/* <div className="flex flex-col gap-3 relative !mt-4">
+            <Timer
+              time={2}
+              className="mx-auto"
+              completed={completedTimer}
+              setCompletedTimer={setCompletedTimer}
+            />
+            <Button
+              disabled
+              id="accept"
+              type="submit"
+              text="Accept"
+              className="btn btn-primary disabled:btn-disabled"
+            />
+          </div> */}
+          {children}
         </form>
       </Form>
     </div>

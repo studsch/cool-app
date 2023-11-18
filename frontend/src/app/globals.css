@@ -136,6 +136,15 @@ body {
     color: var(--btn-secondary-outline-color);
   }
 
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+  }
+  
+  input[type=number] {
+      -moz-appearance:textfield;
+  }
 
   .input-primary:focus {
     outline: none ;
