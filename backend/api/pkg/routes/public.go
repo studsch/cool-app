@@ -22,4 +22,9 @@ func Public(a *fiber.App) {
 
 	router.Get("/user/phone/:phone", controllers.UserWithPhoneExist)
 	router.Get("/user/login/:login", controllers.UserWithLoginExist)
+
+	// Posts
+	router.Get("/post", controllers.GetPosts)
+	router.Get("/post/:id", controllers.GetPostById)
+	router.Get("/post/user/:id", controllers.GetPostsByUserId)
 }

@@ -95,30 +95,43 @@ func (q *PostQueries) GetPostById(ctx context.Context, id uuid.UUID) (models.Pos
 	return post, nil
 }
 
-func (q *PostQueries) GetPostByUserId(ctx context.Context, id uuid.UUID) (models.Post, error) {
+func (q *PostQueries) GetPostsByUserId(ctx context.Context, id uuid.UUID) ([]models.Post, error) {
 	query := `
 		SELECT id, user_id, description, location, created_at, archived, deleted
 		FROM post
 		WHERE user_id=$1 AND deleted=false AND archived=false
-		LIMIT 1
 	`
-	var post models.Post
+	var posts []models.Post
 
-	row := q.QueryRow(ctx, query, id)
-	err := row.Scan(
-		&post.ID,
-		&post.UserID,
-		&post.Description,
-		&post.Location,
-		&post.CreatedAt,
-		&post.Archived,
-		&post.Deleted,
-	)
+	rows, err := q.Query(ctx, query, id)
 	if err != nil {
-		return post, err
+		return nil, err
 	}
 
-	return post, nil
+	for rows.Next() {
+		var post models.Post
+
+		err = rows.Scan(
+			&post.ID,
+			&post.UserID,
+			&post.Description,
+			&post.Location,
+			&post.CreatedAt,
+			&post.Archived,
+			&post.Deleted,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		posts = append(posts, post)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return posts, nil
 }
 
 func (q *PostQueries) UpdatePostDescription(ctx context.Context, id uuid.UUID, d string) error {
