@@ -18,6 +18,7 @@ import Button from "../ui/button/Button";
 import OtpInput from "react18-input-otp";
 import PhoneNumberInput from "../phone-number/phone-number";
 import { type } from "os";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   code: z
@@ -29,6 +30,7 @@ const formSchema = z.object({
 });
 
 export default function OtpForm({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,7 +41,7 @@ export default function OtpForm({ children }: { children: React.ReactNode }) {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log("values");
+    router.push("/register/base");
   }
   const changeLogic = () => {
     const result = formSchema.safeParse({ code: form.getValues("code") });

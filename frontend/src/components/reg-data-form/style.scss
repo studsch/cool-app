@@ -1,0 +1,33 @@
+@import url("../../app/globals.css");
+
+div {
+    color: var(--btn-secondary-backround-color-hover);
+    label {
+        height: 30px;
+    }
+
+    label[data-selected="true"]>div>span {
+        color:  var(--btn-primary-background-color);
+       
+    }
+
+    select {
+        @apply sm:min-h-[20px] h-[34px] md:min-h-[40px] w-full;
+        font-size: 15px;
+        font-weight: 400;
+       
+        border: solid 2px var(--btn-secondary-outline-color);
+        border-radius: 6px !important;
+        color: var(--btn-secondary-text-color);
+        padding: 0 6px;
+        transition: all 0.4s ease-in-out;
+        
+    
+
+        &:focus {
+            outline: none ;
+            border-color: var(--btn-primary-background-color);
+            color: var(--btn-secondary-backround-color-hover);
+        }
+    }
+}

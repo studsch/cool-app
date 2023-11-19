@@ -6,6 +6,7 @@
   :root {
     --btn-primary-background-color: #FF60A3;
     --btn-primary-text-color: #fff;
+    --text-primary-color: "#6A6A6A";
     --btn-primary-backround-color-hover: #FF89BB;
     --btn-secondary-background-color: #fff;
     --btn-secondary-text-color: #9B9B9B;
@@ -204,6 +205,7 @@ body {
   }
 
 }
+
 
 
 
