@@ -8,8 +8,6 @@ import (
 	"github.com/studsch/cool-app/backend/platform/database"
 )
 
-// Login       string `validate:"required,lte=30,gte=10" json:"login,omitempty"`
-
 func UserWithPhoneExist(c *fiber.Ctx) error {
 	phone := c.Params("phone")
 

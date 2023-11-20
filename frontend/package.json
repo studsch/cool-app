@@ -35,12 +35,18 @@
     "next": "^13.5.6",
     "next-auth": "^4.24.4",
     "react": "^18",
+<<<<<<< HEAD
     "react-day-picker": "^8.9.1",
+=======
+    "react-countdown": "^2.3.5",
+>>>>>>> 2878f6cc62df00a6c722af6ca97c9ed2628d27be
     "react-dom": "^18",
     "react-hook-form": "^7.47.0",
     "react-otp-input": "^3.1.0",
     "react-phone-input-2": "^2.15.1",
     "react-phone-number-input": "^3.3.7",
+    "react-select-datepicker": "^2.1.2",
+    "react18-input-otp": "^1.1.4",
     "sass": "^1.69.5",
     "shadcn-ui": "^0.4.1",
     "tailwind-merge": "^1.14.0",

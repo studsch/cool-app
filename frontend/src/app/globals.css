@@ -6,6 +6,7 @@
   :root {
     --btn-primary-background-color: #FF60A3;
     --btn-primary-text-color: #fff;
+    --text-primary-color: "#6A6A6A";
     --btn-primary-backround-color-hover: #FF89BB;
     --btn-secondary-background-color: #fff;
     --btn-secondary-text-color: #9B9B9B;
@@ -111,11 +112,12 @@ body {
     border-color: var(--btn-primary-background-color);
   }
 
-  .btn-secondary {
+  .btn-secondary, .btn-disabled {
     background: var(--btn-secondary-background-color);
     color: var(--btn-secondary-text-color);
     border: solid 2px var(--btn-secondary-outline-color);
   }
+
 
   .btn-secondary:hover {
     color: var(--btn-secondary-backround-color-hover);
@@ -135,6 +137,15 @@ body {
     color: var(--btn-secondary-outline-color);
   }
 
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+  }
+  
+  input[type=number] {
+      -moz-appearance:textfield;
+  }
 
   .input-primary:focus {
     outline: none ;
@@ -194,6 +205,7 @@ body {
   }
 
 }
+
 
 
 
