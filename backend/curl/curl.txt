@@ -1,0 +1,66 @@
+curl --location 'http://localhost:8000/api/v1/user/sign/up' \
+--header 'Content-Type: application/json' \
+--data '{
+    "phone": "+7912345678",
+    "login": "testLogin10chars",
+    "password": "thisispassword",
+    "name": "Albert",
+    "surname": "Einstein",
+    "dateOfBirth": "01-11-2023",
+    "gender": "Male",
+    "userRole": "user"
+}'
+
+curl --location 'http://localhost:8000/api/v1/user/sign/in/phone' \
+--header 'Content-Type: application/json' \
+--data '{
+    "phone": "+7912345678",
+    "password": "thisispassword"
+}'
+
+curl --location 'http://localhost:8000/api/v1/user/sign/in/login' \
+--header 'Content-Type: application/json' \
+--data '{
+    "login": "testLogin10chars",
+    "password": "thisispassword"
+}'
+
+curl --location 'http://localhost:8000/api/v1/user/phone/+7912345678'
+
+curl --location 'http://localhost:8000/api/v1/user/login/testLogin10chars'
+
+curl --location --request POST 'http://localhost:8000/api/v1/user/sign/out' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzIjoxNzAwODIxMTQ2LCJpZCI6ImUxNGI1OWQ4LTI1NDgtNGI4NS04ODUxLTYxNWM5NDEzYTFiZSJ9.KLQgOWDgZoBbt3VwZp9vs106vS4pDYq8TE4TUudFfS0'
+
+curl --location 'http://localhost:8000/api/v1/post' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzIjoxNzAwODI3OTk1LCJpZCI6ImUxNGI1OWQ4LTI1NDgtNGI4NS04ODUxLTYxNWM5NDEzYTFiZSJ9.Tg-FYz0D06Y8XujVJsf2hDJvi5jrlHRV3F2AbYcki0o' \
+--header 'Content-Type: application/json' \
+--data '{
+    "description": "some desc",
+    "location": "some location",
+    "userId": "e14b59d8-2548-4b85-8851-615c9413a1be"
+}'
+
+curl --location --request PUT 'http://localhost:8000/api/v1/post/dabcce87-d4f5-42b8-9d00-d92e264d1d62' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzIjoxNzAwODI3OTk1LCJpZCI6ImUxNGI1OWQ4LTI1NDgtNGI4NS04ODUxLTYxNWM5NDEzYTFiZSJ9.Tg-FYz0D06Y8XujVJsf2hDJvi5jrlHRV3F2AbYcki0o' \
+--header 'Content-Type: application/json' \
+--data '{
+    "description": "some desc 2",
+    "location": "some location 2"
+}'
+
+curl --location --request DELETE 'http://localhost:8000/api/v1/post/dabcce87-d4f5-42b8-9d00-d92e264d1d62' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzIjoxNzAwODI3OTk1LCJpZCI6ImUxNGI1OWQ4LTI1NDgtNGI4NS04ODUxLTYxNWM5NDEzYTFiZSJ9.Tg-FYz0D06Y8XujVJsf2hDJvi5jrlHRV3F2AbYcki0o' \
+--data ''
+
+curl --location --request PATCH 'http://localhost:8000/api/v1/post/6ae4f0f3-379b-417d-a8df-7202d66f01b6' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzIjoxNzAwODI3OTk1LCJpZCI6ImUxNGI1OWQ4LTI1NDgtNGI4NS04ODUxLTYxNWM5NDEzYTFiZSJ9.Tg-FYz0D06Y8XujVJsf2hDJvi5jrlHRV3F2AbYcki0o' \
+--data ''
+
+curl --location 'http://localhost:8000/api/v1/post/' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzIjoxNzAwODI3OTk1LCJpZCI6ImUxNGI1OWQ4LTI1NDgtNGI4NS04ODUxLTYxNWM5NDEzYTFiZSJ9.Tg-FYz0D06Y8XujVJsf2hDJvi5jrlHRV3F2AbYcki0o' \
+--data ''
+
+curl --location 'http://localhost:8000/api/v1/post/user/e14b59d8-2548-4b85-8851-615c9413a1be' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzIjoxNzAwODI3OTk1LCJpZCI6ImUxNGI1OWQ4LTI1NDgtNGI4NS04ODUxLTYxNWM5NDEzYTFiZSJ9.Tg-FYz0D06Y8XujVJsf2hDJvi5jrlHRV3F2AbYcki0o' \
+--data ''
