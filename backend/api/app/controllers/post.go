@@ -123,9 +123,14 @@ func CreatePost(c *fiber.Ctx) error {
 		})
 	}
 
-	post := &models.Post{}
+	type createPost struct {
+		Description string    `validate:"lte=180" json:"description"`
+		Location    string    `validate:"gte=3" json:"location"`
+		UserID      uuid.UUID `validate:"required,uuid" json:"userId"`
+	}
+	cp := &createPost{}
 
-	if err := c.BodyParser(post); err != nil {
+	if err := c.BodyParser(cp); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": true,
 			"msg":   err.Error(),
@@ -142,10 +147,25 @@ func CreatePost(c *fiber.Ctx) error {
 
 	validate := utils.NewValidator()
 
-	if err := validate.Struct(post); err != nil {
+	if err := validate.Struct(cp); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": true,
 			"msg":   utils.ValidatorErrors(err),
+		})
+	}
+
+	post := &models.Post{
+		Description: cp.Description,
+		Location:    cp.Location,
+		CreatedAt:   time.Now(),
+		UserID:      cp.UserID,
+	}
+
+	userID := claims.UserID
+	if post.UserID != userID {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"error": true,
+			"msg":   "permission denied",
 		})
 	}
 
@@ -216,7 +236,28 @@ func UpdatePost(c *fiber.Ctx) error {
 		})
 	}
 
-	// TODO: maybe add field for info about update post?
+	type updatePost struct {
+		Description string `validate:"lte=180" json:"description"`
+		Location    string `validate:"lte=100" json:"location"`
+	}
+	up := &updatePost{}
+
+	if err := c.BodyParser(up); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	if up.Description != "" && up.Location != "" {
+		post.Description = up.Description
+		post.Location = up.Location
+	} else if up.Description == "" && up.Location != "" {
+		post.Location = up.Location
+	} else if up.Location == "" && up.Description != "" {
+		post.Description = up.Description
+	}
+
 	validate := utils.NewValidator()
 	if err := validate.Struct(post); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
