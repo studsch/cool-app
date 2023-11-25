@@ -9,6 +9,7 @@ import (
 type Queries struct {
 	*queries.UserQueries
 	*queries.PostQueries
+	*queries.CommentQueries
 }
 
 func OpenDBConnection() (*Queries, error) {
@@ -24,7 +25,8 @@ func OpenDBConnection() (*Queries, error) {
 	}
 
 	return &Queries{
-		UserQueries: &queries.UserQueries{Pool: db},
-		PostQueries: &queries.PostQueries{Pool: db},
+		UserQueries:    &queries.UserQueries{Pool: db},
+		PostQueries:    &queries.PostQueries{Pool: db},
+		CommentQueries: &queries.CommentQueries{Pool: db},
 	}, nil
 }
