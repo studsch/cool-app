@@ -27,3 +27,20 @@ func (q *CommentQueries) CreateComment(ctx context.Context, c *models.Comment) e
 
 	return nil
 }
+
+func (q *CommentQueries) ReplyTo(ctx context.Context, r *models.Reply) error {
+	query := `
+		insert into comment
+			(id, user_id, post_id, reply_to_user_id, content, deleted, created_at)
+		values
+			(default, $1, $2, $3, $4, default, default)
+		returning id, deleted, created_at
+	`
+
+	row := q.QueryRow(ctx, query, r.UserID, r.PostID, r.ReplyToUserID, r.Content)
+	if err := row.Scan(&r.ID, &r.Deleted, &r.CreatedAt); err != nil {
+		return err
+	}
+
+	return nil
+}

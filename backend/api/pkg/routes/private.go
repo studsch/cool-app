@@ -25,4 +25,5 @@ func Private(a *fiber.App) {
 
 	// Comments
 	router.Post("/comment", middleware.JWTProtected(), controllers.CreateComment)
+	router.Post("/reply", middleware.JWTProtected(), controllers.CreateReply)
 }
