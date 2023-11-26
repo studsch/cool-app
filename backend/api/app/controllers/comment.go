@@ -10,7 +10,6 @@ import (
 	"github.com/studsch/cool-app/backend/platform/database"
 )
 
-// TODO: test it
 func CreateComment(c *fiber.Ctx) error {
 	now := time.Now().Unix()
 

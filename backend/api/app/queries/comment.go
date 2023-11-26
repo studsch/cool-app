@@ -17,7 +17,7 @@ func (q *CommentQueries) CreateComment(ctx context.Context, c *models.Comment) e
 			(id, user_id, post_id, content, deleted, created_at)
 		values
 			(default, $1, $2, $3, default, default)
-		returning (id, deleted, created_at)
+		returning id, deleted, created_at
 	`
 
 	row := q.QueryRow(ctx, query, c.UserID, c.PostID, c.Content)
