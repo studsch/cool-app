@@ -163,3 +163,45 @@ func CreateReply(c *fiber.Ctx) error {
 		"comment": reply,
 	})
 }
+
+func GetPostComments(c *fiber.Ctx) error {
+	postID, err := uuid.Parse(c.Params("postID"))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	db, err := database.OpenDBConnection()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	_, err = db.GetPostById(c.Context(), postID)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": true,
+			"msg":   "post with the givern ID is not found",
+			"post":  nil,
+		})
+	}
+
+	comments, err := db.GetCommentsByPostID(c.Context(), postID)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"error":    false,
+		"msg":      nil,
+		"count":    len(comments),
+		"comments": comments,
+	})
+}

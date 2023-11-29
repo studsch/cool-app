@@ -3,6 +3,7 @@ package queries
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/studsch/cool-app/backend/app/models"
 )
@@ -43,4 +44,35 @@ func (q *CommentQueries) ReplyTo(ctx context.Context, r *models.Reply) error {
 	}
 
 	return nil
+}
+
+func (q *CommentQueries) GetCommentsByPostID(ctx context.Context, postID uuid.UUID) ([]models.Reply, error) {
+	query := `
+		select id, user_id, post_id, reply_to_user_id, content, deleted, created_at
+		from comment
+		where post_id=$1 and deleted=false
+	`
+	var comments []models.Reply
+
+	rows, err := q.Query(ctx, query, postID)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var comment models.Reply
+
+		err = rows.Scan(&comment.ID, &comment.UserID, &comment.PostID, &comment.ReplyToUserID, &comment.Content, &comment.Deleted, &comment.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		comments = append(comments, comment)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return comments, nil
 }
