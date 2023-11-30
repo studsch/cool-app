@@ -106,10 +106,10 @@ func CreateReply(c *fiber.Ctx) error {
 	}
 
 	type createReply struct {
-		UserID        uuid.UUID `validate:"required,uuid" json:"userID"`
-		PostID        uuid.UUID `validate:"required,uuid" json:"postID"`
-		ReplyToUserID uuid.UUID `validate:"required,uuid" json:"replyTo"`
-		Content       string    `validate:"required,gte=1,lte=180" json:"content"`
+		UserID           uuid.UUID `validate:"required,uuid" json:"userID"`
+		PostID           uuid.UUID `validate:"required,uuid" json:"postID"`
+		ReplyToCommentID uuid.UUID `validate:"required,uuid" json:"replyTo"`
+		Content          string    `validate:"required,gte=1,lte=180" json:"content"`
 	}
 	newReply := &createReply{}
 
@@ -145,10 +145,10 @@ func CreateReply(c *fiber.Ctx) error {
 	}
 
 	reply := &models.Reply{
-		UserID:        newReply.UserID,
-		PostID:        newReply.PostID,
-		ReplyToUserID: newReply.ReplyToUserID,
-		Content:       newReply.Content,
+		UserID:           newReply.UserID,
+		PostID:           newReply.PostID,
+		ReplyToCommentID: newReply.ReplyToCommentID,
+		Content:          newReply.Content,
 	}
 	if err := db.ReplyTo(c.Context(), reply); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

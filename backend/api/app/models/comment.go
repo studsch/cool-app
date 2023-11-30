@@ -16,11 +16,11 @@ type Comment struct {
 }
 
 type Reply struct {
-	ID            uuid.UUID
-	UserID        uuid.UUID
-	PostID        uuid.UUID
-	ReplyToUserID uuid.UUID
-	Content       string
-	CreatedAt     time.Time
-	Deleted       bool
+	ID               uuid.UUID
+	UserID           uuid.UUID
+	PostID           uuid.UUID
+	ReplyToCommentID uuid.UUID
+	Content          string
+	CreatedAt        time.Time
+	Deleted          bool
 }

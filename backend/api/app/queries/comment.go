@@ -32,13 +32,13 @@ func (q *CommentQueries) CreateComment(ctx context.Context, c *models.Comment) e
 func (q *CommentQueries) ReplyTo(ctx context.Context, r *models.Reply) error {
 	query := `
 		insert into comment
-			(id, user_id, post_id, reply_to_user_id, content, deleted, created_at)
+			(id, user_id, post_id, reply_to_comment_id, content, deleted, created_at)
 		values
 			(default, $1, $2, $3, $4, default, default)
 		returning id, deleted, created_at
 	`
 
-	row := q.QueryRow(ctx, query, r.UserID, r.PostID, r.ReplyToUserID, r.Content)
+	row := q.QueryRow(ctx, query, r.UserID, r.PostID, r.ReplyToCommentID, r.Content)
 	if err := row.Scan(&r.ID, &r.Deleted, &r.CreatedAt); err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ func (q *CommentQueries) ReplyTo(ctx context.Context, r *models.Reply) error {
 
 func (q *CommentQueries) GetCommentsByPostID(ctx context.Context, postID uuid.UUID) ([]models.Reply, error) {
 	query := `
-		select id, user_id, post_id, reply_to_user_id, content, deleted, created_at
+		select id, user_id, post_id, reply_to_comment_id, content, deleted, created_at
 		from comment
 		where post_id=$1 and deleted=false
 	`
@@ -62,7 +62,7 @@ func (q *CommentQueries) GetCommentsByPostID(ctx context.Context, postID uuid.UU
 	for rows.Next() {
 		var comment models.Reply
 
-		err = rows.Scan(&comment.ID, &comment.UserID, &comment.PostID, &comment.ReplyToUserID, &comment.Content, &comment.Deleted, &comment.CreatedAt)
+		err = rows.Scan(&comment.ID, &comment.UserID, &comment.PostID, &comment.ReplyToCommentID, &comment.Content, &comment.Deleted, &comment.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
