@@ -6,8 +6,9 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/studsch/cool-app/backend/pkg/configs"
 	pgxUUID "github.com/vgarvardt/pgx-google-uuid/v5"
+
+	"github.com/studsch/cool-app/backend/pkg/configs"
 )
 
 func PGXPoolConnection() (*pgxpool.Pool, error) {

@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+
 	"github.com/studsch/cool-app/backend/app/models"
 	"github.com/studsch/cool-app/backend/pkg/utils"
 	"github.com/studsch/cool-app/backend/platform/database"
