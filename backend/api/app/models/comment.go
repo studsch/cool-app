@@ -24,3 +24,9 @@ type Reply struct {
 	CreatedAt        time.Time
 	Deleted          bool
 }
+
+type LikeComment struct {
+	ID        uuid.UUID
+	UserID    uuid.UUID
+	CommentID uuid.UUID
+}

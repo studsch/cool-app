@@ -2,6 +2,7 @@ package queries
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -76,4 +77,54 @@ func (q *CommentQueries) GetCommentsByPostID(ctx context.Context, postID uuid.UU
 	}
 
 	return comments, nil
+}
+
+func (q *CommentQueries) GetCommentsByCommentID(ctx context.Context, commentID uuid.UUID) (models.Reply, error) {
+	query := `
+		select (id, user_id, post_id, reply_to_comment_id, content, created_at, deleted)
+		from comment
+		where id=$1 and deleted=false
+	`
+	comment := models.Reply{}
+
+	err := q.QueryRow(ctx, query, commentID).Scan(&comment)
+	if err != nil {
+		return comment, err
+	}
+
+	return comment, nil
+}
+
+func (q *CommentQueries) LikeComment(ctx context.Context, like *models.LikeComment) error {
+	query := `
+		insert into like_comment
+			(id, user_id, comment_id)
+		values
+			(default, $1, $2)
+		returning id
+	`
+
+	row := q.QueryRow(ctx, query, like.UserID, like.CommentID)
+	if err := row.Scan(&like.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (q *CommentQueries) UnlikeComment(ctx context.Context, like *models.LikeComment) error {
+	query := `
+		delete from like_comment
+		where user_id=$1 and comment_id=$2
+	`
+
+	ct, err := q.Exec(ctx, query, &like.UserID, &like.CommentID)
+	if err != nil {
+		return err
+	}
+	if ct.RowsAffected() != 1 {
+		return errors.New("no row found to delete")
+	}
+
+	return nil
 }

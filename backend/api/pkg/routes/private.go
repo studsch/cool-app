@@ -26,4 +26,6 @@ func Private(a *fiber.App) {
 	// Comments
 	router.Post("/comment", middleware.JWTProtected(), controllers.CreateComment)
 	router.Post("/reply", middleware.JWTProtected(), controllers.CreateReply)
+	router.Post("/comment/:commentID/like", middleware.JWTProtected(), controllers.LikeComment)
+	router.Post("/comment/:commentID/unlike", middleware.JWTProtected(), controllers.UnlikeComment)
 }
