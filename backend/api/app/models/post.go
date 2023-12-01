@@ -15,3 +15,9 @@ type Post struct {
 	Archived    bool
 	Deleted     bool
 }
+
+type LikePost struct {
+	ID     uuid.UUID
+	UserID uuid.UUID
+	PostID uuid.UUID
+}

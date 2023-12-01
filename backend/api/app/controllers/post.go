@@ -405,3 +405,161 @@ func ArchivePost(c *fiber.Ctx) error {
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
+
+func LikePost(c *fiber.Ctx) error {
+	now := time.Now().Unix()
+
+	claims, err := utils.ExtractTokenMetadata(c)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	expires := claims.Expires
+	if now > expires {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": true,
+			"msg":   "unauthorized, check expiration time of your token",
+		})
+	}
+
+	postID, err := uuid.Parse(c.Params("postID"))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	db, err := database.OpenDBConnection()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	_, err = db.GetPostById(c.Context(), postID)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": true,
+			"msg":   "post with the given ID is not found",
+		})
+	}
+
+	userID := claims.UserID
+	like := models.LikePost{
+		UserID: userID,
+		PostID: postID,
+	}
+
+	if err := db.LikePost(c.Context(), &like); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
+}
+
+func UnlikePost(c *fiber.Ctx) error {
+	now := time.Now().Unix()
+
+	claims, err := utils.ExtractTokenMetadata(c)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	expires := claims.Expires
+	if now > expires {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": true,
+			"msg":   "unauthorized, check expiration time of your token",
+		})
+	}
+
+	postID, err := uuid.Parse(c.Params("postID"))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	db, err := database.OpenDBConnection()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	_, err = db.GetPostById(c.Context(), postID)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": true,
+			"msg":   "post with the given ID is not found",
+		})
+	}
+
+	userID := claims.UserID
+	like := models.LikePost{
+		UserID: userID,
+		PostID: postID,
+	}
+
+	if err := db.UnlikePost(c.Context(), &like); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
+}
+
+func GetPostLikeCount(c *fiber.Ctx) error {
+	postID, err := uuid.Parse(c.Params("postID"))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	db, err := database.OpenDBConnection()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	_, err = db.GetPostById(c.Context(), postID)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": true,
+			"msg":   "post with the given ID is not found",
+		})
+	}
+
+	count, err := db.GetPostLikeCount(c.Context(), postID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"error":      false,
+		"msg":        nil,
+		"like_count": count,
+	})
+}

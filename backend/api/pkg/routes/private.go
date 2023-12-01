@@ -19,6 +19,8 @@ func Private(a *fiber.App) {
 	router.Put("/post/:id", middleware.JWTProtected(), controllers.UpdatePost)
 	router.Delete("/post/:id", middleware.JWTProtected(), controllers.DeletePost)
 	router.Patch("/post/:id", middleware.JWTProtected(), controllers.ArchivePost)
+	router.Post("/post/:postID/like", middleware.JWTProtected(), controllers.LikePost)
+	router.Post("/post/:postID/unlike", middleware.JWTProtected(), controllers.UnlikePost)
 
 	// User
 	router.Post("/user/follow/:id", middleware.JWTProtected(), controllers.UserFollow)

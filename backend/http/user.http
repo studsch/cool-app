@@ -47,3 +47,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzIjoxNzAxN
 ###
 POST http://localhost:8000/api/v1/comment/4c5c9a7e-8068-4767-b8b5-b2ddf3102597/unlike
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzIjoxNzAxNDIzODc3LCJpZCI6IjZkODc1MmQ5LTc3MzQtNGNjNy1hNDA3LTE5ZDI4OWI5YWExNSJ9.EeBsDoZ7lo6vGaWW7fgBVPM25a14Nyna0HIvMqkauAg
+
+###
+GET  http://localhost:8000/api/v1/post/dabcce87-d4f5-42b8-9d00-d92e264d1d62/like
+
+###
+POST  http://localhost:8000/api/v1/post/dabcce87-d4f5-42b8-9d00-d92e264d1d62/like
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzIjoxNzAxNDQ1MTY1LCJpZCI6IjZkODc1MmQ5LTc3MzQtNGNjNy1hNDA3LTE5ZDI4OWI5YWExNSJ9.5oVfPz_NfkDrDHEdBEpUPDLyf1aNdZxz7EQ-gkCjaZE
+
+###
+POST  http://localhost:8000/api/v1/post/dabcce87-d4f5-42b8-9d00-d92e264d1d62/unlike
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzIjoxNzAxNDQ1ODk2LCJpZCI6IjZkODc1MmQ5LTc3MzQtNGNjNy1hNDA3LTE5ZDI4OWI5YWExNSJ9.ujg0IJVH0SPK_XMa30vUu9-KcK8SBV4BM04w_0RBbG8

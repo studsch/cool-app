@@ -28,4 +28,5 @@ func Public(a *fiber.App) {
 	router.Get("/post/:id", controllers.GetPostById)
 	router.Get("/post/user/:id", controllers.GetPostsByUserId)
 	router.Get("/post/:postID/comment", controllers.GetPostComments)
+	router.Get("/post/:postID/like", controllers.GetPostLikeCount)
 }
