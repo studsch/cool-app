@@ -14,6 +14,7 @@ type Post struct {
 	CreatedAt   time.Time
 	Archived    bool
 	Deleted     bool
+	Media       []string
 }
 
 type LikePost struct {

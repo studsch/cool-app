@@ -48,10 +48,10 @@ func (q *PostQueries) GetPosts(ctx context.Context) ([]models.Post, error) {
 func (q *PostQueries) CreatePost(ctx context.Context, p *models.Post) error {
 	query := `
 		INSERT INTO post
-		    (id, user_id, description, location, created_at, archived, deleted)
+		    (id, user_id, description, location, media, created_at, archived, deleted)
 		VALUES
-		    (DEFAULT, $1, $2, $3, $4, DEFAULT, DEFAULT)
-		RETURNING id
+		    ($5, $1, $2, $3, $4, DEFAULT, DEFAULT, DEFAULT)
+		RETURNING id, created_at
 	`
 
 	row := q.QueryRow(
@@ -60,9 +60,10 @@ func (q *PostQueries) CreatePost(ctx context.Context, p *models.Post) error {
 		p.UserID,
 		p.Description,
 		p.Location,
-		p.CreatedAt,
+		p.Media,
+		p.ID,
 	)
-	if err := row.Scan(&p.ID); err != nil {
+	if err := row.Scan(&p.ID, &p.CreatedAt); err != nil {
 		return err
 	}
 

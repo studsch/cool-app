@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"fmt"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -155,19 +158,73 @@ func CreatePost(c *fiber.Ctx) error {
 		})
 	}
 
-	post := &models.Post{
-		Description: cp.Description,
-		Location:    cp.Location,
-		CreatedAt:   time.Now(),
-		UserID:      cp.UserID,
+	form, err := c.MultipartForm()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
 	}
 
-	userID := claims.UserID
-	if post.UserID != userID {
-		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+	postID := uuid.New()
+
+	files := form.File["files"]
+
+	if len(files) == 0 && len(cp.Description) == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": true,
-			"msg":   "permission denied",
+			"msg":   "no content in post",
 		})
+	}
+
+	if len(files) != 0 {
+		if err := os.Mkdir(fmt.Sprintf("tmp/uploads/%s", postID), os.ModePerm); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": true,
+				"msg":   "can't save file",
+			})
+		}
+	}
+
+	var fileNames []string
+	for _, file := range files {
+		var fileName string
+		// max - 5 MB
+		if file.Size > 5*1000*1000 {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": true,
+				"msg":   "no content in post",
+			})
+		}
+		// save only images
+		if !strings.Contains(file.Header["Content-Type"][0], "image") {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": true,
+				"msg":   "media can be only image files",
+			})
+		}
+		fileName = fmt.Sprintf(
+			"%s/%s.%s",
+			postID,
+			uuid.NewString(),
+			strings.Split(file.Header["Content-Type"][0], "/")[1],
+		)
+		err = c.SaveFile(file, fmt.Sprintf("tmp/uploads/%s", fileName))
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": true,
+				"msg":   err.Error(),
+			})
+		}
+		fileNames = append(fileNames, fileName)
+	}
+
+	post := &models.Post{
+		ID:          postID,
+		Description: cp.Description,
+		Location:    cp.Location,
+		UserID:      claims.UserID,
+		Media:       fileNames,
 	}
 
 	if err := db.CreatePost(c.Context(), post); err != nil {
