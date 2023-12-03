@@ -16,7 +16,7 @@ type PostQueries struct {
 
 func (q *PostQueries) GetPosts(ctx context.Context) ([]models.Post, error) {
 	query := `
-		SELECT id, user_id, description, location, created_at, archived, deleted
+		SELECT id, user_id, description, location, created_at, archived, deleted, media
 		FROM post
 		WHERE deleted=false AND archived=false
 	`
@@ -30,7 +30,16 @@ func (q *PostQueries) GetPosts(ctx context.Context) ([]models.Post, error) {
 	for rows.Next() {
 		var post models.Post
 
-		err = rows.Scan(&post.ID, &post.UserID, &post.Description, &post.Location, &post.CreatedAt, &post.Archived, &post.Deleted)
+		err = rows.Scan(
+			&post.ID,
+			&post.UserID,
+			&post.Description,
+			&post.Location,
+			&post.CreatedAt,
+			&post.Archived,
+			&post.Deleted,
+			&post.Media,
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -72,7 +81,7 @@ func (q *PostQueries) CreatePost(ctx context.Context, p *models.Post) error {
 
 func (q *PostQueries) GetPostById(ctx context.Context, id uuid.UUID) (models.Post, error) {
 	query := `
-		SELECT id, user_id, description, location, created_at, archived, deleted
+		SELECT id, user_id, description, location, created_at, archived, deleted, media
 		FROM post
 		WHERE id=$1 AND deleted=false AND archived=false
 		LIMIT 1
@@ -88,6 +97,7 @@ func (q *PostQueries) GetPostById(ctx context.Context, id uuid.UUID) (models.Pos
 		&post.CreatedAt,
 		&post.Archived,
 		&post.Deleted,
+		&post.Media,
 	)
 	if err != nil {
 		return post, err
@@ -98,7 +108,7 @@ func (q *PostQueries) GetPostById(ctx context.Context, id uuid.UUID) (models.Pos
 
 func (q *PostQueries) GetPostsByUserId(ctx context.Context, id uuid.UUID) ([]models.Post, error) {
 	query := `
-		SELECT id, user_id, description, location, created_at, archived, deleted
+		SELECT id, user_id, description, location, created_at, archived, deleted, media
 		FROM post
 		WHERE user_id=$1 AND deleted=false AND archived=false
 	`
@@ -120,6 +130,7 @@ func (q *PostQueries) GetPostsByUserId(ctx context.Context, id uuid.UUID) ([]mod
 			&post.CreatedAt,
 			&post.Archived,
 			&post.Deleted,
+			&post.Media,
 		)
 		if err != nil {
 			return nil, err
@@ -169,13 +180,18 @@ func (q *PostQueries) UpdatePostLocation(ctx context.Context, id uuid.UUID, l st
 	return nil
 }
 
-func (q *PostQueries) UpdatePost(ctx context.Context, id uuid.UUID, d, l string) error {
+func (q *PostQueries) UpdatePost(
+	ctx context.Context,
+	id uuid.UUID,
+	desc, loc string,
+	media []string,
+) error {
 	query := `
 		UPDATE post
-		SET description=$2, location=$3
+		SET description=$2, location=$3, media=$4
 		WHERE id=$1 AND deleted=false AND archived=false
 	`
-	exec, err := q.Exec(ctx, query, id, d, l)
+	exec, err := q.Exec(ctx, query, id, desc, loc, media)
 	if err != nil {
 		return err
 	}
