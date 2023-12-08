@@ -2,6 +2,7 @@ package queries
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -113,6 +114,23 @@ func (q *UserQueries) FollowToUser(ctx context.Context, id uuid.UUID, toId uuid.
 	err := q.QueryRow(ctx, query, id, toId).Scan(&followId)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (q *UserQueries) UnfollowToUser(ctx context.Context, id uuid.UUID, toId uuid.UUID) error {
+	query := `
+		delete from follow
+		where user_id=$1 and user_id_to=$2
+	`
+
+	ct, err := q.Exec(ctx, query, id, toId)
+	if err != nil {
+		return err
+	}
+	if ct.RowsAffected() != 1 {
+		return errors.New("no row found to delete")
 	}
 
 	return nil

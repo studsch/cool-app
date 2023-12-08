@@ -24,6 +24,7 @@ func Private(a *fiber.App) {
 
 	// User
 	router.Post("/user/follow/:id", middleware.JWTProtected(), controllers.UserFollow)
+	router.Post("/user/unfollow/:id", middleware.JWTProtected(), controllers.UserUnfollow)
 
 	// Comments
 	router.Post("/comment", middleware.JWTProtected(), controllers.CreateComment)
