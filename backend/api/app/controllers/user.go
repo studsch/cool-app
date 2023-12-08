@@ -2,9 +2,12 @@ package controllers
 
 import (
 	"context"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 
+	"github.com/studsch/cool-app/backend/pkg/utils"
 	"github.com/studsch/cool-app/backend/platform/database"
 )
 
@@ -34,6 +37,7 @@ func UserWithPhoneExist(c *fiber.Ctx) error {
 		"status": "exist",
 	})
 }
+
 func UserWithLoginExist(c *fiber.Ctx) error {
 	login := c.Params("login")
 
@@ -59,4 +63,61 @@ func UserWithLoginExist(c *fiber.Ctx) error {
 		"msg":    nil,
 		"status": "exist",
 	})
+}
+
+func UserFollow(c *fiber.Ctx) error {
+	now := time.Now().Unix()
+
+	claims, err := utils.ExtractTokenMetadata(c)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	expires := claims.Expires
+
+	if now > expires {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": true,
+			"msg":   "unauthorized, check expiration time of your token",
+		})
+	}
+
+	userID := claims.UserID
+
+	followToID, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	db, err := database.OpenDBConnection()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	_, err = db.GetUserById(c.Context(), followToID)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": true,
+			"msg":   "user with the given ID is not found",
+			"user":  nil,
+		})
+	}
+
+	if err := db.FollowToUser(c.Context(), userID, followToID); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
 }

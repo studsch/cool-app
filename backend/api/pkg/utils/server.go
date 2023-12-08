@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+
 	"github.com/studsch/cool-app/backend/pkg/configs"
 )
 

@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+
 	"github.com/studsch/cool-app/backend/app/models"
 	"github.com/studsch/cool-app/backend/pkg/utils"
 	"github.com/studsch/cool-app/backend/platform/database"
@@ -123,9 +124,14 @@ func CreatePost(c *fiber.Ctx) error {
 		})
 	}
 
-	post := &models.Post{}
+	type createPost struct {
+		Description string    `validate:"lte=180" json:"description"`
+		Location    string    `validate:"gte=3" json:"location"`
+		UserID      uuid.UUID `validate:"required,uuid" json:"userId"`
+	}
+	cp := &createPost{}
 
-	if err := c.BodyParser(post); err != nil {
+	if err := c.BodyParser(cp); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": true,
 			"msg":   err.Error(),
@@ -142,10 +148,25 @@ func CreatePost(c *fiber.Ctx) error {
 
 	validate := utils.NewValidator()
 
-	if err := validate.Struct(post); err != nil {
+	if err := validate.Struct(cp); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": true,
 			"msg":   utils.ValidatorErrors(err),
+		})
+	}
+
+	post := &models.Post{
+		Description: cp.Description,
+		Location:    cp.Location,
+		CreatedAt:   time.Now(),
+		UserID:      cp.UserID,
+	}
+
+	userID := claims.UserID
+	if post.UserID != userID {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"error": true,
+			"msg":   "permission denied",
 		})
 	}
 
@@ -216,7 +237,28 @@ func UpdatePost(c *fiber.Ctx) error {
 		})
 	}
 
-	// TODO: maybe add field for info about update post?
+	type updatePost struct {
+		Description string `validate:"lte=180" json:"description"`
+		Location    string `validate:"lte=100" json:"location"`
+	}
+	up := &updatePost{}
+
+	if err := c.BodyParser(up); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	if up.Description != "" && up.Location != "" {
+		post.Description = up.Description
+		post.Location = up.Location
+	} else if up.Description == "" && up.Location != "" {
+		post.Location = up.Location
+	} else if up.Location == "" && up.Description != "" {
+		post.Description = up.Description
+	}
+
 	validate := utils.NewValidator()
 	if err := validate.Struct(post); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -362,4 +404,162 @@ func ArchivePost(c *fiber.Ctx) error {
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
+}
+
+func LikePost(c *fiber.Ctx) error {
+	now := time.Now().Unix()
+
+	claims, err := utils.ExtractTokenMetadata(c)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	expires := claims.Expires
+	if now > expires {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": true,
+			"msg":   "unauthorized, check expiration time of your token",
+		})
+	}
+
+	postID, err := uuid.Parse(c.Params("postID"))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	db, err := database.OpenDBConnection()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	_, err = db.GetPostById(c.Context(), postID)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": true,
+			"msg":   "post with the given ID is not found",
+		})
+	}
+
+	userID := claims.UserID
+	like := models.LikePost{
+		UserID: userID,
+		PostID: postID,
+	}
+
+	if err := db.LikePost(c.Context(), &like); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
+}
+
+func UnlikePost(c *fiber.Ctx) error {
+	now := time.Now().Unix()
+
+	claims, err := utils.ExtractTokenMetadata(c)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	expires := claims.Expires
+	if now > expires {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": true,
+			"msg":   "unauthorized, check expiration time of your token",
+		})
+	}
+
+	postID, err := uuid.Parse(c.Params("postID"))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	db, err := database.OpenDBConnection()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	_, err = db.GetPostById(c.Context(), postID)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": true,
+			"msg":   "post with the given ID is not found",
+		})
+	}
+
+	userID := claims.UserID
+	like := models.LikePost{
+		UserID: userID,
+		PostID: postID,
+	}
+
+	if err := db.UnlikePost(c.Context(), &like); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
+}
+
+func GetPostLikeCount(c *fiber.Ctx) error {
+	postID, err := uuid.Parse(c.Params("postID"))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	db, err := database.OpenDBConnection()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	_, err = db.GetPostById(c.Context(), postID)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": true,
+			"msg":   "post with the given ID is not found",
+		})
+	}
+
+	count, err := db.GetPostLikeCount(c.Context(), postID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"error":      false,
+		"msg":        nil,
+		"like_count": count,
+	})
 }

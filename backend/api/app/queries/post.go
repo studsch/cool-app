@@ -218,3 +218,53 @@ func (q *PostQueries) DeletePostById(ctx context.Context, id uuid.UUID) error {
 
 	return nil
 }
+
+func (q *PostQueries) LikePost(ctx context.Context, like *models.LikePost) error {
+	query := `
+		insert into like_post
+			(id, user_id, post_id)
+		values
+			(default, $1, $2)
+		returning id
+	`
+
+	row := q.QueryRow(ctx, query, like.UserID, like.PostID)
+	if err := row.Scan(&like.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (q *PostQueries) UnlikePost(ctx context.Context, like *models.LikePost) error {
+	query := `
+		delete from like_post
+		where user_id=$1 and post_id=$2
+	`
+
+	ct, err := q.Exec(ctx, query, &like.UserID, &like.PostID)
+	if err != nil {
+		return err
+	}
+	if ct.RowsAffected() != 1 {
+		return errors.New("no row found to delete")
+	}
+
+	return nil
+}
+
+func (q *PostQueries) GetPostLikeCount(ctx context.Context, postID uuid.UUID) (uint, error) {
+	query := `
+		select count(*)
+		from like_post
+		where post_id=$1
+	`
+	var count uint
+
+	row := q.QueryRow(ctx, query, postID)
+	if err := row.Scan(&count); err != nil {
+		return count, err
+	}
+
+	return count, nil
+}

@@ -1,9 +1,10 @@
 package utils
 
 import (
+	"time"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
-	"time"
 )
 
 func NewValidator() *validator.Validate {
@@ -18,6 +19,7 @@ func NewValidator() *validator.Validate {
 	})
 
 	_ = validate.RegisterValidation("DOB", isDOB)
+	_ = validate.RegisterValidation("date", isDate)
 
 	return validate
 }
@@ -25,6 +27,14 @@ func NewValidator() *validator.Validate {
 func isDOB(fl validator.FieldLevel) bool {
 	field := fl.Field().String()
 	if _, err := time.Parse("02-01-2006", field); err != nil {
+		return false
+	}
+	return true
+}
+
+func isDate(fl validator.FieldLevel) bool {
+	field := fl.Field().String()
+	if _, err := time.Parse("02-01-2006 15:04:05", field); err != nil {
 		return false
 	}
 	return true

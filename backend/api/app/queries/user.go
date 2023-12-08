@@ -3,6 +3,7 @@ package queries
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/studsch/cool-app/backend/app/models"
@@ -81,4 +82,38 @@ func (q *UserQueries) GetUserByLogin(ctx context.Context, l string) (models.User
 	}
 
 	return user, nil
+}
+
+func (q *UserQueries) GetUserById(ctx context.Context, id uuid.UUID) (models.User, error) {
+	query := `
+		SELECT
+			(id, login, phone, password_hash, name, surname, date_of_birth, gender, created_at, updated_at, user_role, deleted)
+		from users
+		WHERE id = $1 AND deleted<>true
+	`
+	user := models.User{}
+
+	err := q.QueryRow(ctx, query, id).Scan(&user)
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
+
+func (q *UserQueries) FollowToUser(ctx context.Context, id uuid.UUID, toId uuid.UUID) error {
+	query := `
+		INSERT INTO follow
+			(user_id, user_id_to)
+		VALUES
+			($1, $2)
+		RETURNING id
+	`
+	var followId uuid.UUID
+	err := q.QueryRow(ctx, query, id, toId).Scan(&followId)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

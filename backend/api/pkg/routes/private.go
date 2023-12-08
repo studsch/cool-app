@@ -19,4 +19,15 @@ func Private(a *fiber.App) {
 	router.Put("/post/:id", middleware.JWTProtected(), controllers.UpdatePost)
 	router.Delete("/post/:id", middleware.JWTProtected(), controllers.DeletePost)
 	router.Patch("/post/:id", middleware.JWTProtected(), controllers.ArchivePost)
+	router.Post("/post/:postID/like", middleware.JWTProtected(), controllers.LikePost)
+	router.Post("/post/:postID/unlike", middleware.JWTProtected(), controllers.UnlikePost)
+
+	// User
+	router.Post("/user/follow/:id", middleware.JWTProtected(), controllers.UserFollow)
+
+	// Comments
+	router.Post("/comment", middleware.JWTProtected(), controllers.CreateComment)
+	router.Post("/reply", middleware.JWTProtected(), controllers.CreateReply)
+	router.Post("/comment/:commentID/like", middleware.JWTProtected(), controllers.LikeComment)
+	router.Post("/comment/:commentID/unlike", middleware.JWTProtected(), controllers.UnlikeComment)
 }
