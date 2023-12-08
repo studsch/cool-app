@@ -12,7 +12,7 @@ export default function AvatarBlock() {
       </div>
       <div className="flex-col">
         <div className="pl-4 grid place-content-left">
-          <div className="text-black">Morty Sanders</div>
+          <div className="text-black">Morty Sanches</div>
         </div>
         <div className="pl-4 grid place-content-left">
           <div className="text-slate-400">14 September</div>

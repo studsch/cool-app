@@ -20,6 +20,7 @@ import {
 
 const frameworks = [
   {
+    image: "",
     value: "next.js",
     label: "Next.js",
   },
