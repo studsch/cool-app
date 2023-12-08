@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"fmt"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -59,7 +62,7 @@ func GetPostById(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": true,
-			"msg":   "post with the givern ID is not found",
+			"msg":   "post with the given ID is not found",
 			"post":  nil,
 		})
 	}
@@ -92,7 +95,7 @@ func GetPostsByUserId(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": true,
-			"msg":   "post with the givern user ID is not found",
+			"msg":   "post with the given user ID is not found",
 			"posts": nil,
 		})
 	}
@@ -100,6 +103,7 @@ func GetPostsByUserId(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"error": false,
 		"msg":   nil,
+		"count": len(posts),
 		"posts": posts,
 	})
 }
@@ -125,22 +129,14 @@ func CreatePost(c *fiber.Ctx) error {
 	}
 
 	type createPost struct {
-		Description string    `validate:"lte=180" json:"description"`
-		Location    string    `validate:"gte=3" json:"location"`
-		UserID      uuid.UUID `validate:"required,uuid" json:"userId"`
+		Description string   `validate:"lte=180" json:"description" form:"description"`
+		Location    string   `validate:"gte=3" json:"location" form:"location"`
+		Files       []string `form:"files"`
 	}
 	cp := &createPost{}
 
 	if err := c.BodyParser(cp); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": true,
-			"msg":   err.Error(),
-		})
-	}
-
-	db, err := database.OpenDBConnection()
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": true,
 			"msg":   err.Error(),
 		})
@@ -155,19 +151,81 @@ func CreatePost(c *fiber.Ctx) error {
 		})
 	}
 
-	post := &models.Post{
-		Description: cp.Description,
-		Location:    cp.Location,
-		CreatedAt:   time.Now(),
-		UserID:      cp.UserID,
+	db, err := database.OpenDBConnection()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
 	}
 
-	userID := claims.UserID
-	if post.UserID != userID {
-		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+	form, err := c.MultipartForm()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": true,
-			"msg":   "permission denied",
+			"msg":   err.Error(),
 		})
+	}
+
+	postID := uuid.New()
+
+	files := form.File["files"]
+
+	if len(files) == 0 && len(cp.Description) == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": true,
+			"msg":   "no content in post",
+		})
+	}
+
+	if len(files) != 0 {
+		if err := os.Mkdir(fmt.Sprintf("tmp/uploads/%s", postID), os.ModePerm); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": true,
+				"msg":   "can't save file",
+			})
+		}
+	}
+
+	var fileNames []string
+	for _, file := range files {
+		var fileName string
+		// max - 5 MB
+		if file.Size > 5*1000*1000 {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": true,
+				"msg":   "no content in post",
+			})
+		}
+		// save only images
+		if !strings.Contains(file.Header["Content-Type"][0], "image") {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": true,
+				"msg":   "media can be only image files",
+			})
+		}
+		fileName = fmt.Sprintf(
+			"%s/%s.%s",
+			postID,
+			uuid.NewString(),
+			strings.Split(file.Header["Content-Type"][0], "/")[1],
+		)
+		err = c.SaveFile(file, fmt.Sprintf("tmp/uploads/%s", fileName))
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": true,
+				"msg":   err.Error(),
+			})
+		}
+		fileNames = append(fileNames, fileName)
+	}
+
+	post := &models.Post{
+		ID:          postID,
+		Description: cp.Description,
+		Location:    cp.Location,
+		UserID:      claims.UserID,
+		Media:       fileNames,
 	}
 
 	if err := db.CreatePost(c.Context(), post); err != nil {
@@ -224,7 +282,7 @@ func UpdatePost(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": true,
-			"msg":   "post with the givern ID is not found",
+			"msg":   "post with the given ID is not found",
 			"post":  nil,
 		})
 	}
@@ -238,8 +296,9 @@ func UpdatePost(c *fiber.Ctx) error {
 	}
 
 	type updatePost struct {
-		Description string `validate:"lte=180" json:"description"`
-		Location    string `validate:"lte=100" json:"location"`
+		Description string   `validate:"lte=180" json:"description" form:"description"`
+		Location    string   `validate:"lte=100" json:"location" form:"location"`
+		files       []string `form:"files"`
 	}
 	up := &updatePost{}
 
@@ -267,7 +326,66 @@ func UpdatePost(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := db.UpdatePost(c.Context(), post.ID, post.Description, post.Location); err != nil {
+	form, err := c.MultipartForm()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+	files := form.File["files"]
+
+	if len(files) != 0 && len(post.Media) == 0 {
+		if err := os.Mkdir(fmt.Sprintf("tmp/uploads/%s", post.ID), os.ModePerm); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": true,
+				"msg":   "can't save file",
+			})
+		}
+	}
+
+	var fileNames []string
+	for _, file := range files {
+		fmt.Println(file.Filename)
+		var fileName string
+		// max - 5 MB
+		if file.Size > 5*1000*1000 {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": true,
+				"msg":   "no content in post",
+			})
+		}
+		// save only images
+		if !strings.Contains(file.Header["Content-Type"][0], "image") {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": true,
+				"msg":   "media can be only image files",
+			})
+		}
+		fileName = fmt.Sprintf(
+			"%s/%s.%s",
+			post.ID,
+			uuid.NewString(),
+			strings.Split(file.Header["Content-Type"][0], "/")[1],
+		)
+		err = c.SaveFile(file, fmt.Sprintf("tmp/uploads/%s", fileName))
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": true,
+				"msg":   err.Error(),
+			})
+		}
+		fileNames = append(fileNames, fileName)
+	}
+	post.Media = fileNames
+
+	if err := db.UpdatePost(
+		c.Context(),
+		post.ID,
+		post.Description,
+		post.Location,
+		post.Media,
+	); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": true,
 			"msg":   err.Error(),
@@ -562,4 +680,11 @@ func GetPostLikeCount(c *fiber.Ctx) error {
 		"msg":        nil,
 		"like_count": count,
 	})
+}
+
+func GetMedia(c *fiber.Ctx) error {
+	postID := c.Params("postID")
+	mediaID := c.Params("mediaID")
+	fullURL := fmt.Sprintf("./tmp/uploads/%s/%s", postID, mediaID)
+	return c.SendFile(fullURL)
 }
