@@ -681,3 +681,10 @@ func GetPostLikeCount(c *fiber.Ctx) error {
 		"like_count": count,
 	})
 }
+
+func GetMedia(c *fiber.Ctx) error {
+	postID := c.Params("postID")
+	mediaID := c.Params("mediaID")
+	fullURL := fmt.Sprintf("./tmp/uploads/%s/%s", postID, mediaID)
+	return c.SendFile(fullURL)
+}
