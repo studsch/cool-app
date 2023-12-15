@@ -1,92 +1,155 @@
 "use client";
 
-import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import {
-  Command,
-  CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
+  CommandList,
+  CommandInput,
 } from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Command as CommandPrimitive } from "cmdk";
+import { useState, useRef, useCallback, type KeyboardEvent } from "react";
 
-const frameworks = [
-  {
-    image: "",
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
+import { Skeleton } from "../ui/skeleton";
+import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
 
-export function ComboboxDemo() {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+export type Option = Record<"value" | "label", string> & Record<string, string>;
+
+type AutoCompleteProps = {
+  options: Option[];
+  emptyMessage: string;
+  value?: Option;
+  onValueChange?: (value: Option) => void;
+  isLoading?: boolean;
+  disabled?: boolean;
+  placeholder?: string;
+};
+
+export const AutoComplete = ({
+  options,
+  placeholder,
+  emptyMessage,
+  value,
+  onValueChange,
+  disabled,
+  isLoading = false,
+}: AutoCompleteProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [isOpen, setOpen] = useState(false);
+  const [selected, setSelected] = useState<Option>(value as Option);
+  const [inputValue, setInputValue] = useState<string>(value?.label || "");
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
+      const input = inputRef.current;
+      if (!input) {
+        return;
+      }
+
+      // Keep the options displayed when the user is typing
+      if (!isOpen) {
+        setOpen(true);
+      }
+
+      // This is not a default behaviour of the <input /> field
+      if (event.key === "Enter" && input.value !== "") {
+        const optionToSelect = options.find(
+          option => option.label === input.value,
+        );
+        if (optionToSelect) {
+          setSelected(optionToSelect);
+          onValueChange?.(optionToSelect);
+        }
+      }
+
+      if (event.key === "Escape") {
+        input.blur();
+      }
+    },
+    [isOpen, options, onValueChange],
+  );
+
+  const handleBlur = useCallback(() => {
+    setOpen(false);
+    setInputValue(selected?.label);
+  }, [selected]);
+
+  const handleSelectOption = useCallback(
+    (selectedOption: Option) => {
+      setInputValue(selectedOption.label);
+
+      setSelected(selectedOption);
+      onValueChange?.(selectedOption);
+
+      // This is a hack to prevent the input from being focused after the user selects an option
+      // We can call this hack: "The next tick"
+      setTimeout(() => {
+        inputRef?.current?.blur();
+      }, 0);
+    },
+    [onValueChange],
+  );
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-[200px] justify-between"
-        >
-          {value
-            ? frameworks.find(framework => framework.value === value)?.label
-            : "Select framework..."}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder="Search framework..." />
-          <CommandEmpty>No framework found.</CommandEmpty>
-          <CommandGroup>
-            {frameworks.map(framework => (
-              <CommandItem
-                key={framework.value}
-                value={framework.value}
-                onSelect={currentValue => {
-                  setValue(currentValue === value ? "" : currentValue);
-                  setOpen(false);
-                }}
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    value === framework.value ? "opacity-100" : "opacity-0",
-                  )}
-                />
-                {framework.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <CommandPrimitive onKeyDown={handleKeyDown}>
+      <div>
+        <CommandInput
+          ref={inputRef}
+          value={inputValue}
+          onValueChange={isLoading ? undefined : setInputValue}
+          onBlur={handleBlur}
+          onFocus={() => setOpen(true)}
+          placeholder={placeholder}
+          disabled={disabled}
+          className="text-base"
+        />
+      </div>
+      <div className="mt-1 relative">
+        {isOpen ? (
+          <div className="absolute top-0 z-10 w-full rounded-xl bg-stone-50 outline-none animate-in fade-in-0 zoom-in-95">
+            <CommandList className="ring-1 ring-slate-200 rounded-lg">
+              {isLoading ? (
+                <CommandPrimitive.Loading>
+                  <div className="p-1">
+                    <Skeleton className="h-8 w-full" />
+                  </div>
+                </CommandPrimitive.Loading>
+              ) : null}
+              {options.length > 0 && !isLoading ? (
+                <CommandGroup>
+                  {options.map(option => {
+                    const isSelected = selected?.value === option.value;
+                    return (
+                      <CommandItem
+                        key={option.value}
+                        value={option.label}
+                        onMouseDown={event => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                        }}
+                        onSelect={() => handleSelectOption(option)}
+                        className={cn(
+                          "flex items-center gap-2 w-full",
+                          !isSelected ? "pl-8" : null,
+                        )}
+                      >
+                        {isSelected ? <Check className="w-4" /> : null}
+                        {option.label}
+                      </CommandItem>
+                    );
+                  })}
+                </CommandGroup>
+              ) : null}
+              {!isLoading ? (
+                <CommandPrimitive.Empty className="select-none rounded-sm px-2 py-3 text-sm text-center">
+                  {emptyMessage}
+                </CommandPrimitive.Empty>
+              ) : null}
+            </CommandList>
+          </div>
+        ) : null}
+      </div>
+    </CommandPrimitive>
   );
-}
+};
