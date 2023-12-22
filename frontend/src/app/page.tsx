@@ -1,3 +1,4 @@
+import { Profile } from "@/components/profile/profile";
 import {
   ProfileInfo,
   RightSidebar,
@@ -48,9 +49,17 @@ export default function Home() {
     },
   ];
 
+  const profileInfo = {
+    avatarImage: "https://github.com/shadcn.png",
+    avatarFallback: "MP",
+    name: "Morty",
+    description: "There are some description",
+  };
+
   return (
     <>
       <RightSidebar items={profiles} />
+      <Profile info={profileInfo} />
     </>
   );
 }

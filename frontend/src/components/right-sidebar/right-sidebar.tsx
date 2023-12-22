@@ -30,7 +30,7 @@ export function RightSidebar({ items }: SidebarProps) {
       <CardHeader className="p-3">
         <CardTitle>Who to Follow</CardTitle>
       </CardHeader>
-      <div className="shrink-0 bg-border h-[1px] w-full"></div>
+      <div className="shrink-0 bg-border h-[1px] w-full" />
       <CardContent className="grid gap-3 p-3">
         {itemsForDisplay.map((item: ProfileInfo, index) => (
           <div
@@ -55,7 +55,7 @@ export function RightSidebar({ items }: SidebarProps) {
           </div>
         ))}
       </CardContent>
-      <div className="shrink-0 bg-border h-[1px] w-full"></div>
+      <div className="shrink-0 bg-border h-[1px] w-full" />
       <CardFooter className="p-0">
         <Button variant="link" onClick={() => setExpanded(!expanded)}>
           {expanded ? "Show Less" : "Show More"}
