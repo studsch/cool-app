@@ -1,9 +1,56 @@
-import Button from "@/components/ui/button/Button";
-import Input from "@/components/ui/input/Input";
-import PhoneNumberInput from "@/components/phone-number/phone-number";
-import Checkbox from "@/components/ui/checkbox/checkbox";
-import Radiobutton from "@/components/ui/radiobutton/radiobutton";
-import memoriesSign from "@/components/memories-sign/memoriesSign";
+import {
+  ProfileInfo,
+  RightSidebar,
+} from "@/components/right-sidebar/right-sidebar";
+
 export default function Home() {
-  return <main>выфв</main>;
+  const profiles: ProfileInfo[] = [
+    {
+      avatarImage: "https://github.com/shadcn.png",
+      avatarFallback: "MP",
+      name: "Morty",
+      link: "@morty",
+    },
+    {
+      avatarImage:
+        "https://i.pinimg.com/736x/6e/51/32/6e5132a90812ad1abf3711135a5cf406.jpg",
+      avatarFallback: "RP",
+      name: "Rick",
+      link: "@rick",
+    },
+
+    {
+      avatarImage: "https://github.com/shadcn.png",
+      avatarFallback: "MP",
+      name: "Morty",
+      link: "@morty",
+    },
+    {
+      avatarImage:
+        "https://i.pinimg.com/736x/6e/51/32/6e5132a90812ad1abf3711135a5cf406.jpg",
+      avatarFallback: "RP",
+      name: "Rick",
+      link: "@rick",
+    },
+
+    {
+      avatarImage: "https://github.com/shadcn.png",
+      avatarFallback: "MP",
+      name: "Morty",
+      link: "@morty",
+    },
+    {
+      avatarImage:
+        "https://i.pinimg.com/736x/6e/51/32/6e5132a90812ad1abf3711135a5cf406.jpg",
+      avatarFallback: "RP",
+      name: "Rick",
+      link: "@rick",
+    },
+  ];
+
+  return (
+    <>
+      <RightSidebar items={profiles} />
+    </>
+  );
 }
