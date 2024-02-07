@@ -28,7 +28,7 @@ export default function Enter() {
             <LogForm>
               <div className="mb-2 px-1 flex justify-between items-center md:h-auto sm:mb-1 sm:h-14 md:mb-2 md:mt-8 py-2">
                 <Link
-                  href="/enter/forgot_pass"
+                  href="/enter/recovery"
                   className="hover:underline cursor-pointer text-link-primary-color text-sm font-light"
                 >
                   Forgot password?
