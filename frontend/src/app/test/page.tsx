@@ -12,7 +12,10 @@ export default function page() {
       {/* <SearchAutoComplete />
       <AutoComplete options={[]} emptyMessage={"Smt not found"} /> */}
       <Slider data={data} errMsg="No data"></Slider>
-      <RecentAvatarBlock></RecentAvatarBlock>
+      <RecentAvatarBlock
+        text="@sobaka"
+        img="https://github.com/shadcn.png"
+      ></RecentAvatarBlock>
     </div>
   );
 }
