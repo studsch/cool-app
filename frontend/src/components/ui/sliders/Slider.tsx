@@ -13,10 +13,6 @@ import "./styles.css";
 // import required modules
 import { Pagination, Navigation } from "swiper/modules";
 
-// Import Swiper styles
-import "swiper/css";
-
-import "./styles.css";
 import SliderProps from "@/interfaces/Slider";
 
 export default function Slider(props: SliderProps) {
@@ -25,8 +21,9 @@ export default function Slider(props: SliderProps) {
     <>
       <Swiper
         onSwiper={setSwiperRef}
-        slidesPerView={3}
-        spaceBetween={30}
+        slidesPerView={props.slidesPerView}
+        spaceBetween={props.spaceBetween}
+        breakpoints={props.breakpoints}
         navigation={true}
         modules={[Pagination, Navigation]}
         className="mySwiper"

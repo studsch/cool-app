@@ -1,9 +1,17 @@
 import { ReactNode } from "react";
+import { SwiperOptions } from "swiper/types";
 
 interface SliderProps {
   className?: string;
-  breakpoints?: string;
-  data?: React.ReactElement[];
+  spaceBetween: number;
+  breakpoints?:
+    | {
+        [width: number]: SwiperOptions;
+        [ratio: string]: SwiperOptions;
+      }
+    | undefined;
+  slidesPerView: number | "auto";
+  data?: React.ReactElement[] | ReactNode[];
   errMsg?: string;
 }
 

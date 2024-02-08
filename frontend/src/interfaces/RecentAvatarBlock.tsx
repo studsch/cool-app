@@ -1,4 +1,5 @@
 interface RecentAvatarBlockProps {
+  key?: any;
   text: string;
   img: string;
   classNames?: {

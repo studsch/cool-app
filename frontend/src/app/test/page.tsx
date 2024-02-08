@@ -3,19 +3,16 @@ import SearchAutoComplete from "@/components/search-autocomplete/SearchAutoCompl
 import SearchInput from "@/components/search-input/search-input";
 import { Select } from "@/components/ui/select";
 import Slider from "@/components/ui/sliders/Slider";
-import data from "@/test_data/slider/slider"; // тестовые данные для тестирования слайдера
-import RecentAvatarBlock from "@/components/avatarblock/recent-avatar-block";
+import { Recent } from "@/components/recent/recent";
+// import data from "@/test_data/slider/slider"; // тестовые данные для тестирования слайдера
+// import users from "@/test_data/recent/users"; // для тестирования , слайдера и автаров
 
 export default function page() {
   return (
     <div className=" justify-between">
       {/* <SearchAutoComplete />
       <AutoComplete options={[]} emptyMessage={"Smt not found"} /> */}
-      <Slider data={data} errMsg="No data"></Slider>
-      <RecentAvatarBlock
-        text="@sobaka"
-        img="https://github.com/shadcn.png"
-      ></RecentAvatarBlock>
+      <Recent></Recent>
     </div>
   );
 }
