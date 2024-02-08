@@ -28,7 +28,7 @@ const MutualFriends: React.FC<AvatarProps> = props => {
 };
 
 // RecentAvatarBlock.defaultProps = {
-//   classNames: {
+//   classNames: {d
 //     avatar: { base: "", fallback: "", img: "" },
 //     text: { base: "" },
 //   },
