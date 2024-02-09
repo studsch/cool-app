@@ -33,7 +33,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "src/config/firebase.config.ts"  ],
+, "src/config/firebase.config.ts", "src/components/ui/sliders/Slider.jsx"  ],
   "exclude": [
     "node_modules"
   ]

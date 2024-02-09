@@ -52,6 +52,7 @@
     "react18-input-otp": "^1.1.4",
     "sass": "^1.69.5",
     "shadcn-ui": "^0.4.1",
+    "swiper": "^11.0.6",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.22.4"
