@@ -4,15 +4,6 @@ import SearchInput from "@/components/search-input/search-input";
 import DragAndDrop from "@/components/ui/dragdroppreview";
 import DragDropPreview from "@/components/ui/dragdroppreview";
 import { Select } from "@/components/ui/select";
-<<<<<<< HEAD
-import Slide from "@/components/ui/slider";
-
-export default function page() {
-  return (
-    <div>
-      <DragDropPreview />
-    </div>
-=======
 import Slider from "@/components/ui/sliders/Slider";
 import { Recent } from "@/components/recent/recent";
 import MutualFriends from "@/components/mutual-friends/mutual-friends";
@@ -30,6 +21,5 @@ export default function page() {
       </div>
       <MutualFriends data={users} />
     </>
->>>>>>> 96f30a161ec7a9f4444f401ea1c9db50af732655
   );
 }
