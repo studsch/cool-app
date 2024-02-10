@@ -8,6 +8,7 @@ import MutualFriends from "@/components/mutual-friends/mutual-friends";
 // import data from "@/test_data/slider/slider"; // тестовые данные для тестирования слайдера
 // import users from "@/test_data/recent/users"; // для тестирования , слайдера и автаров
 import users from "@/test_data/people/users"; // для теста общих друзей
+import People from "@/components/people/people";
 
 export default function page() {
   return (
@@ -17,7 +18,7 @@ export default function page() {
       <AutoComplete options={[]} emptyMessage={"Smt not found"} /> */}
         <Recent></Recent>
       </div>
-      <MutualFriends data={users} />
+      <People></People>
     </>
   );
 }
