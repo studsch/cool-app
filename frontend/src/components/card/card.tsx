@@ -61,7 +61,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import AvatarBlock from "@/components/avatarblock/avatarblock";
-import { ComboboxDemo } from "@/components/combobox/combobox";
 import { MoreHorizontal } from "lucide-react";
 import { Image } from "@nextui-org/react";
 import { Button } from "@/components/ui/button";
