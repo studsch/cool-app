@@ -19,7 +19,7 @@ const DragDropPreview: React.FC = () => {
     if (croppieRef.current && imageSrc) {
       croppieInstanceRef.current = new Croppie(croppieRef.current, {
         viewport: { width: 150, height: 150, type: "circle" },
-        boundary: { width: 400, height: 200 },
+        boundary: { width: 300, height: 200 },
         enableZoom: true,
         showZoomer: false,
       });
@@ -80,24 +80,51 @@ const DragDropPreview: React.FC = () => {
       style={{
         border: "2px solid grey",
         borderRadius: "10px",
-        width: "600px",
+        width: "710px",
+        height: "1100px",
         margin: "auto",
       }}
     >
       <div style={{ marginLeft: "10px", color: "#666666" }}>
-        <div style={{ textAlign: "center" }}>
-          <h2>Add a preview photo</h2>
+        <div
+          style={{
+            textAlign: "center",
+            width: "510px",
+            height: "160px",
+            margin: "auto",
+            justifyContent: "center",
+          }}
+        >
+          <p className="font-sans font-semibold pt-8 text-7xl text-[#F07281]">
+            Memories
+          </p>
+        </div>
+        <div
+          style={{
+            textAlign: "left",
+            width: "490px",
+            height: "60px",
+            marginTop: "10px",
+            margin: "auto",
+            marginBottom: "15%",
+          }}
+        >
+          <h2 className="text-xl mb-8">
+            Enter additional information, it will help other people to find you.
+          </h2>
+          <h2 className="text-3xl">Add a preview photo</h2>
         </div>
         <div
           onClick={handleClick}
           style={{
-            border: "2px solid grey",
+            border: "2px solid #CBCED3",
             padding: "30px",
-            marginBottom: "20px",
+            marginBottom: "100px",
             cursor: "pointer",
             textAlign: "center",
             borderRadius: "10px",
-            width: "300px",
+            width: "490px",
+            height: "130px",
             margin: "auto",
           }}
           onDrop={handleDrop}
@@ -113,8 +140,16 @@ const DragDropPreview: React.FC = () => {
             style={{ display: "none" }}
           />
         </div>
-        <div style={{ textAlign: "center" }}>
-          <p>This is how the photo will look, you can change it</p>
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: "30px",
+            marginBottom: "30px",
+          }}
+        >
+          <p className="text-xl mb-8">
+            This is how the photo will look, you can change it
+          </p>
         </div>
         <div
           style={{
@@ -128,9 +163,10 @@ const DragDropPreview: React.FC = () => {
             className="cr-boundary"
             style={{
               border: "none",
-              width: "400px",
+              width: "300px",
               height: "200px",
               position: "relative",
+              margin: "auto",
             }}
           />
           {resultImage && (
@@ -141,41 +177,56 @@ const DragDropPreview: React.FC = () => {
                 maxWidth: "150px",
                 maxHeight: "150px",
                 marginLeft: "20px",
-                paddingTop: "25px",
+                margin: "auto",
               }}
             />
           )}
         </div>
-        <div style={{ textAlign: "center" }}>
+        <div className="text-xl mb-8 text-center">
           <p>You can change the icon at any time</p>
         </div>
-        <div style={{ display: "flex", justifyContent: "flex-start" }}>
+        <div
+          style={{
+            width: "auto",
+            height: "160",
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "30px",
+            marginBottom: "30px",
+          }}
+        >
           <button
             style={{
-              width: "150px",
+              width: "230px",
+              height: "50",
               marginRight: "20px",
-              border: "1px solid #ccc",
-              borderRadius: "5px",
+              border: "2px solid #CBCED3",
+              borderRadius: "10px",
               padding: "15px 30px",
               cursor: "pointer",
               margin: "auto",
             }}
           >
-            Skip
+            <p className="font-sans font-semibold text-2xl text-[#9B9B9B]">
+              Skip
+            </p>
           </button>
           <button
             style={{
-              width: "150px",
+              width: "230px",
+              height: "50",
               backgroundColor: "#ff69b4",
               color: "white",
-              border: "none",
-              borderRadius: "5px",
+              border: "2px solid #FF60A3",
+              borderRadius: "10px",
               padding: "15px 30px",
               cursor: "pointer",
               margin: "auto",
             }}
           >
-            Finish
+            <p className="font-sans font-semibold text-2xl text-[#FFFFFF]">
+              Finish
+            </p>
           </button>
         </div>
       </div>

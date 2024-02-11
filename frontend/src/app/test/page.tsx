@@ -1,25 +1,21 @@
-import { AutoComplete } from "@/components/combobox/combobox";
-import SearchAutoComplete from "@/components/search-autocomplete/SearchAutoComplete";
-import SearchInput from "@/components/search-input/search-input";
-import DragAndDrop from "@/components/ui/dragdroppreview";
+import Button from "@/components/ui/button/Button";
+import Input from "@/components/ui/input/Input";
+import PhoneNumberInput from "@/components/phone-number/phone-number";
+import Checkbox from "@/components/ui/checkbox/checkbox";
+import Radiobutton from "@/components/ui/radiobutton/radiobutton";
+import MemoriesSign from "@/components/memories-sign/memoriesSign";
+import NonRegLayout from "@/components/layouts/layout-main-nonreg/NonRegLayout";
+import RegForm from "@/components/reg-form/reg-form";
+import LogForm from "@/components/log-form/log-form";
+import LogOutButton from "@/components/log-out-button/log-out-button";
 import DragDropPreview from "@/components/ui/dragdroppreview";
-import { Select } from "@/components/ui/select";
-import Slider from "@/components/ui/sliders/Slider";
-import { Recent } from "@/components/recent/recent";
-import MutualFriends from "@/components/mutual-friends/mutual-friends";
-// import data from "@/test_data/slider/slider"; // тестовые данные для тестирования слайдера
-// import users from "@/test_data/recent/users"; // для тестирования , слайдера и автаров
-import users from "@/test_data/people/users"; // для теста общих друзей
 
-export default function page() {
+export default function Home() {
   return (
     <>
-      <div className=" justify-between">
-        {/* <SearchAutoComplete />
-      <AutoComplete options={[]} emptyMessage={"Smt not found"} /> */}
-        <Recent></Recent>
+      <div>
+        <DragDropPreview />
       </div>
-      <MutualFriends data={users} />
     </>
   );
 }
