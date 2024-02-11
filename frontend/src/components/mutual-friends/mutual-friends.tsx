@@ -11,7 +11,7 @@ type AvatarProps = {
 
 const MutualFriends: React.FC<AvatarProps> = props => {
   return (
-    <div className="flex ml-[5px]">
+    <div className="flex ml-[5px] w-18">
       {props.data.map((user, index) => {
         return (
           <Avatar
