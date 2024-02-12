@@ -19,4 +19,5 @@ type User struct {
 	UpdatedAt    time.Time
 	UserRole     string
 	Deleted      bool
+	Avatar       string
 }
