@@ -7,13 +7,14 @@ import MutualFriends from "@/components/mutual-friends/mutual-friends";
 import users from "@/test_data/people/users"; // для теста общих друзей
 import People from "@/components/people/people";
 import DragDropPreview from "@/components/ui/dragdroppreview";
-import { Card } from "@/components/ui/card";
 
 export default function DragAndDrop() {
   return (
     <>
       <div>
-        <Card />
+        <div>
+          <DragDropPreview />
+        </div>
       </div>
     </>
   );

@@ -8,6 +8,7 @@ import LogForm from "@/components/log-form/log-form";
 import RegForm from "@/components/reg-form/reg-form";
 import Link from "next/link";
 import PhoneForm from "@/components/phone-form/phone-form";
+import DragDropPreview from "@/components/ui/dragdroppreview";
 
 export default function Enter() {
   return (

@@ -2,6 +2,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import Croppie from "croppie";
 import "croppie/croppie.css";
+import MemoriesSign from "@/components/memories-sign/memoriesSign";
+import Button from "@/components/ui/button/Button";
+import { Files, FilesIcon } from "lucide-react";
 
 const DragDropPreview: React.FC = () => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -18,8 +21,8 @@ const DragDropPreview: React.FC = () => {
 
     if (croppieRef.current && imageSrc) {
       croppieInstanceRef.current = new Croppie(croppieRef.current, {
-        viewport: { width: 150, height: 150, type: "circle" },
-        boundary: { width: 300, height: 200 },
+        viewport: { width: 120, height: 120, type: "circle" },
+        boundary: { width: 200, height: 130 },
         enableZoom: true,
         showZoomer: false,
       });
@@ -76,159 +79,78 @@ const DragDropPreview: React.FC = () => {
   };
 
   return (
-    <div
-      style={{
-        border: "2px solid grey",
-        borderRadius: "10px",
-        width: "710px",
-        height: "1100px",
-        margin: "auto",
-      }}
-    >
-      <div style={{ marginLeft: "10px", color: "#666666" }}>
+    <div className="">
+      <div className="max-w-[490px] max-h-[60px] mt-[10px] mb-[100px] m-auto  text-left">
+        <h2 className="text-xl mb-8">
+          Enter additional information, it will help other people to find you.
+        </h2>
+        <h2 className="text-3xl">Add a preview photo</h2>
+      </div>
+      <div
+        onClick={handleClick}
+        className="border-2 mb-[50px] cursor-pointer rounded-xl max-w-[490px] h-[120px] m-auto text-center"
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+      >
+        <p className="text-text-primary-color h-14 text-xl mt-2">
+          Add a Throw a photo here or choose a path
+        </p>
+        <FilesIcon color="grey" size={35} className="m-auto mb-2" />
+        <input
+          ref={fileInputRef}
+          type="file"
+          onChange={handleFileChange}
+          style={{ display: "none" }}
+        />
+      </div>
+      <div
+        style={{
+          textAlign: "center",
+          marginTop: "30px",
+          marginBottom: "30px",
+        }}
+      >
+        <p className="text-text-primary-color h-14 text-xl">
+          This is how the photo will look, you can change it
+        </p>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-start",
+          marginBottom: "45px",
+        }}
+      >
         <div
+          ref={croppieRef}
+          className="cr-boundary"
           style={{
-            textAlign: "center",
-            width: "510px",
-            height: "160px",
-            margin: "auto",
-            justifyContent: "center",
-          }}
-        >
-          <p className="font-sans font-semibold pt-8 text-7xl text-[#F07281]">
-            Memories
-          </p>
-        </div>
-        <div
-          style={{
-            textAlign: "left",
-            width: "490px",
-            height: "60px",
-            marginTop: "10px",
-            margin: "auto",
-            marginBottom: "15%",
-          }}
-        >
-          <h2 className="text-xl mb-8">
-            Enter additional information, it will help other people to find you.
-          </h2>
-          <h2 className="text-3xl">Add a preview photo</h2>
-        </div>
-        <div
-          onClick={handleClick}
-          style={{
-            border: "2px solid #CBCED3",
-            padding: "30px",
-            marginBottom: "100px",
-            cursor: "pointer",
-            textAlign: "center",
-            borderRadius: "10px",
-            width: "490px",
+            border: "none",
+            width: "200px",
             height: "130px",
+            position: "relative",
             margin: "auto",
           }}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-        >
-          <p style={{ color: "#666666", margin: "0" }}>
-            Add a Throw a photo here or choose a path
-          </p>
-          <input
-            ref={fileInputRef}
-            type="file"
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-          />
-        </div>
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: "30px",
-            marginBottom: "30px",
-          }}
-        >
-          <p className="text-xl mb-8">
-            This is how the photo will look, you can change it
-          </p>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-start",
-            marginBottom: "45px",
-          }}
-        >
-          <div
-            ref={croppieRef}
-            className="cr-boundary"
+        />
+        {resultImage && (
+          <img
+            src={resultImage}
+            alt="Result"
             style={{
-              border: "none",
-              width: "300px",
-              height: "200px",
-              position: "relative",
+              maxWidth: "120px",
+              maxHeight: "120px",
+              marginLeft: "20px",
               margin: "auto",
             }}
           />
-          {resultImage && (
-            <img
-              src={resultImage}
-              alt="Result"
-              style={{
-                maxWidth: "150px",
-                maxHeight: "150px",
-                marginLeft: "20px",
-                margin: "auto",
-              }}
-            />
-          )}
-        </div>
-        <div className="text-xl mb-8 text-center">
-          <p>You can change the icon at any time</p>
-        </div>
-        <div
-          style={{
-            width: "auto",
-            height: "160",
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: "30px",
-            marginBottom: "30px",
-          }}
-        >
-          <button
-            style={{
-              width: "230px",
-              height: "50",
-              marginRight: "20px",
-              border: "2px solid #CBCED3",
-              borderRadius: "10px",
-              padding: "15px 30px",
-              cursor: "pointer",
-              margin: "auto",
-            }}
-          >
-            <p className="font-sans font-semibold text-2xl text-[#9B9B9B]">
-              Skip
-            </p>
-          </button>
-          <button
-            style={{
-              width: "230px",
-              height: "50",
-              backgroundColor: "#ff69b4",
-              color: "white",
-              border: "2px solid #FF60A3",
-              borderRadius: "10px",
-              padding: "15px 30px",
-              cursor: "pointer",
-              margin: "auto",
-            }}
-          >
-            <p className="font-sans font-semibold text-2xl text-[#FFFFFF]">
-              Finish
-            </p>
-          </button>
-        </div>
+        )}
+      </div>
+      <div className="text-text-primary-color h-14 text-xl">
+        <p>You can change the icon at any time</p>
+      </div>
+      <div className="m-auto h-[160] flex justify-between">
+        <Button type="submit" text="Skip" className="btn btn-secondary mr-3" />
+        <Button type="submit" text="Finish" className="btn btn-primary" />
       </div>
     </div>
   );
