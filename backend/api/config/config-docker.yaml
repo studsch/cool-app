@@ -1,0 +1,19 @@
+server:
+  AppVersion: 1.0.0
+  Host: 0.0.0.0
+  Port: 8000
+  Mode: Development
+  ReadTimeout: 60
+
+logger:
+  Development: true
+  DisableCaller: false
+  DisableStacktrace: false
+  Encoding: json
+  Level: info
+
+jwt:
+  SecretKey: secret
+  SecretKeyExpire: 60
+  RefreshKey: refresh
+  RefreshKeyExpire: 60

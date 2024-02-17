@@ -4,25 +4,22 @@ import (
 	"github.com/studsch/cool-app/backend/config"
 	"github.com/studsch/cool-app/backend/internal/server"
 	"github.com/studsch/cool-app/backend/pkg/logger"
+	"github.com/studsch/cool-app/backend/pkg/utils"
 	"log"
+	"os"
 )
 
 func main() {
-	cfg := &config.Config{
-		Server: config.ServerConfig{
-			AppVersion:  "1",
-			Host:        "0.0.0.0",
-			Port:        "8000",
-			ReadTimeout: "60",
-			Mode:        "Development",
-		},
-		Logger: config.Logger{
-			Development:       true,
-			DisableCaller:     false,
-			DisableStacktrace: false,
-			Encoding:          "json",
-			Level:             "info",
-		},
+	configPath := utils.GetConfigPath(os.Getenv("config"))
+	println(configPath)
+	cfgFile, err := config.LoadConfig(configPath)
+	if err != nil {
+		log.Fatalf("LoadConfig: %v", err)
+	}
+
+	cfg, err := config.ParseConfig(cfgFile)
+	if err != nil {
+		log.Fatalf("ParseConfig: %v", err)
 	}
 
 	appLogger := logger.NewApiLogger(cfg)
