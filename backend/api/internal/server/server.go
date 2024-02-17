@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/studsch/cool-app/backend/pkg/logger"
 	"os"
 	"os/signal"
@@ -21,12 +22,14 @@ const (
 type Server struct {
 	fiber  *fiber.App
 	cfg    *config.Config
+	db     *pgxpool.Pool
 	logger logger.Logger
 }
 
-func NewServer(cfg *config.Config, logger logger.Logger) *Server {
+func NewServer(cfg *config.Config, db *pgxpool.Pool, logger logger.Logger) *Server {
 	return &Server{
 		cfg:    cfg,
+		db:     db,
 		logger: logger,
 	}
 }

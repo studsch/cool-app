@@ -9,12 +9,13 @@ import (
 
 // Config app config struct
 type Config struct {
-	Server ServerConfig
-	Logger Logger
-	JWT    JWT
+	Server   ServerConfig
+	Postgres PostgresConfig
+	Logger   Logger
+	JWT      JWT
 }
 
-// ServerConfig server config struct
+// ServerConfig server config
 type ServerConfig struct {
 	AppVersion  string
 	Host        string
@@ -23,7 +24,7 @@ type ServerConfig struct {
 	ReadTimeout string // TODO: change to time.Duration
 }
 
-// JWT json web tokens struct
+// JWT json web tokens config
 type JWT struct {
 	SecretKey        string
 	SecretKeyExpire  time.Duration
@@ -31,13 +32,23 @@ type JWT struct {
 	RefreshKeyExpire time.Duration
 }
 
-// Logger struct
+// Logger config
 type Logger struct {
 	Development       bool
 	DisableCaller     bool
 	DisableStacktrace bool
 	Encoding          string
 	Level             string
+}
+
+// PostgresConfig postgresql config
+type PostgresConfig struct {
+	Host     string
+	Port     string
+	User     string
+	Password string
+	DBName   string
+	SSLMode  string
 }
 
 // LoadConfig load config file from given path

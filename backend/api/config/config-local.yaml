@@ -17,3 +17,11 @@ jwt:
   SecretKeyExpire: 60
   RefreshKey: refresh
   RefreshKeyExpire: 60
+
+postgres:
+  Host: localhost
+  Port: 5432
+  User: postgres
+  Password: cool-app
+  DBName: postgres
+  SSLMode: disable
