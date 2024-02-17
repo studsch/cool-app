@@ -7,6 +7,9 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 
 	health := v1.Group("/health")
 
-	health.Get("", func(c *fiber.Ctx) error { return c.SendStatus(fiber.StatusOK) })
+	health.Get("", func(c *fiber.Ctx) error {
+		s.logger.Info("Health check")
+		return c.SendStatus(fiber.StatusOK)
+	})
 	return nil
 }

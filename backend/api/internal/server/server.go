@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
-	"log"
+	"github.com/studsch/cool-app/backend/pkg/logger"
 	"os"
 	"os/signal"
 	"strconv"
@@ -19,13 +19,15 @@ const (
 )
 
 type Server struct {
-	fiber *fiber.App
-	cfg   *config.Config
+	fiber  *fiber.App
+	cfg    *config.Config
+	logger logger.Logger
 }
 
-func NewServer(cfg *config.Config) *Server {
+func NewServer(cfg *config.Config, logger logger.Logger) *Server {
 	return &Server{
-		cfg: cfg,
+		cfg:    cfg,
+		logger: logger,
 	}
 }
 
@@ -45,9 +47,12 @@ func (s *Server) Run() error {
 		s.cfg.Server.Port,
 	)
 
-	if err := s.fiber.Listen(url); err != nil {
-		log.Fatalf("Server is not running. Reason: %v", err)
-	}
+	go func() {
+		s.logger.Infof("Server is listening on PORT: %s", s.cfg.Server.Port)
+		if err := s.fiber.Listen(url); err != nil {
+			s.logger.Fatalf("Error starting Server: %v", err)
+		}
+	}()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
@@ -57,5 +62,6 @@ func (s *Server) Run() error {
 	ctx, shutdown := context.WithTimeout(context.Background(), ctxTimeout*time.Second)
 	defer shutdown()
 
+	s.logger.Info("server Exited Properly")
 	return s.fiber.Server().ShutdownWithContext(ctx)
 }
