@@ -19,6 +19,7 @@ const (
 	ctxTimeout = 5
 )
 
+// Server struct
 type Server struct {
 	fiber  *fiber.App
 	cfg    *config.Config
@@ -26,6 +27,7 @@ type Server struct {
 	logger logger.Logger
 }
 
+// NewServer New server constructor
 func NewServer(cfg *config.Config, db *pgxpool.Pool, logger logger.Logger) *Server {
 	return &Server{
 		cfg:    cfg,
@@ -34,6 +36,7 @@ func NewServer(cfg *config.Config, db *pgxpool.Pool, logger logger.Logger) *Serv
 	}
 }
 
+// Run Start server
 func (s *Server) Run() error {
 	readTimeout, _ := strconv.Atoi(s.cfg.Server.ReadTimeout)
 	s.fiber = fiber.New(fiber.Config{

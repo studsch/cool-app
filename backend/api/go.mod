@@ -10,6 +10,7 @@ require (
 	github.com/google/uuid v1.4.0
 	github.com/jackc/pgx/v5 v5.4.3
 	github.com/joho/godotenv v1.5.1
+	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.18.2
 	go.uber.org/zap v1.26.0
 	golang.org/x/crypto v0.16.0

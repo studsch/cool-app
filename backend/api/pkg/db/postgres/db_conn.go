@@ -9,6 +9,7 @@ import (
 	pgxUUID "github.com/vgarvardt/pgx-google-uuid/v5"
 )
 
+// NewPsqlDB New Postgresql db instance
 func NewPsqlDB(c *config.Config) (*pgxpool.Pool, error) {
 	dataSourceName := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=%s pool_max_conns=10",
 		c.Postgres.User,
