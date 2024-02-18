@@ -8,12 +8,13 @@ import users from "@/test_data/people/users"; // для теста общих д
 import People from "@/components/people/people";
 import DragDropPreview from "@/components/ui/dragdroppreview";
 import { Card } from "@/components/ui/card";
+import TopBar from "@/components/topbar/topbar";
 
 export default function DragAndDrop() {
   return (
     <>
       <div>
-        <Card />
+        <TopBar />
       </div>
     </>
   );

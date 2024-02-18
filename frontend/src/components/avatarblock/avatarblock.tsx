@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function AvatarBlock() {
   return (
-    <div className="flex">
+    <div className="flex items-center">
       <div className="grid place-content-center">
         <Avatar>
           <AvatarImage src="https://github.com/shadcn.png" />
