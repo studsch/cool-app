@@ -8,4 +8,6 @@ import (
 // Repository Auth repository interface
 type Repository interface {
 	Register(ctx context.Context, user *models.User) (*models.User, error)
+	FindByLogin(ctx context.Context, user *models.User) (*models.User, error)
+	FindByPhoneNumber(ctx context.Context, user *models.User) (*models.User, error)
 }

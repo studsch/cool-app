@@ -11,14 +11,15 @@ import (
 )
 
 const (
-	ErrBadRequest         = "Bad request"
-	ErrEmailAlreadyExists = "User with given email already exists"
-	ErrNoSuchUser         = "User not found"
-	ErrWrongCredentials   = "Wrong Credentials"
-	ErrNotFound           = "Not Found"
-	ErrUnauthorized       = "Unauthorized"
-	ErrForbidden          = "Forbidden"
-	ErrBadQueryParams     = "Invalid query params"
+	ErrBadRequest               = "Bad request"
+	ErrLoginAlreadyExists       = "User with given login already exists"
+	ErrPhoneNumberAlreadyExists = "User with given phone number already exists"
+	ErrNoSuchUser               = "User not found"
+	ErrWrongCredentials         = "Wrong Credentials"
+	ErrNotFound                 = "Not Found"
+	ErrUnauthorized             = "Unauthorized"
+	ErrForbidden                = "Forbidden"
+	ErrBadQueryParams           = "Invalid query params"
 )
 
 var (

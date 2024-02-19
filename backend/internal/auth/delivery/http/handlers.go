@@ -47,7 +47,7 @@ func (h *authHandlers) Register() fiber.Handler {
 
 		return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 			"error": false,
-			"user":  createdUser,
+			"user":  createdUser.User,
 		})
 	}
 }

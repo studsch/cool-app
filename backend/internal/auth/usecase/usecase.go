@@ -8,6 +8,7 @@ import (
 	"github.com/studsch/cool-app/backend/internal/models"
 	"github.com/studsch/cool-app/backend/pkg/httpErrors"
 	"github.com/studsch/cool-app/backend/pkg/logger"
+	"net/http"
 )
 
 // authUC Auth useCase
@@ -28,7 +29,15 @@ func NewAuthUC(cfg *config.Config, authRepo auth.Repository, logger logger.Logge
 
 // Register Create new user
 func (u *authUC) Register(ctx context.Context, user *models.User) (*models.UserWithToken, error) {
-	// TODO: get exists users (login, phone)
+	existsUserLogin, err := u.authRepo.FindByLogin(ctx, user)
+	if existsUserLogin != nil || err == nil {
+		return nil, httpErrors.NewRestErrorWithMessage(http.StatusBadRequest, httpErrors.ErrLoginAlreadyExists, nil)
+	}
+
+	existsUserPhoneNumber, err := u.authRepo.FindByPhoneNumber(ctx, user)
+	if existsUserPhoneNumber != nil || err == nil {
+		return nil, httpErrors.NewRestErrorWithMessage(http.StatusBadRequest, httpErrors.ErrPhoneNumberAlreadyExists, nil)
+	}
 
 	if err := user.PrepareCreate(); err != nil {
 		return nil, httpErrors.NewBadRequestError(errors.Wrap(err, "authUC.Register.PrepareCreate"))

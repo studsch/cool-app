@@ -22,6 +22,6 @@ postgres:
   Host: localhost
   Port: 5432
   User: postgres
-  Password: cool-app
-  DBName: postgres
+  Password: postgres
+  DBName: api_db
   SSLMode: disable
