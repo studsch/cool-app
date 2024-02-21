@@ -54,7 +54,7 @@ func (r *authRepo) FindByPhoneNumber(ctx context.Context, user *models.User) (*m
 // GetByID Get user by id
 func (r *authRepo) GetByID(ctx context.Context, userID uuid.UUID) (*models.User, error) {
 	user := &models.User{}
-	if err := r.db.QueryRow(ctx, findUserByPhoneQuery, userID).Scan(&user); err != nil {
+	if err := r.db.QueryRow(ctx, getUserByIDQuery, userID).Scan(&user); err != nil {
 		return nil, errors.Wrap(err, "authRepo.GetByID.Scan")
 	}
 	return user, nil

@@ -24,8 +24,10 @@ type User struct {
 	UpdatedAt   time.Time  `json:"updatedAt,omitempty" validate:"omitempty"`
 }
 
-type UserWithToken struct {
-	User *User
+type UserWithTokens struct {
+	User         *User  `json:"user"`
+	AccessToken  string `json:"access"`
+	RefreshToken string `json:"refresh"`
 }
 
 // HashPassword Hash user password with bcrypt

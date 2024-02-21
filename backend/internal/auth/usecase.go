@@ -8,6 +8,7 @@ import (
 
 // UseCase Auth repository interface
 type UseCase interface {
-	Register(ctx context.Context, user *models.User) (*models.UserWithToken, error)
+	Register(ctx context.Context, user *models.User) (*models.UserWithTokens, error)
 	GetByID(ctx context.Context, userID uuid.UUID) (*models.User, error)
+	Login(ctx context.Context, user *models.User) (*models.UserWithTokens, error)
 }

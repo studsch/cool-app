@@ -1,7 +1,10 @@
 package utils
 
 import (
+	"context"
 	"github.com/gofiber/fiber/v2"
+	"github.com/studsch/cool-app/backend/internal/models"
+	"github.com/studsch/cool-app/backend/pkg/httpErrors"
 	"github.com/studsch/cool-app/backend/pkg/logger"
 )
 
@@ -39,4 +42,17 @@ func LogResponseError(c *fiber.Ctx, logger logger.Logger, err error) {
 		GetIPAddress(c),
 		err,
 	)
+}
+
+// UserCtxKey is a key used for the User object in the context
+type UserCtxKey struct{}
+
+// GetUserFromCtx Get user from context
+func GetUserFromCtx(ctx context.Context) (*models.User, error) {
+	user, ok := ctx.Value(UserCtxKey{}).(*models.User)
+	if !ok {
+		return nil, httpErrors.Unauthorized
+	}
+
+	return user, nil
 }
