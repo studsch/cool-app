@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/studsch/cool-app/backend/config"
 	"github.com/studsch/cool-app/backend/internal/auth"
@@ -54,4 +55,15 @@ func (u *authUC) Register(ctx context.Context, user *models.User) (*models.UserW
 	return &models.UserWithToken{
 		User: createdUser,
 	}, nil
+}
+
+func (u *authUC) GetByID(ctx context.Context, userID uuid.UUID) (*models.User, error) {
+	user, err := u.authRepo.GetByID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	user.SanitizePassword()
+
+	return user, nil
 }

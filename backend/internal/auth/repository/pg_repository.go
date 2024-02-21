@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pkg/errors"
 	"github.com/studsch/cool-app/backend/internal/auth"
@@ -48,4 +49,13 @@ func (r *authRepo) FindByPhoneNumber(ctx context.Context, user *models.User) (*m
 		return nil, errors.Wrap(err, "authRepo.FindByPhoneNumber.Scan")
 	}
 	return foundUser, nil
+}
+
+// GetByID Get user by id
+func (r *authRepo) GetByID(ctx context.Context, userID uuid.UUID) (*models.User, error) {
+	user := &models.User{}
+	if err := r.db.QueryRow(ctx, findUserByPhoneQuery, userID).Scan(&user); err != nil {
+		return nil, errors.Wrap(err, "authRepo.GetByID.Scan")
+	}
+	return user, nil
 }

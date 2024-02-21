@@ -32,4 +32,12 @@ SELECT
 FROM users
 WHERE phone_number = $1
 `
+	getUserByIDQuery = `
+SELECT
+	(id, first_name, last_name, login, password,
+    phone_number, role, avatar, gender, about,
+    city, country, birthday, created_at, updated_at)
+FROM users
+WHERE id = $1
+`
 )
