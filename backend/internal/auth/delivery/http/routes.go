@@ -2,8 +2,8 @@ package http
 
 import (
 	"fmt"
+
 	"github.com/gofiber/fiber/v2"
-	"github.com/studsch/cool-app/backend/config"
 	"github.com/studsch/cool-app/backend/internal/auth"
 	"github.com/studsch/cool-app/backend/internal/middleware"
 )
@@ -11,11 +11,10 @@ import (
 // MapAuthRoutes Map auth routes
 func MapAuthRoutes(
 	authGroup fiber.Router, h auth.Handlers, mw *middleware.MiddlewareManager,
-	authUC auth.UseCase, cfg *config.Config,
 ) {
 	authGroup.Post("/register", h.Register())
 	authGroup.Post("/login", h.Login())
-	authGroup.Use(mw.AuthJWTMiddleware(authUC, cfg))
+	authGroup.Use(mw.AuthJWTMiddleware())
 	authGroup.Post("/logout", h.Logout())
 	authGroup.Get("/health", func(c *fiber.Ctx) error {
 		q := c.Locals("user")

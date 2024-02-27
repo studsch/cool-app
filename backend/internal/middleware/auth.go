@@ -3,19 +3,18 @@ package middleware
 import (
 	"context"
 	"fmt"
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"github.com/studsch/cool-app/backend/config"
-	"github.com/studsch/cool-app/backend/internal/auth"
 	"github.com/studsch/cool-app/backend/pkg/httpErrors"
 	"github.com/studsch/cool-app/backend/pkg/utils"
-	"net/http"
 )
 
-func (mw *MiddlewareManager) AuthJWTMiddleware(authUC auth.UseCase, cfg *config.Config) fiber.Handler {
+func (mw *MiddlewareManager) AuthJWTMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		tokenMetadata, err := utils.ExtractTokenMetadata(c, cfg)
+		tokenMetadata, err := utils.ExtractTokenMetadata(c, mw.cfg)
 		if err != nil {
 			mw.logger.Error("auth middleware", err)
 			return c.Status(http.StatusUnauthorized).JSON(httpErrors.NewUnauthorizedError(httpErrors.Unauthorized))
@@ -28,7 +27,7 @@ func (mw *MiddlewareManager) AuthJWTMiddleware(authUC auth.UseCase, cfg *config.
 			return c.Status(http.StatusUnauthorized).JSON(httpErrors.NewUnauthorizedError(httpErrors.Unauthorized))
 		}
 
-		u, err := authUC.GetByID(c.Context(), userUUID)
+		u, err := mw.authUC.GetByID(c.Context(), userUUID)
 		if err != nil {
 			mw.logger.Error("auth middleware", err)
 			return c.Status(http.StatusUnauthorized).JSON(httpErrors.NewUnauthorizedError(httpErrors.Unauthorized))
@@ -62,7 +61,7 @@ func (mw *MiddlewareManager) AuthJWTMiddleware(authUC auth.UseCase, cfg *config.
 	}
 }
 
-func (mw *MiddlewareManager) validateJWT(tokenString string, authUC auth.UseCase, c *fiber.Ctx, cfg *config.Config) error {
+func (mw *MiddlewareManager) validateJWT(tokenString string, c *fiber.Ctx) error {
 	if tokenString == "" {
 		return httpErrors.InvalidJWTToken
 	}
@@ -71,10 +70,9 @@ func (mw *MiddlewareManager) validateJWT(tokenString string, authUC auth.UseCase
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signin method %v", token.Header["alg"])
 		}
-		secret := []byte(cfg.JWT.SecretKey)
+		secret := []byte(mw.cfg.JWT.SecretKey)
 		return secret, nil
 	})
-
 	if err != nil {
 		return err
 	}
@@ -94,12 +92,12 @@ func (mw *MiddlewareManager) validateJWT(tokenString string, authUC auth.UseCase
 			return err
 		}
 
-		u, err := authUC.GetByID(c.Context(), userUUID)
+		u, err := mw.authUC.GetByID(c.Context(), userUUID)
 		if err != nil {
 			return err
 		}
 
-		//c.Locals("user", u)
+		// c.Locals("user", u)
 		// TODO: or
 		ctx := context.WithValue(c.Context(), utils.UserCtxKey{}, u)
 		c.SetUserContext(ctx)

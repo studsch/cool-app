@@ -31,7 +31,7 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	health := v1.Group("/health")
 	authGroup := v1.Group("/auth")
 
-	authHttp.MapAuthRoutes(authGroup, authHandlers, mw, authUC, s.cfg)
+	authHttp.MapAuthRoutes(authGroup, authHandlers, mw)
 
 	health.Get("", func(c *fiber.Ctx) error {
 		s.logger.Info("Health check")
