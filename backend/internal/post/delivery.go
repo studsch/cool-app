@@ -5,4 +5,7 @@ import "github.com/gofiber/fiber/v2"
 // Handlers Post HTTP handlers interface
 type Handlers interface {
 	Create() fiber.Handler
+	Update() fiber.Handler
+	Archive() fiber.Handler
+	Delete() fiber.Handler
 }

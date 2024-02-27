@@ -11,4 +11,7 @@ func MapPostRoutes(
 	postGroup fiber.Router, h post.Handlers, mw *middleware.MiddlewareManager,
 ) {
 	postGroup.Post("/", mw.AuthJWTMiddleware(), h.Create())
+	postGroup.Put("/:id", mw.AuthJWTMiddleware(), h.Update())
+	postGroup.Patch("/:id", mw.AuthJWTMiddleware(), h.Archive())
+	postGroup.Delete("/:id", mw.AuthJWTMiddleware(), h.Delete())
 }
