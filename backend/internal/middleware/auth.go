@@ -19,7 +19,6 @@ func (mw *MiddlewareManager) AuthJWTMiddleware() fiber.Handler {
 			mw.logger.Error("auth middleware", err)
 			return c.Status(http.StatusUnauthorized).JSON(httpErrors.NewUnauthorizedError(httpErrors.Unauthorized))
 		}
-		fmt.Println(tokenMetadata.ID)
 
 		userUUID, err := uuid.Parse(tokenMetadata.ID)
 		if err != nil {
@@ -34,6 +33,8 @@ func (mw *MiddlewareManager) AuthJWTMiddleware() fiber.Handler {
 		}
 
 		c.Locals("user", u)
+		ctx := context.WithValue(c.Context(), utils.UserCtxKey{}, u)
+		c.SetUserContext(ctx)
 
 		//bearerHeader := c.Get("Authorization")
 		//
