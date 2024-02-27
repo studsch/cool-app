@@ -19,16 +19,28 @@ CREATE TABLE users
     updated_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
-INSERT INTO users(
-    first_name, last_name, login, password, phone_number,
-    role, avatar, gender, about, city,
-    country, birthday, created_at, updated_at
-) VALUES (
-    'first', 'last', 'login', 'pass', '+7123456789',
-    'user', '', 'male', '', '',
-    '2024-02-19', NOW(), NOW()
-) RETURNING (
-    id, first_name, last_name, login, password,
-    phone_number, role, avatar, gender, about,
-    city, country, birthday, created_at, updated_at
+-- INSERT INTO users(
+--     first_name, last_name, login, password, phone_number,
+--     role, avatar, gender, about, city,
+--     country, birthday, created_at, updated_at
+-- ) VALUES (
+--     'first', 'last', 'login', 'pass', '+7123456789',
+--     'user', '', 'male', '', '',
+--     '2024-02-19', NOW(), NOW()
+-- ) RETURNING (
+--     id, first_name, last_name, login, password,
+--     phone_number, role, avatar, gender, about,
+--     city, country, birthday, created_at, updated_at
+-- );
+
+CREATE TABLE post
+(
+    id          UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
+    user_id     UUID                     NOT NULL REFERENCES users (id),
+    description VARCHAR(256),
+    location    VARCHAR(128),
+    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    image_urls   VARCHAR(1024)[],
+    archived    BOOLEAN                           DEFAULT FALSE,
+    deleted     BOOLEAN                           DEFAULT FALSE
 );
