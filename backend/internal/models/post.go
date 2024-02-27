@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Post Post base model
+// Post Posts base model
 type Post struct {
 	ID          uuid.UUID `json:"id,omitempty" validate:"omitempty,uuid"`
 	UserID      uuid.UUID `json:"userId,omitempty" validate:"required"`

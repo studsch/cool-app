@@ -63,6 +63,7 @@ func (u *authUC) Register(ctx context.Context, user *models.User) (*models.UserW
 	}, nil
 }
 
+// GetByID Get user by id
 func (u *authUC) GetByID(ctx context.Context, userID uuid.UUID) (*models.User, error) {
 	user, err := u.authRepo.GetByID(ctx, userID)
 	if err != nil {
@@ -74,6 +75,7 @@ func (u *authUC) GetByID(ctx context.Context, userID uuid.UUID) (*models.User, e
 	return user, nil
 }
 
+// Login Log-in user
 func (u *authUC) Login(ctx context.Context, user *models.User) (*models.UserWithTokens, error) {
 	var foundUser *models.User
 	var err error

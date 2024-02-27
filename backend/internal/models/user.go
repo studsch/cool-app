@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// User Users base model
 type User struct {
 	ID          uuid.UUID  `json:"id,omitempty" validate:"omitempty"`
 	FirstName   string     `json:"firstName,omitempty" validate:"required,lte=30"`
@@ -24,6 +25,7 @@ type User struct {
 	UpdatedAt   time.Time  `json:"updatedAt,omitempty" validate:"omitempty"`
 }
 
+// UserWithTokens Users model with tokens
 type UserWithTokens struct {
 	User         *User  `json:"user"`
 	AccessToken  string `json:"access"`

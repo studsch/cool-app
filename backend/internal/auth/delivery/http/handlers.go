@@ -58,6 +58,7 @@ func (h *authHandlers) Register() fiber.Handler {
 	}
 }
 
+// Login Log-in user
 func (h *authHandlers) Login() fiber.Handler {
 	// TODO: excluded_with - bug
 	// required_without=PhoneNumber,excluded_with=PhoneNumber,
@@ -97,6 +98,7 @@ func (h *authHandlers) Login() fiber.Handler {
 	}
 }
 
+// Logout Log-out user
 func (h *authHandlers) Logout() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		claims, err := utils.ExtractTokenMetadata(c, h.cfg)
