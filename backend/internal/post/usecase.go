@@ -15,4 +15,5 @@ type UseCase interface {
 	Delete(ctx context.Context, postID uuid.UUID) error
 	GetPosts(ctx context.Context, pq *utils.PaginationQuery) (*models.PostList, error)
 	GetByID(ctx context.Context, postID uuid.UUID) (*models.PostBase, error)
+	GetByUserID(ctx context.Context, userID uuid.UUID, pq *utils.PaginationQuery) (*models.PostList, error)
 }

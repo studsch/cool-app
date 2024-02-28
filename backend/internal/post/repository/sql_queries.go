@@ -52,4 +52,12 @@ SELECT (
 WHERE deleted=FALSE AND archived=FALSE
 ORDER BY created_at OFFSET $1 LIMIT $2
 `
+	getByUserIdQuery = `
+SELECT (
+	id, user_id, description, location, created_at,
+	image_urls
+) FROM post
+WHERE user_id=$1 AND deleted=FALSE AND archived=FALSE
+ORDER BY created_at OFFSET $2 LIMIT $3
+`
 )

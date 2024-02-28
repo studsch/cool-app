@@ -16,4 +16,5 @@ func MapPostRoutes(
 	postGroup.Delete("/:id", mw.AuthJWTMiddleware(), h.Delete())
 	postGroup.Get("", h.GetPosts())
 	postGroup.Get("/:id", h.GetByID())
+	postGroup.Get("/user/:id", h.GetByUserID())
 }

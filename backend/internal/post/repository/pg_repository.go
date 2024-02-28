@@ -127,3 +127,50 @@ func (r *postRepo) GetPosts(ctx context.Context, pq *utils.PaginationQuery) (*mo
 		Posts:      postsList,
 	}, err
 }
+
+// GetByUserID Get posts by user id
+func (r *postRepo) GetByUserID(ctx context.Context, userID uuid.UUID, pq *utils.PaginationQuery) (*models.PostList, error) {
+	var totalCount int
+	if err := r.db.QueryRow(ctx, getTotalCountQuery).Scan(&totalCount); err != nil {
+		return nil, errors.Wrap(err, "postRepo.GetByUserID.Scan")
+	}
+
+	if totalCount == 0 {
+		return &models.PostList{
+			TotalCount: totalCount,
+			TotalPages: utils.GetTotalPages(totalCount, pq.GetSize()),
+			Page:       pq.GetPage(),
+			Size:       pq.GetSize(),
+			HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
+			Posts:      make([]*models.Post, 0),
+		}, nil
+	}
+
+	var postsList = make([]*models.Post, 0, pq.GetSize())
+	rows, err := r.db.Query(ctx, getByUserIdQuery, userID, pq.GetOffset(), pq.GetLimit())
+	if err != nil {
+		return nil, errors.Wrap(err, "postRepo.GetByUserID.Query")
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		p := &models.Post{}
+		if err := rows.Scan(p); err != nil {
+			return nil, errors.Wrap(err, "postRepo.GetByUserID.Scan")
+		}
+		postsList = append(postsList, p)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "postRepo.GetByUserID.Err")
+	}
+
+	return &models.PostList{
+		TotalCount: totalCount,
+		TotalPages: utils.GetTotalPages(totalCount, pq.GetSize()),
+		Page:       pq.GetPage(),
+		Size:       pq.GetSize(),
+		HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
+		Posts:      postsList,
+	}, err
+}

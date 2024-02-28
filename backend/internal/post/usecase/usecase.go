@@ -123,3 +123,8 @@ func (u *postUC) GetByID(ctx context.Context, postID uuid.UUID) (*models.PostBas
 
 	return p, nil
 }
+
+// GetByUserID Get posts by user id
+func (u *postUC) GetByUserID(ctx context.Context, userID uuid.UUID, pq *utils.PaginationQuery) (*models.PostList, error) {
+	return u.postRepo.GetByUserID(ctx, userID, pq)
+}
