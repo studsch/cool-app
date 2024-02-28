@@ -25,7 +25,7 @@ type PostBase struct {
 	Location    string    `json:"location,omitempty" validate:"omitempty,gte=3,lte=127"`
 	CreatedAt   time.Time `json:"createdAt,omitempty" validate:"omitempty"`
 	ImageURLs   []string  `json:"imageURLs,omitempty" validate:"omitempty"`
-	Author      string    `json:"author,omitempty" validate:""`
+	Author      string    `json:"author,omitempty" validate:"omitempty"`
 }
 
 // PostList All Post response

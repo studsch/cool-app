@@ -40,7 +40,18 @@ CREATE TABLE post
     description VARCHAR(256),
     location    VARCHAR(128),
     created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    image_urls   VARCHAR(1024)[],
+    image_urls  VARCHAR(1024)[],
     archived    BOOLEAN                           DEFAULT FALSE,
     deleted     BOOLEAN                           DEFAULT FALSE
+);
+
+CREATE TABLE comment
+(
+    id                  UUID PRIMARY KEY         DEFAULT uuid_generate_v4(),
+    user_id             UUID                                   NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    post_id             UUID                                   NOT NULL REFERENCES post (id) ON DELETE CASCADE,
+    reply_to_comment_id UUID REFERENCES comment (id) ON DELETE CASCADE,
+    content             VARCHAR(256)                           NOT NULL CHECK ( content <> '' ),
+    created_at          TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+    deleted             BOOLEAN                  DEFAULT FALSE
 );

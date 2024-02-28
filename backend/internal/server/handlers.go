@@ -6,6 +6,9 @@ import (
 	authHttp "github.com/studsch/cool-app/backend/internal/auth/delivery/http"
 	authRepository "github.com/studsch/cool-app/backend/internal/auth/repository"
 	authUseCase "github.com/studsch/cool-app/backend/internal/auth/usecase"
+	commHttp "github.com/studsch/cool-app/backend/internal/comment/delivery/http"
+	commRepository "github.com/studsch/cool-app/backend/internal/comment/repository"
+	commUseCase "github.com/studsch/cool-app/backend/internal/comment/usecase"
 	apiMiddlewares "github.com/studsch/cool-app/backend/internal/middleware"
 	postHttp "github.com/studsch/cool-app/backend/internal/post/delivery/http"
 	postRepository "github.com/studsch/cool-app/backend/internal/post/repository"
@@ -17,14 +20,17 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	// Init repositories
 	authRepo := authRepository.NewAuthRepository(s.db)
 	postRepo := postRepository.NewPostRepository(s.db)
+	commRepo := commRepository.NewCommentRepository(s.db)
 
 	// Init useCases
 	authUC := authUseCase.NewAuthUC(s.cfg, authRepo, s.logger)
 	postUC := postUseCase.NewPostUC(s.cfg, postRepo, s.logger)
+	commUC := commUseCase.NewCommentUC(s.cfg, commRepo, s.logger)
 
 	// Init handlers
 	authHandlers := authHttp.NewAuthHandlers(s.cfg, authUC, s.logger)
 	postHandlers := postHttp.NewPostHandlers(s.cfg, postUC, s.logger)
+	commHandlers := commHttp.NewCommentHandlers(s.cfg, commUC, s.logger)
 
 	mw := apiMiddlewares.NewMiddlewareManager(authUC, s.cfg, []string{"*"}, s.logger)
 
@@ -37,9 +43,11 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	health := v1.Group("/health")
 	authGroup := v1.Group("/auth")
 	postGroup := v1.Group("/post")
+	commGroup := v1.Group("/comment")
 
 	authHttp.MapAuthRoutes(authGroup, authHandlers, mw)
 	postHttp.MapPostRoutes(postGroup, postHandlers, mw)
+	commHttp.MapCommentRoutes(commGroup, commHandlers, mw)
 
 	health.Get("", func(c *fiber.Ctx) error {
 		s.logger.Info("Health check")
