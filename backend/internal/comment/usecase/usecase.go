@@ -3,11 +3,14 @@ package usecase
 import (
 	"context"
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
 	"github.com/studsch/cool-app/backend/config"
 	"github.com/studsch/cool-app/backend/internal/comment"
 	"github.com/studsch/cool-app/backend/internal/models"
+	"github.com/studsch/cool-app/backend/pkg/httpErrors"
 	"github.com/studsch/cool-app/backend/pkg/logger"
 	"github.com/studsch/cool-app/backend/pkg/utils"
+	"net/http"
 )
 
 // commentUC Comment useCase
@@ -31,22 +34,32 @@ func (u *commentUC) Create(ctx context.Context, comment *models.Comment) (*model
 	return u.commentRepo.Create(ctx, comment)
 }
 
+// Delete Deletes comment
 func (u *commentUC) Delete(ctx context.Context, commentID uuid.UUID) error {
-	//TODO implement me
-	panic("implement me")
+	postByID, err := u.commentRepo.GetByID(ctx, commentID)
+	if err != nil {
+		return err
+	}
+
+	if err = utils.ValidateIsOwner(ctx, postByID.UserID.String(), u.logger); err != nil {
+		return httpErrors.NewRestError(http.StatusForbidden, "Forbidden", errors.Wrap(err, "commentUC.Delete.ValidateIsOwner"))
+	}
+
+	if err := u.commentRepo.Delete(ctx, commentID); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (u *commentUC) GetByID(ctx context.Context, commentID uuid.UUID) (*models.CommentBase, error) {
-	//TODO implement me
-	panic("implement me")
+	return u.commentRepo.GetByID(ctx, commentID)
 }
 
 func (u *commentUC) GetAllByPostID(ctx context.Context, postID uuid.UUID, pq *utils.PaginationQuery) (*models.CommentList, error) {
-	//TODO implement me
-	panic("implement me")
+	return u.commentRepo.GetAllByPostID(ctx, postID, pq)
 }
 
-func (u *commentUC) GetReplyByCommentID(ctx context.Context, commentID uuid.UUID, pq *utils.PaginationQuery) {
-	//TODO implement me
-	panic("implement me")
+func (u *commentUC) GetReplyByCommentID(ctx context.Context, commentID uuid.UUID, pq *utils.PaginationQuery) (*models.CommentList, error) {
+	return u.commentRepo.GetReplyByCommentID(ctx, commentID, pq)
 }

@@ -13,5 +13,5 @@ type Repository interface {
 	Delete(ctx context.Context, commentID uuid.UUID) error
 	GetByID(ctx context.Context, commentID uuid.UUID) (*models.CommentBase, error)
 	GetAllByPostID(ctx context.Context, postID uuid.UUID, pq *utils.PaginationQuery) (*models.CommentList, error)
-	GetReplyByCommentID(ctx context.Context, commentID uuid.UUID, pq *utils.PaginationQuery)
+	GetReplyByCommentID(ctx context.Context, commentID uuid.UUID, pq *utils.PaginationQuery) (*models.CommentList, error)
 }

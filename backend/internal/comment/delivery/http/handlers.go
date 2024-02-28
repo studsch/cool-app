@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/studsch/cool-app/backend/config"
 	"github.com/studsch/cool-app/backend/internal/comment"
 	"github.com/studsch/cool-app/backend/internal/models"
@@ -36,16 +37,16 @@ func (h *commentHandlers) Create() fiber.Handler {
 			return c.Status(status).JSON(msg)
 		}
 
-		comment := &models.Comment{}
-		comment.UserID = user.ID
+		comm := &models.Comment{}
+		comm.UserID = user.ID
 
-		if err := c.BodyParser(comment); err != nil {
+		if err := c.BodyParser(comm); err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			status, msg := httpErrors.ErrorResponse(err)
 			return c.Status(status).JSON(msg)
 		}
 
-		createdComment, err := h.commentUC.Create(c.UserContext(), comment)
+		createdComment, err := h.commentUC.Create(c.UserContext(), comm)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			status, msg := httpErrors.ErrorResponse(err)
@@ -57,21 +58,94 @@ func (h *commentHandlers) Create() fiber.Handler {
 }
 
 func (h *commentHandlers) Delete() fiber.Handler {
-	//TODO implement me
-	panic("implement me")
+	return func(c *fiber.Ctx) error {
+		commID, err := uuid.Parse(c.Params("id"))
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		if err := h.commentUC.Delete(c.UserContext(), commID); err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.SendStatus(fiber.StatusOK)
+	}
 }
 
 func (h *commentHandlers) GetByID() fiber.Handler {
-	//TODO implement me
-	panic("implement me")
+	return func(c *fiber.Ctx) error {
+		commID, err := uuid.Parse(c.Params("id"))
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		commByID, err := h.commentUC.GetByID(c.UserContext(), commID)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(commByID)
+	}
 }
 
 func (h *commentHandlers) GetAllByPostID() fiber.Handler {
-	//TODO implement me
-	panic("implement me")
+	return func(c *fiber.Ctx) error {
+		postID, err := uuid.Parse(c.Params("id"))
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		pq, err := utils.GetPaginationFromCtx(c)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		commByPostID, err := h.commentUC.GetAllByPostID(c.UserContext(), postID, pq)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(commByPostID)
+	}
 }
 
 func (h *commentHandlers) GetReplyByCommentID() fiber.Handler {
-	//TODO implement me
-	panic("implement me")
+	return func(c *fiber.Ctx) error {
+		commID, err := uuid.Parse(c.Params("id"))
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		pq, err := utils.GetPaginationFromCtx(c)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		commByPostID, err := h.commentUC.GetReplyByCommentID(c.UserContext(), commID, pq)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(commByPostID)
+	}
 }
