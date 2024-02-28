@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/studsch/cool-app/backend/internal/models"
 	"github.com/studsch/cool-app/backend/internal/post"
+	"github.com/studsch/cool-app/backend/pkg/utils"
 )
 
 // postRepo Post repository
@@ -78,4 +79,51 @@ func (r *postRepo) GetByID(ctx context.Context, postID uuid.UUID) (*models.PostB
 	}
 
 	return &p, nil
+}
+
+// GetPosts Get all post
+func (r *postRepo) GetPosts(ctx context.Context, pq *utils.PaginationQuery) (*models.PostList, error) {
+	var totalCount int
+	if err := r.db.QueryRow(ctx, getTotalCountQuery).Scan(&totalCount); err != nil {
+		return nil, errors.Wrap(err, "postRepo.GetPots.Scan")
+	}
+
+	if totalCount == 0 {
+		return &models.PostList{
+			TotalCount: totalCount,
+			TotalPages: utils.GetTotalPages(totalCount, pq.GetSize()),
+			Page:       pq.GetPage(),
+			Size:       pq.GetSize(),
+			HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
+			Posts:      make([]*models.Post, 0),
+		}, nil
+	}
+
+	var postsList = make([]*models.Post, 0, pq.GetSize())
+	rows, err := r.db.Query(ctx, getPostsQuery, pq.GetOffset(), pq.GetLimit())
+	if err != nil {
+		return nil, errors.Wrap(err, "postRepo.GetPots.Query")
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		p := &models.Post{}
+		if err := rows.Scan(p); err != nil {
+			return nil, errors.Wrap(err, "postRepo.GetPosts.Scan")
+		}
+		postsList = append(postsList, p)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "postRepo.GetPosts.Err")
+	}
+
+	return &models.PostList{
+		TotalCount: totalCount,
+		TotalPages: utils.GetTotalPages(totalCount, pq.GetSize()),
+		Page:       pq.GetPage(),
+		Size:       pq.GetSize(),
+		HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
+		Posts:      postsList,
+	}, err
 }

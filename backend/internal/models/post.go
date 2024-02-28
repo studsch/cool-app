@@ -27,3 +27,13 @@ type PostBase struct {
 	ImageURLs   []string  `json:"imageURLs,omitempty" validate:"omitempty"`
 	Author      string    `json:"author,omitempty" validate:""`
 }
+
+// PostList All Post response
+type PostList struct {
+	TotalCount int     `json:"totalCount"`
+	TotalPages int     `json:"totalPages"`
+	Page       int     `json:"page"`
+	Size       int     `json:"size"`
+	HasMore    bool    `json:"hasMore"`
+	Posts      []*Post `json:"posts"`
+}

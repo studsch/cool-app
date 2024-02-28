@@ -116,3 +116,24 @@ func (h *postHandlers) Delete() fiber.Handler {
 		return c.SendStatus(fiber.StatusOK)
 	}
 }
+
+// GetPosts Get all posts
+func (h *postHandlers) GetPosts() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		pq, err := utils.GetPaginationFromCtx(c)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		postsList, err := h.postUC.GetPosts(c.UserContext(), pq)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(postsList)
+	}
+}

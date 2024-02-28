@@ -104,3 +104,8 @@ func (u *postUC) Delete(ctx context.Context, postID uuid.UUID) error {
 
 	return nil
 }
+
+// GetPosts Get all posts
+func (u *postUC) GetPosts(ctx context.Context, pq *utils.PaginationQuery) (*models.PostList, error) {
+	return u.postRepo.GetPosts(ctx, pq)
+}

@@ -8,4 +8,5 @@ type Handlers interface {
 	Update() fiber.Handler
 	Archive() fiber.Handler
 	Delete() fiber.Handler
+	GetPosts() fiber.Handler
 }
