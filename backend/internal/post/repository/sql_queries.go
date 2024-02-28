@@ -37,7 +37,7 @@ SELECT (
     p.id, p.user_id, p.description, p.location,
 	p.created_at, p.image_urls, CONCAT(u.first_name, ' ', u.last_name)
 ) FROM post p LEFT JOIN users u ON u.id = p.user_id
-WHERE p.id=$1
+WHERE p.id=$1 AND p.deleted=FALSE AND p.archived=FALSE
 `
 	getTotalCountQuery = `
 SELECT COUNT(id)

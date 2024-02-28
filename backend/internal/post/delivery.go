@@ -9,4 +9,5 @@ type Handlers interface {
 	Archive() fiber.Handler
 	Delete() fiber.Handler
 	GetPosts() fiber.Handler
+	GetByID() fiber.Handler
 }

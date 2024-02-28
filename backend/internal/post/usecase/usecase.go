@@ -109,3 +109,17 @@ func (u *postUC) Delete(ctx context.Context, postID uuid.UUID) error {
 func (u *postUC) GetPosts(ctx context.Context, pq *utils.PaginationQuery) (*models.PostList, error) {
 	return u.postRepo.GetPosts(ctx, pq)
 }
+
+// GetByID Get post by id
+func (u *postUC) GetByID(ctx context.Context, postID uuid.UUID) (*models.PostBase, error) {
+	// TODO: get from redis and return it
+
+	p, err := u.postRepo.GetByID(ctx, postID)
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: set to redis
+
+	return p, nil
+}

@@ -14,4 +14,5 @@ type UseCase interface {
 	Archive(ctx context.Context, postID uuid.UUID) error
 	Delete(ctx context.Context, postID uuid.UUID) error
 	GetPosts(ctx context.Context, pq *utils.PaginationQuery) (*models.PostList, error)
+	GetByID(ctx context.Context, postID uuid.UUID) (*models.PostBase, error)
 }

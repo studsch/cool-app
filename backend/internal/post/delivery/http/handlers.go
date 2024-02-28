@@ -137,3 +137,24 @@ func (h *postHandlers) GetPosts() fiber.Handler {
 		return c.Status(fiber.StatusOK).JSON(postsList)
 	}
 }
+
+// GetByID Get post by id
+func (h *postHandlers) GetByID() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		postID, err := uuid.Parse(c.Params("id"))
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		postByID, err := h.postUC.GetByID(c.UserContext(), postID)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(postByID)
+	}
+}
