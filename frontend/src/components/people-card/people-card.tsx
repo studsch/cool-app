@@ -16,7 +16,7 @@ import AddButton from "./add-button";
 
 const PeopleCard: React.FC = () => {
   return (
-    <div className="flex items-centerm">
+    <div className="flex items-center">
       <Avatar>
         <AvatarImage src="https://github.com/shadcn.png" />
         <AvatarFallback>CN</AvatarFallback>
@@ -30,7 +30,7 @@ const PeopleCard: React.FC = () => {
           <p className="text-sm text-text-secondary-color">4 mutual friends</p>
         </div>
       </div>
-      <AddButton data="@stepanlogin" className="my-auto"></AddButton>
+      <AddButton data="@stepanlogin" className="my-auto "></AddButton>
     </div>
   );
 };

@@ -9,6 +9,7 @@ import People from "@/components/people/people";
 import DragDropPreview from "@/components/ui/dragdroppreview";
 import { Card } from "@/components/ui/card";
 import TopBar from "@/components/topbar/topbar";
+import PostCard from "@/components/card/card";
 
 export default function DragAndDrop() {
   return (

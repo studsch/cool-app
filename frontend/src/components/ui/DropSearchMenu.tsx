@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import { UserPlus } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { Input } from "./input";
+import People from "../people/people";
+import { Recent } from "../recent/recent";
+import Post from "../postsearch/postsearch";
 
 interface User {
   name: string;
@@ -47,6 +50,25 @@ const DropSearchMenu: React.FC = () => {
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [isActive, setIsActive] = useState<boolean>(false);
 
+  const dropdownRef = useRef<HTMLUListElement>(null);
+
+  const handleClickOutside = (e: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(e.target as Node)
+    ) {
+      setIsActive(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     setValue(inputValue);
@@ -54,89 +76,43 @@ const DropSearchMenu: React.FC = () => {
       user.name.toLowerCase().includes(inputValue.toLowerCase()),
     );
     setFilteredUsers(filtered);
-    setIsActive(true);
+    setIsActive(!!inputValue && filtered.length > 0);
+    // Появление по вводу и наличии результатов
   };
 
-  const handleBlur = () => {
-    setIsActive(false);
+  const handlePostClick = (name: string) => {
+    // Обработка клика по элементу Post
+    console.log(`Post clicked: ${name}`);
   };
 
   return (
     <div className="w-[450px] ml-4 mr-4 border-3 border-[#6A6A6A] rounded-lg">
-      <input
+      <Input
         className="w-full h-[30px]  rounded-lg"
         type="text"
         value={value}
         onChange={handleChange}
-        onBlur={handleBlur}
         placeholder="Search something here..."
       />
       {isActive && filteredUsers.length > 0 && (
-        <ul className="absolute mt-4 z-10 bg-white border-2 border-gray-300 rounded-lg shadow-md">
+        <ul
+          ref={dropdownRef}
+          className="absolute mt-4 z-10 bg-white border-2 border-gray-300 rounded-lg shadow-md"
+        >
           {/* Recent */}
-          <li className=" p-2">
-            <strong>Recent:</strong>
-            {users.map((user, index) => (
-              <div className="flex flex-row">
-                <div key={index} className="flex flex-col">
-                  <img
-                    src={user.photo}
-                    alt={user.name}
-                    className="w-[65px] h-[65px] rounded-full mr-2 content-center"
-                  />
-                  <span className="w-[65px] text-center">@{user.login}</span>
-                </div>
-              </div>
-            ))}
-          </li>
+          <Recent />
           {/* People */}
-          <li className=" p-2">
-            <strong>People:</strong>
-            {users.map((user, index) => (
-              <div key={index} className="flex items-center w-full">
-                <div className="flex justify-self-start">
-                  <div className="">
-                    <img
-                      src={user.photo}
-                      alt={user.name}
-                      className="w-[45px] h-[45px] rounded-full mb-2 mt-2 mr-2"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <span>{user.name}</span>
-                    <span className="ml-2">{user.subs} followers</span>
-                  </div>
-                </div>
-                <div className="justify-items-end">
-                  <UserPlus />
-                </div>
-              </div>
-            ))}
-          </li>
+          <People />
           {/* Photo */}
-          <li className=" p-2 mt-2 mb-2">
-            <strong>Photo:</strong>
-            {users.map((user, index) => (
-              <div key={index} className="flex items-center">
-                <img
-                  src={user.postphoto}
-                  alt={user.name}
-                  className="w-[64px] h-[65px] mr-2 mb-2 mt-2 rounded-lg"
-                />
-                <div className="flex flex-col">
-                  <span>{user.name}</span>
-                  <p className="ml-2 w-[400px] truncate">{user.descript}</p>
-                </div>
-                <div>
-                  <img
-                    src={user.photo}
-                    alt={user.name}
-                    className="w-[35px] h-[35px] rounded-full mb-2 mt-2 mr-2"
-                  />
-                </div>
-              </div>
-            ))}
-          </li>
+          {filteredUsers.map(user => (
+            <Post
+              key={user.login}
+              photo={user.postphoto}
+              name={user.name}
+              text={user.descript}
+              avatarImg={user.photo}
+            />
+          ))}
         </ul>
       )}
     </div>
