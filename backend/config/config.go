@@ -2,9 +2,10 @@ package config
 
 import (
 	"errors"
-	"github.com/spf13/viper"
 	"log"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 // Config app config struct
@@ -21,24 +22,24 @@ type ServerConfig struct {
 	Host        string
 	Port        string
 	Mode        string
-	ReadTimeout string // TODO: change to time.Duration
+	ReadTimeout time.Duration // TODO: change to time.Duration
 }
 
 // JWT json web tokens config
 type JWT struct {
 	SecretKey        string
-	SecretKeyExpire  time.Duration
 	RefreshKey       string
+	SecretKeyExpire  time.Duration
 	RefreshKeyExpire time.Duration
 }
 
 // Logger config
 type Logger struct {
+	Encoding          string
+	Level             string
 	Development       bool
 	DisableCaller     bool
 	DisableStacktrace bool
-	Encoding          string
-	Level             string
 }
 
 // PostgresConfig postgresql config

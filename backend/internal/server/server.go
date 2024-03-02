@@ -3,13 +3,13 @@ package server
 import (
 	"context"
 	"fmt"
-	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/studsch/cool-app/backend/pkg/logger"
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
 	"time"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/studsch/cool-app/backend/pkg/logger"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/studsch/cool-app/backend/config"
@@ -38,9 +38,8 @@ func NewServer(cfg *config.Config, db *pgxpool.Pool, logger logger.Logger) *Serv
 
 // Run Start server
 func (s *Server) Run() error {
-	readTimeout, _ := strconv.Atoi(s.cfg.Server.ReadTimeout)
 	s.fiber = fiber.New(fiber.Config{
-		ReadTimeout: time.Second * time.Duration(readTimeout),
+		ReadTimeout: time.Second * s.cfg.Server.ReadTimeout,
 	})
 
 	if err := s.MapHandlers(s.fiber); err != nil {
