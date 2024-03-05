@@ -7,6 +7,7 @@ import { Providers } from "@/components/providers/providers";
 // Иконки
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
+import Navbar from "@/components/nav-bar/nav-bar";
 config.autoAddCss = false;
 
 // шрифты
@@ -29,7 +30,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Providers>
-        <body className={notoSans.className}>{children}</body>
+        <body className={notoSans.className}>
+          <header></header>
+          <main></main>
+
+          {children}
+        </body>
       </Providers>
     </html>
   );

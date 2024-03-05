@@ -9,6 +9,8 @@ import People from "@/components/people/people";
 import DragDropPreview from "@/components/ui/dragdroppreview";
 import { Card } from "@/components/ui/card";
 import TopBar from "@/components/topbar/topbar";
+import Navbar from "@/components/nav-bar/nav-bar";
+import ToggleNavBar from "@/components/toggle-nav-menu/toggle-nav-menu";
 import PostCard from "@/components/card/card";
 
 export default function DragAndDrop() {
@@ -16,6 +18,7 @@ export default function DragAndDrop() {
     <>
       <div>
         <TopBar />
+        <ToggleNavBar></ToggleNavBar>
       </div>
     </>
   );
