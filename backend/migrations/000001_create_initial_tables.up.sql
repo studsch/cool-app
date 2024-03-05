@@ -55,3 +55,17 @@ CREATE TABLE comment
     created_at          TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     deleted             BOOLEAN                  DEFAULT FALSE
 );
+
+CREATE TABLE like_post
+(
+    id      UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    post_id UUID NOT NULL REFERENCES post (id) ON DELETE CASCADE
+);
+
+CREATE TABLE like_comment
+(
+    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id    UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    comment_id UUID NOT NULL REFERENCES comment (id) ON DELETE CASCADE
+);
