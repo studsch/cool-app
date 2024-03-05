@@ -41,7 +41,7 @@ func (r *likeRepo) UnlikeComment(ctx context.Context, like *models.LikeComment) 
 // GetPostLikeCount implements like.Repository.
 func (r *likeRepo) GetPostLikeCount(ctx context.Context, postID uuid.UUID) (uint, error) {
 	var postLikeCount uint
-	if err := r.db.QueryRow(ctx, getPostLikeCountQuery).Scan(&postLikeCount); err != nil {
+	if err := r.db.QueryRow(ctx, getPostLikeCountQuery, postID).Scan(&postLikeCount); err != nil {
 		return 0, errors.Wrap(err, "likeRepo.GetPostLikeCount.Scan")
 	}
 
