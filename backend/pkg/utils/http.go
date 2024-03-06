@@ -2,7 +2,11 @@ package utils
 
 import (
 	"context"
+	"mime/multipart"
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/pkg/errors"
 	"github.com/studsch/cool-app/backend/internal/models"
 	"github.com/studsch/cool-app/backend/pkg/httpErrors"
 	"github.com/studsch/cool-app/backend/pkg/logger"
@@ -34,6 +38,19 @@ func ReadRequest(c *fiber.Ctx, request interface{}) error {
 	return validate.StructCtx(c.Context(), request)
 }
 
+func ReadImage(c *fiber.Ctx, field string) (*multipart.FileHeader, error) {
+	image, err := c.FormFile(field)
+	if err != nil {
+		return nil, errors.WithMessage(err, "ctx.FromFile")
+	}
+
+	if err = CheckImageContentType(image); err != nil {
+		return nil, err
+	}
+
+	return image, nil
+}
+
 // LogResponseError Logging error response
 func LogResponseError(c *fiber.Ctx, logger logger.Logger, err error) {
 	logger.Errorf(
@@ -55,4 +72,27 @@ func GetUserFromCtx(ctx context.Context) (*models.User, error) {
 	}
 
 	return user, nil
+}
+
+var allowedImagesContentTypes = map[string]string{
+	"image/bmp":                "bmp",
+	"image/gif":                "gif",
+	"image/png":                "png",
+	"image/jpeg":               "jpeg",
+	"image/jpg":                "jpg",
+	"image/svg+xml":            "svg",
+	"image/webp":               "webp",
+	"image/tiff":               "tiff",
+	"image/vnd.microsoft.icon": "ico",
+}
+
+func CheckImageFileContentType(fileContent []byte) (string, error) {
+	contentType := http.DetectContentType(fileContent)
+
+	extension, ok := allowedImagesContentTypes[contentType]
+	if !ok {
+		return "", errors.New("this content type is not allowed")
+	}
+
+	return extension, nil
 }

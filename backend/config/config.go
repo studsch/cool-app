@@ -10,8 +10,9 @@ import (
 
 // Config app config struct
 type Config struct {
-	Server   ServerConfig
 	Postgres PostgresConfig
+	AWS      AWS
+	Server   ServerConfig
 	Logger   Logger
 	JWT      JWT
 }
@@ -22,7 +23,7 @@ type ServerConfig struct {
 	Host        string
 	Port        string
 	Mode        string
-	ReadTimeout time.Duration // TODO: change to time.Duration
+	ReadTimeout time.Duration
 }
 
 // JWT json web tokens config
@@ -50,6 +51,14 @@ type PostgresConfig struct {
 	Password string
 	DBName   string
 	SSLMode  string
+}
+
+type AWS struct {
+	Endpoint       string
+	MinioAccessKey string
+	MinioSecretKey string
+	MinioEndpoint  string
+	UseSSL         bool
 }
 
 // LoadConfig load config file from given path

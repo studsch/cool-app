@@ -1,13 +1,15 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"github.com/studsch/cool-app/backend/config"
 	"github.com/studsch/cool-app/backend/internal/server"
+	"github.com/studsch/cool-app/backend/pkg/db/aws"
 	"github.com/studsch/cool-app/backend/pkg/db/postgres"
 	"github.com/studsch/cool-app/backend/pkg/logger"
 	"github.com/studsch/cool-app/backend/pkg/utils"
-	"log"
-	"os"
 )
 
 func main() {
@@ -38,7 +40,13 @@ func main() {
 	}
 	defer psqlDB.Close()
 
-	s := server.NewServer(cfg, psqlDB, appLogger)
+	awsClient, err := aws.NewAWSClient(cfg.AWS.Endpoint, cfg.AWS.MinioAccessKey, cfg.AWS.MinioSecretKey, cfg.AWS.UseSSL)
+	if err != nil {
+		appLogger.Errorf("AWS Client init: %s", err)
+	}
+	appLogger.Info("AWS S3 connected")
+
+	s := server.NewServer(cfg, psqlDB, appLogger, awsClient)
 	if err := s.Run(); err != nil {
 		log.Fatal(err)
 	}

@@ -2,6 +2,7 @@ package http
 
 import (
 	"fmt"
+
 	"github.com/studsch/cool-app/backend/pkg/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -17,6 +18,7 @@ func MapAuthRoutes(
 	authGroup.Post("/login", h.Login())
 	authGroup.Use(mw.AuthJWTMiddleware())
 	authGroup.Post("/logout", h.Logout())
+	authGroup.Post("/avatar", h.UploadAvatar())
 	authGroup.Get("/health", func(c *fiber.Ctx) error {
 		q := c.Locals("user")
 		u, e := utils.GetUserFromCtx(c.UserContext())

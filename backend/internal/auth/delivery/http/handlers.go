@@ -1,15 +1,19 @@
 package http
 
 import (
+	"bytes"
 	"fmt"
+	"io"
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/studsch/cool-app/backend/config"
 	"github.com/studsch/cool-app/backend/internal/auth"
 	"github.com/studsch/cool-app/backend/internal/models"
 	"github.com/studsch/cool-app/backend/pkg/httpErrors"
 	"github.com/studsch/cool-app/backend/pkg/logger"
 	"github.com/studsch/cool-app/backend/pkg/utils"
-	"net/http"
 )
 
 // authHandlers Auth handlers
@@ -113,5 +117,66 @@ func (h *authHandlers) Logout() fiber.Handler {
 		// TODO: delete refresh token in redis
 
 		return c.SendStatus(fiber.StatusNoContent)
+	}
+}
+
+func (h *authHandlers) UploadAvatar() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		bucket := c.Query("bucket")
+		claims, err := utils.ExtractTokenMetadata(c, h.cfg)
+		if err != nil {
+			return c.Status(http.StatusUnauthorized).JSON(httpErrors.NewUnauthorizedError(httpErrors.Unauthorized))
+		}
+
+		uid, err := uuid.Parse(claims.ID)
+		if err != nil {
+			return c.Status(http.StatusUnauthorized).JSON(httpErrors.NewUnauthorizedError(httpErrors.Unauthorized))
+		}
+
+		image, err := utils.ReadImage(c, "file")
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		file, err := image.Open()
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+		defer file.Close()
+
+		binaryImage := bytes.NewBuffer(nil)
+		if _, err = io.Copy(binaryImage, file); err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		contentType, err := utils.CheckImageFileContentType(binaryImage.Bytes())
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		reader := bytes.NewReader(binaryImage.Bytes())
+
+		updatedUser, err := h.authUC.UploadAvatar(c.UserContext(), uid, models.UploadInput{
+			File:        reader,
+			Name:        image.Filename,
+			ContentType: contentType,
+			BucketName:  bucket,
+			Size:        image.Size,
+		})
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(updatedUser)
 	}
 }

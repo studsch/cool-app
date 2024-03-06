@@ -7,4 +7,5 @@ type Handlers interface {
 	Register() fiber.Handler
 	Login() fiber.Handler
 	Logout() fiber.Handler
+	UploadAvatar() fiber.Handler
 }

@@ -2,6 +2,9 @@ package usecase
 
 import (
 	"context"
+	"fmt"
+	"net/http"
+
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/studsch/cool-app/backend/config"
@@ -10,21 +13,22 @@ import (
 	"github.com/studsch/cool-app/backend/pkg/httpErrors"
 	"github.com/studsch/cool-app/backend/pkg/logger"
 	"github.com/studsch/cool-app/backend/pkg/utils"
-	"net/http"
 )
 
 // authUC Auth useCase
 type authUC struct {
 	cfg      *config.Config
 	authRepo auth.Repository
+	awsRepo  auth.AWSRepository
 	logger   logger.Logger
 }
 
 // NewAuthUC Auth useCase constructor
-func NewAuthUC(cfg *config.Config, authRepo auth.Repository, logger logger.Logger) auth.UseCase {
+func NewAuthUC(cfg *config.Config, authRepo auth.Repository, logger logger.Logger, awsRepo auth.AWSRepository) auth.UseCase {
 	return &authUC{
 		cfg:      cfg,
 		authRepo: authRepo,
+		awsRepo:  awsRepo,
 		logger:   logger,
 	}
 }
@@ -110,4 +114,35 @@ func (u *authUC) Login(ctx context.Context, user *models.User) (*models.UserWith
 		AccessToken:  tokens.Access,
 		RefreshToken: tokens.Refresh,
 	}, nil
+}
+
+func (u *authUC) UploadAvatar(ctx context.Context, userID uuid.UUID, file models.UploadInput) (*models.User, error) {
+	uploadInfo, err := u.awsRepo.PutObject(ctx, file)
+	if err != nil {
+		return nil, httpErrors.NewInternalServerError(errors.Wrap(err, "authUC.UploadAvatar.PutObject"))
+	}
+
+	avatarURL := u.generateAWSMinioURL(file.BucketName, uploadInfo.Key)
+
+	updatedUser, err := u.authRepo.Update(ctx, &models.User{
+		ID:     userID,
+		Avatar: &avatarURL,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	updatedUser.SanitizePassword()
+
+	return updatedUser, nil
+}
+
+func (u *authUC) generateAWSMinioURL(bucket string, key string) string {
+	url, err := u.awsRepo.GenerateAWSMinioURL(context.Background(), bucket, key)
+	if err != nil {
+		return ""
+	}
+	fmt.Println("Generated presigned URL", url)
+
+	return fmt.Sprintf("%s/%s/%s", u.cfg.AWS.MinioEndpoint, bucket, key)
 }

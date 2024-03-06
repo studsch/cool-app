@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+
 	"github.com/google/uuid"
 	"github.com/studsch/cool-app/backend/internal/models"
 )
@@ -11,4 +12,5 @@ type UseCase interface {
 	Register(ctx context.Context, user *models.User) (*models.UserWithTokens, error)
 	GetByID(ctx context.Context, userID uuid.UUID) (*models.User, error)
 	Login(ctx context.Context, user *models.User) (*models.UserWithTokens, error)
+	UploadAvatar(ctx context.Context, userID uuid.UUID, file models.UploadInput) (*models.User, error)
 }

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/minio/minio-go/v7"
 	"github.com/studsch/cool-app/backend/pkg/logger"
 
 	"github.com/gofiber/fiber/v2"
@@ -21,18 +22,20 @@ const (
 
 // Server struct
 type Server struct {
-	fiber  *fiber.App
-	cfg    *config.Config
-	db     *pgxpool.Pool
-	logger logger.Logger
+	fiber     *fiber.App
+	cfg       *config.Config
+	db        *pgxpool.Pool
+	logger    logger.Logger
+	awsClient *minio.Client
 }
 
 // NewServer New server constructor
-func NewServer(cfg *config.Config, db *pgxpool.Pool, logger logger.Logger) *Server {
+func NewServer(cfg *config.Config, db *pgxpool.Pool, logger logger.Logger, awsS3Client *minio.Client) *Server {
 	return &Server{
-		cfg:    cfg,
-		db:     db,
-		logger: logger,
+		cfg:       cfg,
+		db:        db,
+		logger:    logger,
+		awsClient: awsS3Client,
 	}
 }
 

@@ -40,4 +40,24 @@ SELECT
 FROM users
 WHERE id = $1
 `
+	updateUserQuery = `
+UPDATE users
+	SET first_name = COALESCE(NULLIF($1, ''), first_name),
+	last_name = COALESCE(NULLIF($2, ''), last_name),
+	login = COALESCE(NULLIF($3, ''), login),
+	password = COALESCE(NULLIF($4, ''), password),
+	phone_number = COALESCE(NULLIF($5, ''), phone_number),
+    role = COALESCE(NULLIF($6, ''), role),
+	avatar = COALESCE(NULLIF($7, ''), avatar),
+	gender = COALESCE(NULLIF($8, ''), gender),
+	about = COALESCE(NULLIF($9, ''), about),
+	city = COALESCE(NULLIF($10, ''), city),
+    country = COALESCE(NULLIF($11, ''), country),
+	updated_at = NOW()
+WHERE id = $12
+RETURNING
+	(id, first_name, last_name, login, password,
+	phone_number, role, avatar, gender, about,
+	city, country, birthday, created_at, updated_at)
+`
 )

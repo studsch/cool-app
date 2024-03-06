@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pkg/errors"
@@ -58,4 +59,18 @@ func (r *authRepo) GetByID(ctx context.Context, userID uuid.UUID) (*models.User,
 		return nil, errors.Wrap(err, "authRepo.GetByID.Scan")
 	}
 	return user, nil
+}
+
+func (r *authRepo) Update(ctx context.Context, user *models.User) (*models.User, error) {
+	u := &models.User{}
+	if err := r.db.QueryRow(ctx, updateUserQuery,
+		&user.FirstName, &user.LastName, &user.Login, &user.Password,
+		&user.PhoneNumber, &user.Role, &user.Avatar, &user.Gender,
+		&user.About, &user.City, &user.Country,
+		&user.ID,
+	).Scan(&u); err != nil {
+		return nil, errors.Wrap(err, "authRepo.Update.Scan")
+	}
+
+	return u, nil
 }
