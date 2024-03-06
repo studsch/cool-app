@@ -12,6 +12,7 @@ import TopBar from "@/components/topbar/topbar";
 import Navbar from "@/components/nav-bar/nav-bar";
 import ToggleNavBar from "@/components/toggle-nav-menu/toggle-nav-menu";
 import PostCard from "@/components/card/card";
+import MyContacts from "@/components/my-contacts/my-contacts";
 
 export default function DragAndDrop() {
   return (
@@ -19,6 +20,7 @@ export default function DragAndDrop() {
       <div>
         <TopBar />
         <ToggleNavBar></ToggleNavBar>
+        <MyContacts></MyContacts>
       </div>
     </>
   );
