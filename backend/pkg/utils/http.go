@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"fmt"
 	"mime/multipart"
 	"net/http"
 
@@ -88,11 +89,13 @@ var allowedImagesContentTypes = map[string]string{
 
 func CheckImageFileContentType(fileContent []byte) (string, error) {
 	contentType := http.DetectContentType(fileContent)
+	fmt.Println("contentType", contentType)
 
 	extension, ok := allowedImagesContentTypes[contentType]
 	if !ok {
 		return "", errors.New("this content type is not allowed")
 	}
+	fmt.Println(extension)
 
-	return extension, nil
+	return contentType, nil
 }
