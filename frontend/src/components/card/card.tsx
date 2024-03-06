@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { DatePickerWithRange } from "@/components/daterangecalendar/daterangecalendar";
 import {
   Select,
@@ -71,6 +71,16 @@ import { Bookmark } from "lucide-react";
 import { AutoComplete } from "@/components/autocomplete/autocomplete";
 
 export default function PostCard() {
+  const [isLiked, setIsLiked] = useState(false);
+  const handleLikeClick = () => {
+    setIsLiked(!isLiked);
+  };
+
+  const [isSaved, setIsSaved] = useState(false);
+  const handleSaveClick = () => {
+    setIsSaved(!isSaved);
+  };
+
   return (
     <div className="grid place-content-center">
       <span className="align-middle">
@@ -107,11 +117,14 @@ export default function PostCard() {
             </div>
           </CardContent>
           <CardFooter>
-            <div className="flex justify-between">
-              <Button variant="ghost">
+            <div className="flex justify-between w-full">
+              <Button variant="ghost" onClick={handleLikeClick}>
                 <div className="flex">
                   <div className="grid place-content-left">
-                    <Heart />
+                    <Heart
+                      color={isLiked ? "#FF60A3" : "black"}
+                      fill={isLiked ? "#FF60A3" : "white"}
+                    />
                   </div>
                   <div className="pl-2 grid place-content-left">
                     <div className="text-black">Like</div>
@@ -138,10 +151,10 @@ export default function PostCard() {
                   </div>
                 </div>
               </Button>
-              <Button variant="ghost">
+              <Button variant="ghost" onClick={handleSaveClick}>
                 <div className="flex">
                   <div className="grid place-content-left">
-                    <Bookmark />
+                    <Bookmark color={isSaved ? "#FF60A3" : "black"} />
                   </div>
                   <div className="pl-2 grid place-content-left">
                     <div className="text-black">Save</div>
