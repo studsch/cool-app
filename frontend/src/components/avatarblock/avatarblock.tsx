@@ -12,7 +12,6 @@ type Props = {
 };
 
 export default function AvatarBlock(props: Props) {
-  console.log(props);
   const {
     src = "https://github.com/shadcn.png",
     title = "Morty Sanches",
@@ -20,7 +19,6 @@ export default function AvatarBlock(props: Props) {
     classNames = { img: "", title: "", subtitile: "" },
     ...restProps
   } = props;
-  console.log(props);
   return (
     <div className="flex items-center">
       <div className="grid place-content-center">
