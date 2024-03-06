@@ -35,7 +35,6 @@ func (aws *authAWSRepository) GenerateAWSMinioURL(ctx context.Context, bucket st
 	if err != nil {
 		return nil, errors.Wrap(err, "authAWSRepository.GenerateAWSMinioURL.PresignedGetObject")
 	}
-	fmt.Println("Successfully generated presigned URL", presignedURL)
 	return presignedURL, nil
 }
 
