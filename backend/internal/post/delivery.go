@@ -11,4 +11,6 @@ type Handlers interface {
 	GetPosts() fiber.Handler
 	GetByID() fiber.Handler
 	GetByUserID() fiber.Handler
+	UploadImages() fiber.Handler
+	GetImageURL() fiber.Handler
 }

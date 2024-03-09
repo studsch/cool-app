@@ -1,6 +1,9 @@
 package http
 
 import (
+	"bytes"
+	"io"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/studsch/cool-app/backend/config"
@@ -16,6 +19,88 @@ type postHandlers struct {
 	cfg    *config.Config
 	postUC post.UseCase
 	logger logger.Logger
+}
+
+// GetImageURL implements post.Handlers.
+func (h *postHandlers) GetImageURL() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		bucket := c.Params("bucket")
+		key := c.Params("key")
+
+		imageURL, err := h.postUC.GetImageURL(c.UserContext(), bucket, key)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).SendString(imageURL)
+	}
+}
+
+// UploadImages implements post.Handlers.
+func (h *postHandlers) UploadImages() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		postID, err := uuid.Parse(c.Params("id"))
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		bucket := c.Query("bucket")
+
+		images, err := utils.ReadImages(c, "file")
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		var files []models.UploadInput
+		for _, image := range images {
+			file, err := image.Open()
+			if err != nil {
+				utils.LogResponseError(c, h.logger, err)
+				status, msg := httpErrors.ErrorResponse(err)
+				return c.Status(status).JSON(msg)
+			}
+			defer file.Close()
+
+			binaryImage := bytes.NewBuffer(nil)
+			if _, err = io.Copy(binaryImage, file); err != nil {
+				utils.LogResponseError(c, h.logger, err)
+				status, msg := httpErrors.ErrorResponse(err)
+				return c.Status(status).JSON(msg)
+			}
+
+			contentType, err := utils.CheckImageFileContentType(binaryImage.Bytes())
+			if err != nil {
+				utils.LogResponseError(c, h.logger, err)
+				status, msg := httpErrors.ErrorResponse(err)
+				return c.Status(status).JSON(msg)
+			}
+
+			reader := bytes.NewReader(binaryImage.Bytes())
+
+			files = append(files, models.UploadInput{
+				File:        reader,
+				Name:        image.Filename,
+				ContentType: contentType,
+				BucketName:  bucket,
+				Size:        image.Size,
+			})
+		}
+
+		updatedPost, err := h.postUC.UploadImages(c.UserContext(), postID, files)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(updatedPost)
+	}
 }
 
 // NewPostHandlers Post handlers constructor

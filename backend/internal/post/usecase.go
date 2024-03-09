@@ -2,6 +2,7 @@ package post
 
 import (
 	"context"
+
 	"github.com/google/uuid"
 	"github.com/studsch/cool-app/backend/internal/models"
 	"github.com/studsch/cool-app/backend/pkg/utils"
@@ -16,4 +17,6 @@ type UseCase interface {
 	GetPosts(ctx context.Context, pq *utils.PaginationQuery) (*models.PostList, error)
 	GetByID(ctx context.Context, postID uuid.UUID) (*models.PostBase, error)
 	GetByUserID(ctx context.Context, userID uuid.UUID, pq *utils.PaginationQuery) (*models.PostList, error)
+	UploadImages(ctx context.Context, postID uuid.UUID, files []models.UploadInput) (*models.Post, error)
+	GetImageURL(ctx context.Context, bucket, key string) (string, error)
 }

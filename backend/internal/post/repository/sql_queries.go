@@ -15,11 +15,13 @@ INSERT INTO post(
 `
 	updatePostQuery = `
 UPDATE post
-SET description=$1, location=$2, image_urls=$3
-WHERE id=$4 AND deleted=FALSE AND archived=FALSE
+	SET description = COALESCE(NULLIF($1, ''), description),
+	location = COALESCE(NULLIF($2, ''), location),
+	image_urls = $3
+WHERE id = $4 AND deleted=FALSE AND archived=FALSE
 RETURNING (
 	id, user_id, description, location, created_at,
-    image_urls, archived, deleted
+	image_urls, archived, deleted
 )
 `
 	archivePostQuery = `

@@ -49,7 +49,6 @@ func (aws *authAWSRepository) PutObject(ctx context.Context, input models.Upload
 	if err != nil {
 		return nil, errors.Wrap(err, "authAWSRepository.FileUpload.PutObject")
 	}
-	fmt.Println(uploadInfo)
 
 	return &uploadInfo, err
 }

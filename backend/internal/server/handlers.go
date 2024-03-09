@@ -26,10 +26,11 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	commRepo := commRepository.NewCommentRepository(s.db)
 	likeRepo := likeRepository.NewLikeRepository(s.db)
 	authAWSRepo := authRepository.NewAuthAWSRepository(s.awsClient)
+	postAWSRepo := postRepository.NewPostAWSRepository(s.awsClient)
 
 	// Init useCases
 	authUC := authUseCase.NewAuthUC(s.cfg, authRepo, s.logger, authAWSRepo)
-	postUC := postUseCase.NewPostUC(s.cfg, postRepo, s.logger)
+	postUC := postUseCase.NewPostUC(s.cfg, postRepo, s.logger, postAWSRepo)
 	commUC := commUseCase.NewCommentUC(s.cfg, commRepo, s.logger)
 	likeUC := likeUseCase.NewLikeUC(s.cfg, likeRepo, s.logger)
 

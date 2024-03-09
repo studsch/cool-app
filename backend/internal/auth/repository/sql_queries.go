@@ -1,6 +1,5 @@
 package repository
 
-// TODO: add queries
 const (
 	createUserQuery = `
 INSERT INTO users(

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pkg/errors"
@@ -99,7 +100,7 @@ func (r *postRepo) GetPosts(ctx context.Context, pq *utils.PaginationQuery) (*mo
 		}, nil
 	}
 
-	var postsList = make([]*models.Post, 0, pq.GetSize())
+	postsList := make([]*models.Post, 0, pq.GetSize())
 	rows, err := r.db.Query(ctx, getPostsQuery, pq.GetOffset(), pq.GetLimit())
 	if err != nil {
 		return nil, errors.Wrap(err, "postRepo.GetPots.Query")
@@ -146,7 +147,7 @@ func (r *postRepo) GetByUserID(ctx context.Context, userID uuid.UUID, pq *utils.
 		}, nil
 	}
 
-	var postsList = make([]*models.Post, 0, pq.GetSize())
+	postsList := make([]*models.Post, 0, pq.GetSize())
 	rows, err := r.db.Query(ctx, getByUserIdQuery, userID, pq.GetOffset(), pq.GetLimit())
 	if err != nil {
 		return nil, errors.Wrap(err, "postRepo.GetByUserID.Query")

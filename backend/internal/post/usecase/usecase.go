@@ -2,6 +2,9 @@ package usecase
 
 import (
 	"context"
+	"fmt"
+	"net/http"
+
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/studsch/cool-app/backend/config"
@@ -10,21 +13,69 @@ import (
 	"github.com/studsch/cool-app/backend/pkg/httpErrors"
 	"github.com/studsch/cool-app/backend/pkg/logger"
 	"github.com/studsch/cool-app/backend/pkg/utils"
-	"net/http"
 )
 
 // postUC Post useCase
 type postUC struct {
 	cfg      *config.Config
 	postRepo post.Repository
+	awsRepo  post.AWSRepository
 	logger   logger.Logger
 }
 
+// GetImagesURLs implements post.UseCase.
+func (u *postUC) GetImageURL(ctx context.Context, bucket, key string) (string, error) {
+	imageURL, err := u.awsRepo.GetAWSMinioURL(ctx, bucket, key)
+	if err != nil {
+		return "", err
+	}
+
+	fmt.Println(imageURL)
+
+	return fmt.Sprintf("%s/%s/%s", u.cfg.AWS.MinioEndpoint, bucket, key), nil
+}
+
+// UploadImage implements post.UseCase.
+func (u *postUC) UploadImages(ctx context.Context, postID uuid.UUID, files []models.UploadInput) (*models.Post, error) {
+	postByID, err := u.postRepo.GetByID(ctx, postID)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = utils.ValidateIsOwner(ctx, postByID.UserID.String(), u.logger); err != nil {
+		return nil, httpErrors.NewRestError(http.StatusForbidden, "Forbidden", errors.Wrap(err, "postUC.Update.ValidateIsOwner"))
+	}
+
+	var imageURLs []string
+	for _, f := range files {
+		uploadInfo, err := u.awsRepo.PutObject(ctx, f)
+		if err != nil {
+			return nil, httpErrors.NewInternalServerError(errors.Wrap(err, "postUC.UploadImage.PutObject"))
+		}
+
+		imageInfo := fmt.Sprintf("%s/%s", f.BucketName, uploadInfo.Key)
+		imageURLs = append(imageURLs, imageInfo)
+	}
+
+	updatedPost, err := u.postRepo.Update(ctx, &models.Post{
+		ID:          postID,
+		Description: postByID.Description,
+		Location:    postByID.Location,
+		ImageURLs:   imageURLs,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedPost, nil
+}
+
 // NewPostUC Post useCase constructor
-func NewPostUC(cfg *config.Config, postRepo post.Repository, logger logger.Logger) post.UseCase {
+func NewPostUC(cfg *config.Config, postRepo post.Repository, logger logger.Logger, awsRepo post.AWSRepository) post.UseCase {
 	return &postUC{
 		cfg:      cfg,
 		postRepo: postRepo,
+		awsRepo:  awsRepo,
 		logger:   logger,
 	}
 }
@@ -60,6 +111,7 @@ func (u *postUC) Update(ctx context.Context, post *models.Post) (*models.Post, e
 	if err = utils.ValidateIsOwner(ctx, postByID.UserID.String(), u.logger); err != nil {
 		return nil, httpErrors.NewRestError(http.StatusForbidden, "Forbidden", errors.Wrap(err, "postUC.Update.ValidateIsOwner"))
 	}
+	post.ImageURLs = postByID.ImageURLs
 
 	updatedPost, err := u.postRepo.Update(ctx, post)
 	if err != nil {

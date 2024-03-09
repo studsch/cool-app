@@ -51,6 +51,22 @@ func ReadImage(c *fiber.Ctx, field string) (*multipart.FileHeader, error) {
 	return image, nil
 }
 
+func ReadImages(c *fiber.Ctx, field string) ([]*multipart.FileHeader, error) {
+	form, err := c.MultipartForm()
+	if err != nil {
+		return nil, errors.WithMessage(err, "ctx.MultipartForm")
+	}
+
+	files := form.File["file"]
+	for _, file := range files {
+		if err = CheckImageContentType(file); err != nil {
+			return nil, err
+		}
+	}
+
+	return files, nil
+}
+
 // LogResponseError Logging error response
 func LogResponseError(c *fiber.Ctx, logger logger.Logger, err error) {
 	logger.Errorf(
