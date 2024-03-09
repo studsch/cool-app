@@ -10,7 +10,7 @@ interface PostProps {
 const Post: React.FC<PostProps> = ({ photo, name, text, avatarImg }) => {
   return (
     <div className="mx-4 mb-6">
-      <p className="text-lg font-medium text-text-primary-color my-4">Posts</p>
+      {/* <p className="text-lg font-medium text-text-primary-color my-4"></p> */}
       <div className="flex">
         <div className="mr-4">
           <img

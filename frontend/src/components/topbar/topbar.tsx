@@ -8,11 +8,11 @@ import MemoriesSign from "../memories-sign/memoriesSign";
 
 export default function TopBar() {
   return (
-    <div className="h-[90px] flex ml-[270px] mr-[270px] border-2 rounded-lg overflow-hidden">
+    <div className="h-[90px] flex ml-[10%] mr-[10%] border-2 rounded-lg overflow-hidden">
       <div className="flex-initial w-[408px] items-center grid place-content-center">
         <MemoriesSign className="ml-4" />
       </div>
-      <div className="w-full flex items-center">
+      <div className="w-full flex items-center mr-4">
         <UserDropdown />
         <Bookmark color="#6A6A6A" size={38} />
       </div>
