@@ -28,12 +28,13 @@ export default function AvatarBlock(props: Props) {
         </Avatar>
       </div>
       <div className="flex-col">
-        <div className="pl-4 grid place-content-left">
-          <div className="text-black">{title}</div>
-        </div>
-        <div className="pl-4 grid place-content-left">
-          <div className="text-slate-400">{subtitle}</div>
-        </div>
+        <p className="pl-4 text-sm font-medium text-text-reg-secondary-color">
+          {title}
+        </p>
+
+        <p className="pl-4 text-sm font-medium text-text-secondary-color">
+          {subtitle}
+        </p>
       </div>
     </div>
   );

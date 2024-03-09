@@ -23,7 +23,11 @@ const Navbar: React.FC<Props | any> = props => {
       const prevEl = document.querySelector('a[href="/' + lastUrl + '"]');
       prevEl?.toggleAttribute("current");
       el?.setAttribute("current", "on");
-      if (el?.getAttribute("href")?.slice(1) != lastUrl && lastUrl != "")
+      if (
+        el?.getAttribute("href")?.slice(1) != lastUrl &&
+        lastUrl != "" &&
+        typeof props.setOpen !== "undefined"
+      )
         props.setOpen(false);
       setLastUrl(el?.getAttribute("href")?.slice(1) as string);
     }
