@@ -14,11 +14,12 @@ module.exports = {
     container: {
       center: true,
       padding: "1rem",
-      screens: {
-        "2xl": "1400px",
-      },
     },
     extend: {
+      screens: {
+        "3xl": "1920px",
+        "4xl": "2440px",
+      },
       boxShadow: {
         "3xl": "0px 10px 50px 15px rgba(0, 0, 0, 0.1)",
       },

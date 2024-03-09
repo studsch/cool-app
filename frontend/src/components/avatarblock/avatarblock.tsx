@@ -1,35 +1,60 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-interface AvatarBlockProps {
-  avatarPosition: "left" | "right";
-}
+type Props = {
+  className?: string;
+  src?: string;
+  title?: string;
+  subtitle?: string;
+  fallback?: string;
+  classNames?: { img?: string; title?: string; subtitle?: string };
+  avatarPosition?: "left" | "right" | "other";
+};
 
-export default function AvatarBlock({ avatarPosition }: AvatarBlockProps) {
+export default function AvatarBlock(props: Props) {
+  const {
+    src = "https://github.com/shadcn.png",
+    title = "Morty Sanches",
+    subtitle = "14 September",
+    classNames = { img: "", title: "", subtitle: "" },
+    avatarPosition = "left",
+    ...restProps
+  } = props;
+
   return (
     <div className="flex items-center">
-      {avatarPosition === "left" && (
-        <div className="grid place-content-center">
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
+      {avatarPosition === "right" && (
+        <div className="grid place-content-center mb-4 mt-4 mr-4 ml-4">
+          <Avatar className={classNames?.img}>
+            <AvatarImage src={src} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </div>
       )}
 
       <div className="flex-col">
-        <div className="pl-4 pr-4 grid place-content-left">
-          <div className="text-black">Morty Sanches</div>
-        </div>
-        <div className="pl-4 pr-4 grid place-content-left">
-          <div className="text-slate-400">14 September</div>
-        </div>
+        <p className={`pl-4 pr-4 text-sm font-medium ${classNames.title}`}>
+          {title}
+        </p>
+
+        <p className={`pl-4 pr-4 text-sm font-medium ${classNames.subtitle}`}>
+          {subtitle}
+        </p>
       </div>
 
-      {avatarPosition === "right" && (
-        <div className="grid place-content-left">
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
+      {avatarPosition === "left" && (
+        <div className="grid place-content-center mb-4 mt-4 mr-4 ml-4">
+          <Avatar className={classNames?.img}>
+            <AvatarImage src={src} />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </div>
+      )}
+
+      {avatarPosition === "other" && (
+        <div className="grid place-content-center">
+          <Avatar className={classNames?.img}>
+            <AvatarImage src={src} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </div>

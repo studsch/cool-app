@@ -1,0 +1,26 @@
+
+
+a {
+    color: #6a6a6a;
+    svg {
+        height: 24px;
+        width: 24px;
+
+    }
+    &:hover {
+        transition: all 0.4s ease-in-out;
+        path {
+            transition: all 0.4s ease-in-out;
+            fill: #ff60a3;
+
+        }
+        color: #ff60a3; 
+    }
+    &[current="on"] {
+        color: #ff60a3; 
+        path {
+            fill: #ff60a3;
+
+        }
+    }
+}

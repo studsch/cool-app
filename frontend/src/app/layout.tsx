@@ -7,6 +7,7 @@ import { Providers } from "@/components/providers/providers";
 // Иконки
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
+import Navbar from "@/components/nav-bar/nav-bar";
 config.autoAddCss = false;
 
 // шрифты

@@ -5,14 +5,17 @@ import UserDropdown from "../ui/DropSearchMenu";
 import { Bookmark } from "lucide-react";
 import Button from "../ui/button/Button";
 import MemoriesSign from "../memories-sign/memoriesSign";
+import ToggleNavBar from "../toggle-nav-menu/toggle-nav-menu";
+import { useResize } from "@/hooks/screens";
 
 export default function TopBar() {
+  const width = useResize();
   return (
-    <div className="h-[90px] flex ml-[270px] mr-[270px] border-2 rounded-lg overflow-hidden">
+    <div className="h-[90px] flex ml-[10%] mr-[10%] border-2 rounded-lg overflow-hidden">
       <div className="flex-initial w-[408px] items-center grid place-content-center">
-        <MemoriesSign className="ml-4" />
+        {width >= 768 ? <MemoriesSign className="ml-4" /> : <ToggleNavBar />}
       </div>
-      <div className="w-full flex items-center">
+      <div className="w-full flex items-center mr-4">
         <UserDropdown />
         <Bookmark color="#6A6A6A" size={38} />
       </div>
