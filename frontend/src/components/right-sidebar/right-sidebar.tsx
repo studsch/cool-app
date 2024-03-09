@@ -10,6 +10,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
 import Link from "next/link";
+import AvatarBlock from "../avatarblock/avatarblock";
 
 export interface ProfileInfo {
   avatarImage: string;
@@ -20,44 +21,43 @@ export interface ProfileInfo {
 
 interface SidebarProps {
   items: ProfileInfo[];
+  className?: string;
 }
 
-export function RightSidebar({ items }: SidebarProps) {
+export function RightSidebar({ items, className }: SidebarProps) {
   const [expanded, setExpanded] = useState(false);
   const itemsForDisplay = expanded ? items : items.slice(0, 3);
   return (
-    <Card className="w-[350px]">
-      <CardHeader className="p-3">
-        <CardTitle>Who to Follow</CardTitle>
+    <Card className={`border-none shadow-none ${className}`}>
+      <CardHeader className="p-0">
+        <CardTitle className="text-text-primary-color text-base">
+          Who to Follow
+        </CardTitle>
       </CardHeader>
-      <div className="shrink-0 bg-border h-[1px] w-full" />
-      <CardContent className="grid gap-3 p-3">
+      <CardContent className="grid gap-3 p-0">
+        <div className="shrink-0 bg-[#F9F9F9] w-full  h-[1px]" />
         {itemsForDisplay.map((item: ProfileInfo, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-between space-x-4"
-          >
-            <div className="flex items-center space-x-4">
-              <Avatar>
-                <AvatarImage src={item.avatarImage} />
-                <AvatarFallback>{item.avatarFallback}</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium leading-none">{item.name}</p>
-                <Link
-                  href={`/profile/${item.link}`}
-                  className="hover:underline cursor-pointer text-sm text-muted-foreground"
-                >
-                  {item.link}
-                </Link>
-              </div>
+          <div key={index}>
+            <div className="flex items-center justify-between space-x-4 pb-3">
+              <AvatarBlock
+                key={index}
+                src={item.avatarImage}
+                fallback={item.avatarFallback}
+                title={item.name}
+                subtitle={item.link}
+                avatarPosition="other"
+              />
             </div>
+            <div className="shrink-0 bg-[#F9F9F9] w-full  h-[1px]" />
           </div>
         ))}
       </CardContent>
-      <div className="shrink-0 bg-border h-[1px] w-full" />
       <CardFooter className="p-0">
-        <Button variant="link" onClick={() => setExpanded(!expanded)}>
+        <Button
+          variant="link"
+          onClick={() => setExpanded(!expanded)}
+          className="p-0 h-3"
+        >
           {expanded ? "Show Less" : "Show More"}
         </Button>
       </CardFooter>
