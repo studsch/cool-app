@@ -1,9 +1,12 @@
+import TopBar from "@/components/topbar/topbar";
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <header></header>
-      <main></main>
-      {children}
+      <header>
+        <TopBar></TopBar>
+      </header>
+      <main>{children}</main>
     </>
   );
 }

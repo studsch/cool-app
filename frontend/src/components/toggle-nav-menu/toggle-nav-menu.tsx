@@ -1,3 +1,4 @@
+"use client";
 import {
   Dialog,
   DialogContent,
@@ -10,15 +11,17 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../nav-bar/nav-bar";
+import { useState } from "react";
 
 type Props = {
   className?: string;
 };
 
 const ToggleNavBar: React.FC<Props | any> = props => {
+  const [open, setOpen] = useState(false);
   return (
     <>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger>
           <FontAwesomeIcon icon={faBars} className="text-text-primary-color" />
         </DialogTrigger>
@@ -29,8 +32,8 @@ const ToggleNavBar: React.FC<Props | any> = props => {
                 Memories
               </Link>
             </DialogTitle>
-            <DialogDescription>
-              <Navbar></Navbar>
+            <DialogDescription asChild>
+              <Navbar open={open} setOpen={setOpen}></Navbar>
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
