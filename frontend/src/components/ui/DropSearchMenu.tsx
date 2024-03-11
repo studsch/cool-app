@@ -105,7 +105,9 @@ const DropSearchMenu: React.FC = () => {
           <People />
           {/* Photo */}
           <div className="mx-4 mb-6">
-          <p className="text-lg font-medium text-text-primary-color my-4">Posts</p>
+            <p className="text-lg font-medium text-text-primary-color my-4">
+              Posts
+            </p>
           </div>
           {users.slice(0, 3).map(user => (
             <Post

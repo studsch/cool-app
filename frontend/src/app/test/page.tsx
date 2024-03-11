@@ -7,23 +7,20 @@ import MutualFriends from "@/components/mutual-friends/mutual-friends";
 import users from "@/test_data/people/users"; // для теста общих друзей
 import People from "@/components/people/people";
 import DragDropPreview from "@/components/ui/dragdroppreview";
-import { Card } from "@/components/ui/card";
 import TopBar from "@/components/topbar/topbar";
 import Navbar from "@/components/nav-bar/nav-bar";
 import ToggleNavBar from "@/components/toggle-nav-menu/toggle-nav-menu";
 import PostCard from "@/components/card/card";
 import MyContacts from "@/components/my-contacts/my-contacts";
 import AvatarBlock from "@/components/avatarblock/avatarblock";
+import { Card } from "@/components/ui/card";
 
 export default function DragAndDrop() {
   return (
     <>
       <div>
         <TopBar />
-        <ToggleNavBar></ToggleNavBar>
-        <MyContacts></MyContacts>
-        <AvatarBlock avatarPosition="left" className="pb-4 pt-4" />
-        <AvatarBlock avatarPosition="right" className="pb-4 pt-4" />
+        <PostCard />
       </div>
     </>
   );

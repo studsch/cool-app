@@ -70,6 +70,12 @@ import { Share2 } from "lucide-react";
 import { Bookmark } from "lucide-react";
 import { AutoComplete } from "@/components/autocomplete/autocomplete";
 
+interface Comment {
+  name: string;
+  photo: string;
+  comment: string;
+}
+
 export default function PostCard() {
   const [isLiked, setIsLiked] = useState(false);
   const handleLikeClick = () => {
@@ -117,50 +123,53 @@ export default function PostCard() {
             </div>
           </CardContent>
           <CardFooter>
-            <div className="flex justify-between w-full">
-              <Button variant="ghost" onClick={handleLikeClick}>
-                <div className="flex">
-                  <div className="grid place-content-left">
-                    <Heart
-                      color={isLiked ? "#FF60A3" : "black"}
-                      fill={isLiked ? "#FF60A3" : "white"}
-                    />
+            <div className="grid w-full">
+              <div className="flex justify-between w-full">
+                <Button variant="ghost" onClick={handleLikeClick}>
+                  <div className="flex">
+                    <div className="grid place-content-left">
+                      <Heart
+                        color={isLiked ? "#FF60A3" : "black"}
+                        fill={isLiked ? "#FF60A3" : "white"}
+                      />
+                    </div>
+                    <div className="pl-2 grid place-content-left">
+                      <div className="text-black">Like</div>
+                    </div>
                   </div>
-                  <div className="pl-2 grid place-content-left">
-                    <div className="text-black">Like</div>
+                </Button>
+                <Button variant="ghost">
+                  <div className="flex">
+                    <div className="grid place-content-left">
+                      <MessageCircle />
+                    </div>
+                    <div className="pl-2 grid place-content-left">
+                      <div className="text-black">Comment</div>
+                    </div>
                   </div>
-                </div>
-              </Button>
-              <Button variant="ghost">
-                <div className="flex">
-                  <div className="grid place-content-left">
-                    <MessageCircle />
+                </Button>
+                <Button variant="ghost">
+                  <div className="flex">
+                    <div className="grid place-content-left">
+                      <Share2 />
+                    </div>
+                    <div className="pl-2 grid place-content-left">
+                      <div className="text-black">Share</div>
+                    </div>
                   </div>
-                  <div className="pl-2 grid place-content-left">
-                    <div className="text-black">Comment</div>
+                </Button>
+                <Button variant="ghost" onClick={handleSaveClick}>
+                  <div className="flex">
+                    <div className="grid place-content-left">
+                      <Bookmark color={isSaved ? "#FF60A3" : "black"} />
+                    </div>
+                    <div className="pl-2 grid place-content-left">
+                      <div className="text-black">Save</div>
+                    </div>
                   </div>
-                </div>
-              </Button>
-              <Button variant="ghost">
-                <div className="flex">
-                  <div className="grid place-content-left">
-                    <Share2 />
-                  </div>
-                  <div className="pl-2 grid place-content-left">
-                    <div className="text-black">Share</div>
-                  </div>
-                </div>
-              </Button>
-              <Button variant="ghost" onClick={handleSaveClick}>
-                <div className="flex">
-                  <div className="grid place-content-left">
-                    <Bookmark color={isSaved ? "#FF60A3" : "black"} />
-                  </div>
-                  <div className="pl-2 grid place-content-left">
-                    <div className="text-black">Save</div>
-                  </div>
-                </div>
-              </Button>
+                </Button>
+              </div>
+              <div></div>
             </div>
           </CardFooter>
         </Card>
