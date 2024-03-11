@@ -1,5 +1,6 @@
 import Aside from "@/components/a-side/a-side";
 import { RightSidebar } from "@/components/right-sidebar/right-sidebar";
+import Button from "@/components/ui/button/Button";
 
 export default function Feed() {
   const profiles = [
@@ -54,11 +55,27 @@ export default function Feed() {
   };
   return (
     <>
-      <div className="bg-white w-[90%] rounded-md p-7 my-5 md:w-[512px] xl:w-[768px] h-[110px] mx-auto">
-        <p>
-          Блок историй, малый приоритет, пока не разрабатывается. Валера поправь
-          Топбар я тебя умоляю
-        </p>
+      <div className="flex flex-col">
+        <div className="bg-white w-[90%] rounded-md p-7 my-5 md:w-[512px] xl:w-[768px] h-[110px] mx-auto">
+          <p>
+            Блок историй, малый приоритет, пока не разрабатывается. Валера
+            поправь Топбар я тебя умоляю
+          </p>
+        </div>
+        <div className="flex gap-4 justify-end my-2 w-[90%] md:w-[512px] xl:w-[768px] h-[110px] mx-auto">
+          <Button
+            type="button"
+            text="Followers"
+            className="btn btn-disabled w-[20px]"
+            disabled
+          />
+          <Button
+            type="button"
+            text="Popular"
+            className="btn btn-primary w-[20px]"
+          />
+        </div>
+        <p>ВАЛЕРА ниже ВСТАВЛЯЙ КАРТОЧКИ и также пагинацию по скролу</p>
       </div>
       <Aside minWidth={1280} className="my-5 w-[240px] flex flex-col gap-4">
         <RightSidebar

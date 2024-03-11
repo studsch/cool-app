@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <header>
-        <TopBar></TopBar>
+        <TopBar />
       </header>
       <main className="md:w-[768px] xl:w-[1280px] mx-auto">
         <div className="flex gap-4 ">
