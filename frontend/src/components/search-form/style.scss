@@ -1,0 +1,27 @@
+@import url("../../app/globals.css");
+
+.under__line {
+    @apply after:h-[2px] after:content-[''] after:w-0 after:transition-width after:rounded-lg after:bg-button-primary-color after:absolute after:left-0 after:translate-y-1 after:bottom-0;
+    
+}
+
+div {
+    color: var(--btn-secondary-backround-color-hover);
+    label {
+        height: 36px;
+        color: white;
+    }
+
+    label[data-selected="true"]>div>span {
+        &.under__line
+        {
+            @apply after:w-full cursor-default;
+        }
+        color:  var(--btn-primary-background-color);
+       
+    }
+}
+
+label>div>span {
+    color:  white;
+}
