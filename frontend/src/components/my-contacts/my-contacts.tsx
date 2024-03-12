@@ -8,7 +8,7 @@ const MyContacts: React.FC<Props | any> = props => {
   return (
     <>
       <div>
-        <h2 className="text-text-primary-color text-lg weigh mx-auto w-fit font-bold pb-4">
+        <h2 className="text-text-primary-color text-base weigh mx-auto w-fit font-semibold pb-4">
           My Contacts
         </h2>
         <div className="gap-5 flex flex-col">

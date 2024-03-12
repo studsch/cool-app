@@ -1,17 +1,18 @@
 "use client";
 import { useResize } from "@/hooks/screens";
+import { number } from "zod";
 
 type Props = {
   className?: string;
   children: React.ReactNode;
+  minWidth: number;
 };
 const Aside: React.FC<Props | any> = props => {
   const width = useResize();
-  console.log(width);
   return (
     <>
-      {width >= 768 ? (
-        <div className={`bg-white ${props.className}`}>{props.children}</div>
+      {width >= props.minWidth ? (
+        <div className={`${props.className}`}>{props.children}</div>
       ) : null}
     </>
   );

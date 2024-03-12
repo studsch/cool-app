@@ -31,28 +31,30 @@ export default function AvatarBlock(props: Props) {
           </Avatar>
         </div>
       )}
-
-      <div className="flex-col">
-        <p className={`pl-4 pr-4 text-sm font-medium ${classNames.title}`}>
-          {title}
-        </p>
-
-        <p className={`pl-4 pr-4 text-sm font-medium ${classNames.subtitle}`}>
-          {subtitle}
-        </p>
-      </div>
-
-      {avatarPosition === "left" && (
-        <div className="grid place-content-center mb-4 mt-4 mr-4 ml-4">
+      {avatarPosition === "other" && (
+        <div className="grid place-content-center">
           <Avatar className={classNames?.img}>
             <AvatarImage src={src} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </div>
       )}
+      <div className="flex-col">
+        <p
+          className={`pl-4 pr-4 text-sm font-medium text-text-primary-color ${classNames.title}`}
+        >
+          {title}
+        </p>
 
-      {avatarPosition === "other" && (
-        <div className="grid place-content-center">
+        <p
+          className={`pl-4 pr-4 text-sm font-medium text-text-secondary-color ${classNames.subtitle}`}
+        >
+          {subtitle}
+        </p>
+      </div>
+
+      {avatarPosition === "left" && (
+        <div className="grid place-content-center mb-4 mt-4 mr-4 ml-4">
           <Avatar className={classNames?.img}>
             <AvatarImage src={src} />
             <AvatarFallback>CN</AvatarFallback>
