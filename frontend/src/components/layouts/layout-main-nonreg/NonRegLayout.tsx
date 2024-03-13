@@ -15,7 +15,7 @@ export default function NonRegLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="bg-cover bg-[url('/reg-gray-linear.png')] h-full">
+    <main className="bg-cover bg-[url('/reg-gray-linear.png')] h-[100vh]">
       {/* <div className="absolute w-full h-full z-0">
         <Image
           src="http://localhost:3000/reg-gray-linear.png"

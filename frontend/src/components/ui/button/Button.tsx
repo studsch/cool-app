@@ -4,6 +4,7 @@ const Button = (props: ButtonProps) => {
   return (
     <button
       id={props.id}
+      name={props.name}
       disabled={props.disabled}
       ref={props.ref}
       className={props.className}

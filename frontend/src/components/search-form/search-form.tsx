@@ -10,6 +10,7 @@ import * as ShadButton from "../ui/button";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@nextui-org/react";
+import { useResize } from "@/hooks/screens";
 import {
   Command,
   CommandEmpty,
@@ -46,6 +47,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
   const [cities, setCities] = useState<string[]>([]);
   const [openCountries, setOpenCountries] = useState<boolean>();
   const [openCities, setOpenCities] = useState<boolean>();
+  const width = useResize();
   const formSchema = z
     .object({
       search: z.string(),
@@ -85,7 +87,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
       startAge: "0",
       endAge: "130",
       gender: "0",
-      type: "0",
+      type: "1",
       country: "",
       city: "",
       useHashtegs: false,
@@ -109,7 +111,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
             <h2 className="text-lg font-medium text-text-primary-color mb-4">
               Global search
             </h2>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap xl:flex-nowrap">
               <FormField
                 control={form.control}
                 name="search"
@@ -124,7 +126,6 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                         required
                       ></Input>
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -133,17 +134,28 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                 className="btn btn-primary w-[80px] space-y-1 my-1"
                 text="Search"
               />
-              <Button
-                type="reset"
-                className="btn btn-secondary w-[80px] space-y-1 my-1 "
-                text="Reset"
-              />
+              {width >= 1280 ? (
+                <Button
+                  name="reset"
+                  onClick={() => {
+                    form.reset({ type: form.getValues("type") });
+                  }}
+                  type="reset"
+                  className="btn btn-secondary w-[80px] space-y-1 my-1 "
+                  text="Reset"
+                />
+              ) : (
+                <p>
+                  Тут должен быть dawner с правы меню, будет чуть позже для
+                  планшето мобильной версии
+                </p>
+              )}
             </div>
             <FormField
               control={form.control}
               name="type"
               render={({ field }) => (
-                <FormItem className="space-y-1 mt-1">
+                <FormItem className="space-y-1 mt-4 ">
                   <FormControl>
                     <RadioGroup
                       className="mb-4"
@@ -437,7 +449,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                     control={form.control}
                     name="city"
                     render={({ field }) => (
-                      <FormItem className="flex flex-col mt-2">
+                      <FormItem className="flex flex-col mt-2 mb-5">
                         <Popover onOpenChange={setOpenCities} open={openCities}>
                           <PopoverTrigger asChild>
                             <FormControl>
