@@ -24,7 +24,7 @@ export default function AvatarBlock(props: Props) {
   return (
     <div className="flex items-center">
       {avatarPosition === "right" && (
-        <div className="grid place-content-center mb-4 mt-4 mr-4 ml-4">
+        <div className="grid place-content-center mb-4 mt-4 mr-4">
           <Avatar className={classNames?.img}>
             <AvatarImage src={src} />
             <AvatarFallback>CN</AvatarFallback>

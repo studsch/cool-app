@@ -1,52 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 
-interface Comment {
+interface CommentProps {
   name: string;
   photo: string;
   comment: string;
+  dateCom: string;
 }
 
-const Comment = ({
-  name,
-  photo,
-  comment,
-  allComments,
-}: {
-  name: string;
-  photo: string;
-  comment: string;
-  allComments: Comment[];
-}) => {
-  const [showAllComments, setShowAllComments] = useState(false);
-
-  const handleShowAllComments = () => {
-    setShowAllComments(!showAllComments);
-  };
+const Comment: React.FC<CommentProps> = ({ name, photo, comment, dateCom }) => {
+  const defaultName = "Default Name";
+  const defaultPhoto = "https://example.com/default.jpg";
+  const defaultComment = "Default comment";
+  const defaultDateCom = "два часа назад";
 
   return (
-    <div className="comment">
-      <div className="comment-header">
-        <img src={photo} alt="commenter" className="avatar" />
-        <p>{name}:</p>
+    <div className="flex mt-4">
+      <img
+        src={photo || defaultPhoto}
+        alt={name || defaultName}
+        className="h-[45px] w-[45px] rounded-full"
+      />
+      <div className="ml-4">
+        <h3 className="font-medium">{name || defaultName}</h3>
+        <h3 className="">{comment || defaultComment}</h3>
+        <p className="text-sm">{dateCom || defaultDateCom}</p>
       </div>
-      <p className="comment-text">{comment}</p>
-      {showAllComments && allComments && allComments.length > 1
-        ? allComments.map((c: Comment, index: number) => (
-            <div key={index}>
-              <div className="comment-header">
-                <img src={c.photo} alt="commenter" className="avatar" />
-                <p>{c.name}:</p>
-              </div>
-              <p className="comment-text">{c.comment}</p>
-            </div>
-          ))
-        : allComments &&
-          allComments.length > 1 && (
-            <button onClick={handleShowAllComments}>Show more comments</button>
-          )}
-      {!allComments || (allComments && allComments.length === 0) ? (
-        <p>No such results</p>
-      ) : null}
     </div>
   );
 };

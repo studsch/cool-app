@@ -1,14 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { DatePickerWithRange } from "@/components/daterangecalendar/daterangecalendar";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import {
   Card,
   CardContent,
@@ -17,34 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
-} from "@/components/ui/command";
-import {
-  Cloud,
-  CreditCard,
-  Github,
-  Keyboard,
-  LifeBuoy,
-  LogOut,
-  Mail,
-  MessageSquare,
-  Plus,
-  PlusCircle,
-  Settings,
-  User,
-  UserPlus,
-  Users,
-} from "lucide-react";
 
 import {
   DropdownMenu,
@@ -60,6 +25,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import AvatarBlock from "@/components/avatarblock/avatarblock";
 import { MoreHorizontal } from "lucide-react";
 import { Image } from "@nextui-org/react";
@@ -69,14 +35,16 @@ import { MessageCircle } from "lucide-react";
 import { Share2 } from "lucide-react";
 import { Bookmark } from "lucide-react";
 import { AutoComplete } from "@/components/autocomplete/autocomplete";
+import Comment from "../comment";
 
-interface Comment {
+interface CommentProps {
   name: string;
   photo: string;
   comment: string;
+  dateCom: string;
 }
 
-export default function PostCard() {
+const PostCard: React.FC = () => {
   const [isLiked, setIsLiked] = useState(false);
   const handleLikeClick = () => {
     setIsLiked(!isLiked);
@@ -87,6 +55,58 @@ export default function PostCard() {
     setIsSaved(!isSaved);
   };
 
+  const commentsData = [
+    {
+      name: "User1",
+      photo:
+        "https://i.pinimg.com/originals/d9/8b/54/d98b54932c071ceb6f95fbd5439e7da7.jpg",
+      comment: "Comment 1",
+      dateCom: "Today",
+    },
+    {
+      name: "User2",
+      photo:
+        "https://i.pinimg.com/originals/d9/8b/54/d98b54932c071ceb6f95fbd5439e7da7.jpg",
+      comment: "Comment 2",
+      dateCom: "Yesterday",
+    },
+    {
+      name: "User3",
+      photo:
+        "https://i.pinimg.com/originals/d9/8b/54/d98b54932c071ceb6f95fbd5439e7da7.jpg",
+      comment: "Comment 2",
+      dateCom: "Yesterday",
+    },
+    {
+      name: "User4",
+      photo:
+        "https://i.pinimg.com/originals/d9/8b/54/d98b54932c071ceb6f95fbd5439e7da7.jpg",
+      comment: "Comment 2",
+      dateCom: "Yesterday",
+    },
+    {
+      name: "User5",
+      photo:
+        "https://i.pinimg.com/originals/d9/8b/54/d98b54932c071ceb6f95fbd5439e7da7.jpg",
+      comment: "Comment 2",
+      dateCom: "Yesterday",
+    },
+    // Добавьте другие комментарии
+  ];
+
+  const [showAllComments, setShowAllComments] = useState(false);
+  const [hideAllComments, setHideAllComments] = useState(false);
+
+  const handleShowAllClick = () => {
+    setShowAllComments(true);
+    setHideAllComments(false);
+  };
+
+  const handleHideAllClick = () => {
+    setShowAllComments(false);
+    setHideAllComments(true);
+  };
+
   return (
     <div className="grid place-content-center">
       <span className="align-middle">
@@ -94,7 +114,7 @@ export default function PostCard() {
           <CardHeader>
             <div className="flex justify-between">
               <div className="grid place-content-center">
-                <AvatarBlock />
+                <AvatarBlock avatarPosition="right" />
               </div>
               <div className="grid place-content-center">
                 <DropdownMenu>
@@ -169,11 +189,45 @@ export default function PostCard() {
                   </div>
                 </Button>
               </div>
-              <div></div>
+              <div className="overflow-hidden w-full">
+                {showAllComments ? (
+                  commentsData.map((comment, index) => (
+                    <Comment key={index} {...comment} />
+                  ))
+                ) : (
+                  <Comment {...commentsData[0]} />
+                )}
+                {!showAllComments && !hideAllComments && (
+                  <button
+                    onClick={handleShowAllClick}
+                    className="text-[#FF75AF]"
+                  >
+                    Show All
+                  </button>
+                )}
+                {showAllComments && (
+                  <button
+                    onClick={handleHideAllClick}
+                    className="text-[#FF75AF] mt-4"
+                  >
+                    Hide All
+                  </button>
+                )}
+                {!showAllComments && hideAllComments && (
+                  <button
+                    onClick={handleShowAllClick}
+                    className="text-[#FF75AF] mt-4"
+                  >
+                    Show All
+                  </button>
+                )}
+              </div>
             </div>
           </CardFooter>
         </Card>
       </span>
     </div>
   );
-}
+};
+
+export default PostCard;
