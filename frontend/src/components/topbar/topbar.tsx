@@ -11,7 +11,7 @@ import { useResize } from "@/hooks/screens";
 export default function TopBar() {
   const width = useResize();
   return (
-    <div className="h-[90px] flex ml-[10%] mr-[10%] border-2 rounded-lg overflow-hidden">
+    <div className="h-[90px] flex ml-[10%] mr-[10%] border-2 rounded-lg overflow-hidden bg-[#F9F9F9]">
       <div className="flex-initial w-[408px] items-center grid place-content-center">
         {width >= 768 ? <MemoriesSign className="ml-4" /> : <ToggleNavBar />}
       </div>

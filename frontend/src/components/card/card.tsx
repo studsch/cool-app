@@ -36,6 +36,7 @@ import { Share2 } from "lucide-react";
 import { Bookmark } from "lucide-react";
 import { AutoComplete } from "@/components/autocomplete/autocomplete";
 import Comment from "../comment";
+import CommentInput from "../inputComment";
 
 interface CommentProps {
   name: string;
@@ -55,7 +56,7 @@ const PostCard: React.FC = () => {
     setIsSaved(!isSaved);
   };
 
-  const commentsData = [
+  const [commentsData, setCommentsData] = useState([
     {
       name: "User1",
       photo:
@@ -63,36 +64,20 @@ const PostCard: React.FC = () => {
       comment: "Comment 1",
       dateCom: "Today",
     },
-    {
-      name: "User2",
-      photo:
-        "https://i.pinimg.com/originals/d9/8b/54/d98b54932c071ceb6f95fbd5439e7da7.jpg",
-      comment: "Comment 2",
-      dateCom: "Yesterday",
-    },
-    {
-      name: "User3",
-      photo:
-        "https://i.pinimg.com/originals/d9/8b/54/d98b54932c071ceb6f95fbd5439e7da7.jpg",
-      comment: "Comment 2",
-      dateCom: "Yesterday",
-    },
-    {
-      name: "User4",
-      photo:
-        "https://i.pinimg.com/originals/d9/8b/54/d98b54932c071ceb6f95fbd5439e7da7.jpg",
-      comment: "Comment 2",
-      dateCom: "Yesterday",
-    },
-    {
-      name: "User5",
-      photo:
-        "https://i.pinimg.com/originals/d9/8b/54/d98b54932c071ceb6f95fbd5439e7da7.jpg",
-      comment: "Comment 2",
-      dateCom: "Yesterday",
-    },
-    // Добавьте другие комментарии
-  ];
+    // Другие комментарии
+  ]);
+
+  const addComment = (comment: string) => {
+    setCommentsData(prevComments => [
+      ...prevComments,
+      {
+        name: "New User",
+        photo: "https://example.com/newuser.jpg",
+        comment: comment,
+        dateCom: "Now",
+      },
+    ]);
+  };
 
   const [showAllComments, setShowAllComments] = useState(false);
   const [hideAllComments, setHideAllComments] = useState(false);
@@ -107,14 +92,28 @@ const PostCard: React.FC = () => {
     setHideAllComments(true);
   };
 
+  const handleAddReply = (reply: string) => {
+    // Добавить ответ на комментарий в список
+    // В данном случае можно просто добавить ответ в список комментариев
+    setCommentsData(prevComments => [
+      ...prevComments,
+      {
+        name: "New User", // Имя пользователя, отвечающего на комментарий
+        photo: "https://example.com/newuser.jpg", // Фото пользователя
+        comment: reply, // Текст ответа
+        dateCom: "Now", // Дата ответа
+      },
+    ]);
+  };
+
   return (
     <div className="grid place-content-center">
       <span className="align-middle">
         <Card>
           <CardHeader>
             <div className="flex justify-between">
-              <div className="grid place-content-center">
-                <AvatarBlock avatarPosition="right" />
+              <div className="grid place-content-center ">
+                <AvatarBlock avatarPosition="card" className="" />
               </div>
               <div className="grid place-content-center">
                 <DropdownMenu>
@@ -146,61 +145,84 @@ const PostCard: React.FC = () => {
             <div className="grid w-full">
               <div className="flex justify-between w-full">
                 <Button variant="ghost" onClick={handleLikeClick}>
-                  <div className="flex">
-                    <div className="grid place-content-left">
+                  <div className="flex items-center">
+                    <div>
                       <Heart
-                        color={isLiked ? "#FF60A3" : "black"}
+                        color={isLiked ? "#FF60A3" : "#9B9B9B"}
                         fill={isLiked ? "#FF60A3" : "white"}
+                        strokeWidth={1.5}
+                        size={24}
                       />
                     </div>
-                    <div className="pl-2 grid place-content-left">
-                      <div className="text-black">Like</div>
+                    <div className="pl-2">
+                      <div className="text text-primary-color text-center">
+                        Like
+                      </div>
                     </div>
                   </div>
                 </Button>
                 <Button variant="ghost">
-                  <div className="flex">
-                    <div className="grid place-content-left">
-                      <MessageCircle />
+                  <div className="flex items-center">
+                    <div className="">
+                      <MessageCircle
+                        strokeWidth={1.5}
+                        size={24}
+                        color="#9B9B9B"
+                      />
                     </div>
-                    <div className="pl-2 grid place-content-left">
-                      <div className="text-black">Comment</div>
+                    <div className="pl-2">
+                      <div className="text text-primary-color text-center">
+                        Comment
+                      </div>
                     </div>
                   </div>
                 </Button>
                 <Button variant="ghost">
-                  <div className="flex">
-                    <div className="grid place-content-left">
-                      <Share2 />
+                  <div className="flex items-center">
+                    <div className="">
+                      <Share2 strokeWidth={1.5} size={24} color="#9B9B9B" />
                     </div>
-                    <div className="pl-2 grid place-content-left">
-                      <div className="text-black">Share</div>
+                    <div className="pl-2 ">
+                      <div className="text text-primary-color text-center">
+                        Share
+                      </div>
                     </div>
                   </div>
                 </Button>
                 <Button variant="ghost" onClick={handleSaveClick}>
-                  <div className="flex">
-                    <div className="grid place-content-left">
-                      <Bookmark color={isSaved ? "#FF60A3" : "black"} />
+                  <div className="flex items-center">
+                    <div className="">
+                      <Bookmark
+                        color={isSaved ? "#FF60A3" : "#9B9B9B"}
+                        strokeWidth={1.5}
+                        size={24}
+                      />
                     </div>
-                    <div className="pl-2 grid place-content-left">
-                      <div className="text-black">Save</div>
+                    <div className="pl-2">
+                      <div className="text text-primary-color text-center">
+                        Save
+                      </div>
                     </div>
                   </div>
                 </Button>
               </div>
+              <hr></hr>
               <div className="overflow-hidden w-full">
                 {showAllComments ? (
                   commentsData.map((comment, index) => (
-                    <Comment key={index} {...comment} />
+                    <Comment
+                      key={index}
+                      {...comment}
+                      addReply={handleAddReply}
+                    />
                   ))
                 ) : (
-                  <Comment {...commentsData[0]} />
+                  <Comment {...commentsData[0]} addReply={handleAddReply} />
                 )}
                 {!showAllComments && !hideAllComments && (
                   <button
                     onClick={handleShowAllClick}
-                    className="text-[#FF75AF]"
+                    className="text-[#FF75AF] mt-4"
                   >
                     Show All
                   </button>
@@ -221,6 +243,13 @@ const PostCard: React.FC = () => {
                     Show All
                   </button>
                 )}
+              </div>
+              <hr></hr>
+              <div>
+                <CommentInput
+                  photo="https://i.pinimg.com/originals/d9/8b/54/d98b54932c071ceb6f95fbd5439e7da7.jpg"
+                  addComment={addComment}
+                />
               </div>
             </div>
           </CardFooter>

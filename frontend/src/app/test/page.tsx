@@ -18,7 +18,7 @@ import { Card } from "@/components/ui/card";
 export default function DragAndDrop() {
   return (
     <>
-      <div>
+      <div className="h-fit min-h-[100vh] bg-white">
         <TopBar />
         <PostCard />
       </div>

@@ -8,7 +8,7 @@ type Props = {
   subtitle?: string;
   fallback?: string;
   classNames?: { img?: string; title?: string; subtitle?: string };
-  avatarPosition?: "left" | "right" | "other";
+  avatarPosition?: "left" | "right" | "other" | "card";
 };
 
 export default function AvatarBlock(props: Props) {
@@ -39,6 +39,16 @@ export default function AvatarBlock(props: Props) {
           </Avatar>
         </div>
       )}
+
+      {avatarPosition === "card" && (
+        <div className="grid place-content-center">
+          <Avatar className="h-[55px] w-[55px]">
+            <AvatarImage src={src} />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </div>
+      )}
+
       <div className="flex-col">
         <p
           className={`pl-4 pr-4 text-sm font-medium text-text-primary-color ${classNames.title}`}
