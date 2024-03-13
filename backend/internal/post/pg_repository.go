@@ -2,6 +2,7 @@ package post
 
 import (
 	"context"
+
 	"github.com/google/uuid"
 	"github.com/studsch/cool-app/backend/internal/models"
 	"github.com/studsch/cool-app/backend/pkg/utils"
@@ -16,4 +17,5 @@ type Repository interface {
 	GetByID(ctx context.Context, postID uuid.UUID) (*models.PostBase, error)
 	GetPosts(ctx context.Context, pq *utils.PaginationQuery) (*models.PostList, error)
 	GetByUserID(ctx context.Context, userID uuid.UUID, pq *utils.PaginationQuery) (*models.PostList, error)
+	Search(ctx context.Context, tags []string, q string, pq *utils.PaginationQuery) (*models.PostList, error)
 }

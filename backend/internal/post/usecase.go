@@ -19,4 +19,5 @@ type UseCase interface {
 	GetByUserID(ctx context.Context, userID uuid.UUID, pq *utils.PaginationQuery) (*models.PostList, error)
 	UploadImages(ctx context.Context, postID uuid.UUID, files []models.UploadInput) (*models.Post, error)
 	GetImageURL(ctx context.Context, bucket, key string) (string, error)
+	Search(ctx context.Context, tags []string, q string, pq *utils.PaginationQuery) (*models.PostList, error)
 }

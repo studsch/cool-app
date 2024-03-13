@@ -3,6 +3,8 @@ package http
 import (
 	"bytes"
 	"io"
+	"strings"
+	"unicode"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -19,6 +21,49 @@ type postHandlers struct {
 	cfg    *config.Config
 	postUC post.UseCase
 	logger logger.Logger
+}
+
+// Search implements post.Handlers.
+func (h *postHandlers) Search() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		q := c.Query("q")
+
+		// get words without punctuation and others symbols
+		words := strings.FieldsFunc(q, func(r rune) bool {
+			return !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '#'
+		})
+
+		var hashtags []string
+		var otherWords []string
+
+		for _, word := range words {
+			if strings.HasPrefix(word, "#") && (unicode.IsLetter(rune(word[len(word)-1])) || unicode.IsDigit(rune(word[len(word)-1]))) {
+				w := strings.TrimLeft(word, "#")
+				hashtags = append(hashtags, w)
+				otherWords = append(otherWords, w)
+			} else {
+				otherWords = append(otherWords, word)
+			}
+		}
+
+		qWords := strings.Join(otherWords, " ")
+
+		pq, err := utils.GetPaginationFromCtx(c)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		postsList, err := h.postUC.Search(c.UserContext(), hashtags, qWords, pq)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(postsList)
+	}
 }
 
 // GetImageURL implements post.Handlers.

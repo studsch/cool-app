@@ -13,4 +13,5 @@ type Handlers interface {
 	GetByUserID() fiber.Handler
 	UploadImages() fiber.Handler
 	GetImageURL() fiber.Handler
+	Search() fiber.Handler
 }

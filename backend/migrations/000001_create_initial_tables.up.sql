@@ -1,4 +1,7 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE
+EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE
+EXTENSION IF NOT EXISTS "pg_trgm";
 
 CREATE TABLE users
 (
@@ -15,8 +18,8 @@ CREATE TABLE users
     city         VARCHAR(24),
     country      VARCHAR(24),
     birthday     DATE                     NOT NULL,
-    created_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    updated_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+    created_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
 -- INSERT INTO users(
@@ -39,7 +42,7 @@ CREATE TABLE post
     user_id     UUID                     NOT NULL REFERENCES users (id),
     description VARCHAR(256),
     location    VARCHAR(128),
-    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     image_urls  VARCHAR(1024)[],
     archived    BOOLEAN                           DEFAULT FALSE,
     deleted     BOOLEAN                           DEFAULT FALSE
@@ -52,7 +55,7 @@ CREATE TABLE comment
     post_id             UUID                                   NOT NULL REFERENCES post (id) ON DELETE CASCADE,
     reply_to_comment_id UUID REFERENCES comment (id) ON DELETE CASCADE,
     content             VARCHAR(256)                           NOT NULL CHECK ( content <> '' ),
-    created_at          TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+    created_at          TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     deleted             BOOLEAN                  DEFAULT FALSE
 );
 
@@ -68,4 +71,18 @@ CREATE TABLE like_comment
     id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id    UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     comment_id UUID NOT NULL REFERENCES comment (id) ON DELETE CASCADE
+);
+
+CREATE TABLE tags
+(
+    id    UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    title VARCHAR(16) NOT NULL
+);
+
+
+CREATE TABLE post_tags
+(
+    id      UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    post_id UUID NOT NULL REFERENCES post (id) ON DELETE CASCADE,
+    tag_id  UUID NOT NULL REFERENCES tags (id) ON DELETE CASCADE
 );

@@ -2,9 +2,10 @@ package utils
 
 import (
 	"fmt"
-	"github.com/gofiber/fiber/v2"
 	"math"
 	"strconv"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 // defaultSize = 10
@@ -14,9 +15,9 @@ const (
 
 // PaginationQuery Pagination query params
 type PaginationQuery struct {
+	OrderBy string `json:"orderBy,omitempty"`
 	Size    int    `json:"size,omitempty"`
 	Page    int    `json:"page,omitempty"`
-	OrderBy string `json:"orderBy,omitempty"`
 }
 
 // SetSize Set page size

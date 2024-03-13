@@ -175,3 +175,52 @@ func (r *postRepo) GetByUserID(ctx context.Context, userID uuid.UUID, pq *utils.
 		Posts:      postsList,
 	}, err
 }
+
+func (r *postRepo) Search(ctx context.Context, tags []string, q string, pq *utils.PaginationQuery) (*models.PostList, error) {
+	var totalCount int
+	if err := r.db.QueryRow(ctx, searchGetTotalCountQuery, tags, q).Scan(&totalCount); err != nil {
+		return nil, errors.Wrap(err, "postRepo.Search.Scan")
+	}
+
+	if totalCount == 0 {
+		return &models.PostList{
+			TotalCount: totalCount,
+			TotalPages: utils.GetTotalPages(totalCount, pq.GetSize()),
+			Page:       pq.GetPage(),
+			Size:       pq.GetSize(),
+			HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
+			Posts:      make([]*models.Post, 0),
+		}, nil
+	}
+
+	postsList := make([]*models.Post, 0, pq.GetSize())
+	rows, err := r.db.Query(ctx, searchPostQuery, tags, q, pq.GetOffset(), pq.GetLimit())
+	if err != nil {
+		return nil, errors.Wrap(err, "postRepo.Search.Query")
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		p := &models.Post{}
+		if err := rows.Scan(
+			&p.ID, &p.UserID, &p.Description, &p.Location,
+			&p.CreatedAt, &p.ImageURLs,
+		); err != nil {
+			return nil, errors.Wrap(err, "postRepo.Search.Scan")
+		}
+		postsList = append(postsList, p)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "postRepo.Search.Err")
+	}
+
+	return &models.PostList{
+		TotalCount: totalCount,
+		TotalPages: utils.GetTotalPages(totalCount, pq.GetSize()),
+		Page:       pq.GetPage(),
+		Size:       pq.GetSize(),
+		HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
+		Posts:      postsList,
+	}, err
+}

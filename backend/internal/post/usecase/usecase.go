@@ -23,6 +23,11 @@ type postUC struct {
 	logger   logger.Logger
 }
 
+// Search implements post.UseCase.
+func (u *postUC) Search(ctx context.Context, tags []string, q string, pq *utils.PaginationQuery) (*models.PostList, error) {
+	return u.postRepo.Search(ctx, tags, q, pq)
+}
+
 // GetImagesURLs implements post.UseCase.
 func (u *postUC) GetImageURL(ctx context.Context, bucket, key string) (string, error) {
 	imageURL, err := u.awsRepo.GetAWSMinioURL(ctx, bucket, key)

@@ -19,4 +19,5 @@ func MapPostRoutes(
 	postGroup.Get("/user/:id", h.GetByUserID())
 	postGroup.Post("/:id", mw.AuthJWTMiddleware(), h.UploadImages())
 	postGroup.Get("/image/:bucket/:key", h.GetImageURL())
+	postGroup.Get("/search/post", h.Search())
 }
