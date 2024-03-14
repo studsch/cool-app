@@ -1,5 +1,4 @@
 import SearchForm from "@/components/search-form/search-form";
-import SearchUser from "@/components/search-users/search-user";
 import SearchUsers from "@/components/search-users/serch-users";
 import { LoadMore } from "@/components/search-users/load-more";
 

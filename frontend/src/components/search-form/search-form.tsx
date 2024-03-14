@@ -1,15 +1,11 @@
 "use client";
 import "./style.scss";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitErrorHandler } from "react-hook-form";
 import * as z from "zod";
 import Aside from "../a-side/a-side";
 import { RadioGroup, Radio } from "@nextui-org/react";
-import countries from "../../data/eng-countries-and-cities/countries.json";
-import * as ShadButton from "../ui/button";
-import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
-import { cn } from "@/lib/utils";
-import { Checkbox } from "@nextui-org/react";
+
 import SubForm from "./sub-form";
 import {
   Drawer,
@@ -22,18 +18,6 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useResize } from "@/hooks/screens";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 import Button from "../ui/button/Button";
 import {
@@ -46,15 +30,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Input from "../ui/input/Input";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+
 import { useState } from "react";
+import { useToast } from "../ui/use-toast";
 
 function SearchForm({ children }: { children: React.ReactNode }) {
+  const { toast } = useToast();
   const [cities, setCities] = useState<string[]>([]);
   const [openCountries, setOpenCountries] = useState<boolean>();
   const [openCities, setOpenCities] = useState<boolean>();
@@ -71,9 +52,6 @@ function SearchForm({ children }: { children: React.ReactNode }) {
         .string()
         .min(0, { message: "min 0" })
         .max(130, { message: "max 130" }),
-      password: z
-        .string()
-        .min(8, { message: "Пароль должен быть длинее 8 символов" }),
       gender: z.string(),
       type: z.string(),
       country: z.string(),
@@ -88,7 +66,6 @@ function SearchForm({ children }: { children: React.ReactNode }) {
   const defaultValues = {
     search: "",
     filter: "0",
-    password: "",
     startAge: "0",
     endAge: "130",
     gender: "0",
@@ -104,14 +81,21 @@ function SearchForm({ children }: { children: React.ReactNode }) {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    // console.log(isValidPhoneNumber(values.number));
+    console.log("submite");
   }
+
+  function onError() {
+    toast({
+      title: "Search error",
+      description: "bad settings arguments",
+      duration: 1000,
+    });
+  }
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, onError)}
         className="flex gap-4 mx-auto"
       >
         <div className="flex flex-col">
@@ -142,7 +126,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                 className="btn btn-primary w-[80px] space-y-1 my-1"
                 text="Search"
               />
-              {width >= 1280 ? (
+              {width >= 768 ? (
                 <Button
                   name="reset"
                   onClick={() => {
@@ -157,24 +141,42 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                 />
               ) : (
                 <Drawer>
-                  <DrawerTrigger>Open</DrawerTrigger>
+                  <DrawerTrigger className="btn btn-secondary w-[80px] space-y-1 my-1 ">
+                    More
+                  </DrawerTrigger>
                   <DrawerContent>
-                    <DrawerHeader>
-                      <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-                      <DrawerDescription>
-                        This action cannot be undone.
-                      </DrawerDescription>
-                    </DrawerHeader>
-                    <DrawerFooter>
-                      <Button
-                        type="button"
-                        text="More"
-                        className="btn btn-secondary"
-                      ></Button>
-                      <DrawerClose>
-                        <Button text="Cancel" type="button"></Button>
-                      </DrawerClose>
-                    </DrawerFooter>
+                    <div className="overflow-y-auto h-fit max-h-[80vh] transition-all py-auto sm:px-[100px] px-[5%]">
+                      <SubForm
+                        openCities={openCities}
+                        openCountries={openCountries}
+                        setOpenCities={setOpenCities}
+                        setOpenCountries={setOpenCountries}
+                        form={form}
+                        setCities={setCities}
+                        cities={cities}
+                      ></SubForm>
+                      <DrawerFooter>
+                        <Button
+                          name="reset"
+                          onClick={() => {
+                            form.reset({
+                              ...defaultValues,
+                              type: form.getValues("type"),
+                            });
+                          }}
+                          type="reset"
+                          className="btn btn-secondary space-y-1 my-1 "
+                          text="Reset"
+                        />
+                        <DrawerClose asChild>
+                          <Button
+                            className="btn btn-secondary mb-6"
+                            type="button"
+                            text="Close"
+                          ></Button>
+                        </DrawerClose>
+                      </DrawerFooter>
+                    </div>
                   </DrawerContent>
                 </Drawer>
               )}
@@ -224,15 +226,17 @@ function SearchForm({ children }: { children: React.ReactNode }) {
             {children}
           </div>
         </div>
-        <SubForm
-          openCities={openCities}
-          openCountries={openCountries}
-          setOpenCities={setOpenCities}
-          setOpenCountries={setOpenCountries}
-          form={form}
-          setCities={setCities}
-          cities={cities}
-        ></SubForm>
+        <Aside minWidth={768} className="my-5 w-[240px] flex flex-col gap-4">
+          <SubForm
+            openCities={openCities}
+            openCountries={openCountries}
+            setOpenCities={setOpenCities}
+            setOpenCountries={setOpenCountries}
+            form={form}
+            setCities={setCities}
+            cities={cities}
+          ></SubForm>
+        </Aside>
       </form>
     </Form>
   );

@@ -2,6 +2,7 @@ import TopBar from "@/components/topbar/topbar";
 import Navbar from "@/components/nav-bar/nav-bar";
 import Aside from "@/components/a-side/a-side";
 import MyContacts from "@/components/my-contacts/my-contacts";
+import { Toaster } from "@/components/ui/toaster";
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
@@ -20,6 +21,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </Aside>
           {children}
         </div>
+        <Toaster />
       </main>
     </>
   );

@@ -77,7 +77,7 @@ export default function Feed() {
         </div>
         <p>ВАЛЕРА ниже ВСТАВЛЯЙ КАРТОЧКИ и также пагинацию по скролу</p>
       </div>
-      <Aside minWidth={1280} className="my-5 w-[240px] flex flex-col gap-4">
+      <Aside minWidth={768} className="my-5 w-[240px] flex flex-col gap-4">
         <RightSidebar
           items={profiles}
           className=" bg-white rounded-md w-full  flex p-7 flex-col gap-4"
