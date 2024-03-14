@@ -7,6 +7,7 @@ type Props = {
   open?: boolean;
   setOpen?: () => {};
   src?: string;
+  user?: {};
   login?: string;
   name?: string;
   surname?: string;
@@ -23,6 +24,7 @@ type Props = {
 const SearchUser: React.FC<Props | any> = props => {
   const {
     classNames,
+    user,
     src = "https://cs1.livemaster.ru/storage/8b/8d/f315028d963e6ce95dd0099c46ub--kartiny-i-panno-kartina-kruglaya-abstraktsiya-novaya-luna.jpg",
     fallback = "fb",
     login = "Login",

@@ -52,8 +52,6 @@ function SearchForm({ children }: { children: React.ReactNode }) {
     .object({
       search: z.string(),
       filter: z.string(),
-      name: z.string(),
-      surname: z.string(),
       startAge: z
         .string()
         .min(0, { message: "min 0" })
@@ -82,8 +80,6 @@ function SearchForm({ children }: { children: React.ReactNode }) {
       search: "",
       filter: "0",
       password: "",
-      name: "",
-      surname: "",
       startAge: "0",
       endAge: "130",
       gender: "0",
@@ -256,39 +252,6 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                   Other settings
                 </AccordionTrigger>
                 <AccordionContent className="ml-1">
-                  <h3 className="mb-5">Additional info</h3>
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem className="space-y-0 mb-2">
-                        <FormControl>
-                          <Input
-                            className="input input-primary md:min-h-[34px]"
-                            type="text"
-                            placeholder="Name"
-                            field={field}
-                          ></Input>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="surname"
-                    render={({ field }) => (
-                      <FormItem className="space-y-0 mb-5">
-                        <FormControl>
-                          <Input
-                            className="input input-primary md:min-h-[34px]"
-                            type="text"
-                            placeholder="Surname"
-                            field={field}
-                          ></Input>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
                   <h3 className="mb-5">Age</h3>
                   <div className="flex">
                     {" "}
