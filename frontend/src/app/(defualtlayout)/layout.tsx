@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main className="md:w-[768px] xl:w-[1280px] mx-auto">
         <div className="flex gap-4 ">
           <Aside
-            minWidth={768}
+            minWidth={1280}
             className="p-7 my-5 w-[240px] flex flex-col rounded-md gap-4 h-fit bg-white "
           >
             <Navbar />

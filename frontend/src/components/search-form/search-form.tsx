@@ -10,6 +10,17 @@ import * as ShadButton from "../ui/button";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@nextui-org/react";
+import SubForm from "./sub-form";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { useResize } from "@/hooks/screens";
 import {
   Command,
@@ -74,20 +85,21 @@ function SearchForm({ children }: { children: React.ReactNode }) {
       path: ["startAge"],
     });
 
+  const defaultValues = {
+    search: "",
+    filter: "0",
+    password: "",
+    startAge: "0",
+    endAge: "130",
+    gender: "0",
+    type: "1",
+    country: "",
+    city: "",
+    useHashtegs: false,
+  };
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      search: "",
-      filter: "0",
-      password: "",
-      startAge: "0",
-      endAge: "130",
-      gender: "0",
-      type: "1",
-      country: "",
-      city: "",
-      useHashtegs: false,
-    },
+    defaultValues: defaultValues,
   });
 
   // 2. Define a submit handler.
@@ -134,17 +146,37 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                 <Button
                   name="reset"
                   onClick={() => {
-                    form.reset({ type: form.getValues("type") });
+                    form.reset({
+                      ...defaultValues,
+                      type: form.getValues("type"),
+                    });
                   }}
                   type="reset"
                   className="btn btn-secondary w-[80px] space-y-1 my-1 "
                   text="Reset"
                 />
               ) : (
-                <p>
-                  Тут должен быть dawner с правы меню, будет чуть позже для
-                  планшето мобильной версии
-                </p>
+                <Drawer>
+                  <DrawerTrigger>Open</DrawerTrigger>
+                  <DrawerContent>
+                    <DrawerHeader>
+                      <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+                      <DrawerDescription>
+                        This action cannot be undone.
+                      </DrawerDescription>
+                    </DrawerHeader>
+                    <DrawerFooter>
+                      <Button
+                        type="button"
+                        text="More"
+                        className="btn btn-secondary"
+                      ></Button>
+                      <DrawerClose>
+                        <Button text="Cancel" type="button"></Button>
+                      </DrawerClose>
+                    </DrawerFooter>
+                  </DrawerContent>
+                </Drawer>
               )}
             </div>
             <FormField
@@ -192,316 +224,15 @@ function SearchForm({ children }: { children: React.ReactNode }) {
             {children}
           </div>
         </div>
-        <Aside minWidth={1280} className="my-5 w-[240px] flex flex-col gap-4">
-          <div className=" bg-white rounded-md w-full p-7 ">
-            <FormField
-              control={form.control}
-              name="filter"
-              render={({ field }) => (
-                <FormItem className="space-y-1 mt-1">
-                  <FormControl>
-                    <RadioGroup
-                      classNames={{
-                        label:
-                          "mb-3 text-text-primary-color text-base font-medium",
-                        wrapper: "gap-3 ml-1 text-white",
-                      }}
-                      label="Filters"
-                      orientation="horizontal"
-                      color="primary"
-                      {...field}
-                    >
-                      <Radio
-                        value="0"
-                        size="sm"
-                        classNames={{
-                          label: " text-text-primary-color",
-                        }}
-                      >
-                        Relevance
-                      </Radio>
-                      <Radio
-                        value="1"
-                        size="sm"
-                        classNames={{
-                          label: " text-text-primary-color",
-                        }}
-                      >
-                        By rating
-                      </Radio>
-                      <Radio
-                        value="2"
-                        size="sm"
-                        classNames={{
-                          label: " text-text-primary-color",
-                        }}
-                      >
-                        By popular
-                      </Radio>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className=" bg-white rounded-md w-full px-7 pt-3 pb-3">
-            <Accordion type="single" collapsible>
-              <AccordionItem value="item-1">
-                <AccordionTrigger className="text-text-primary-color text-base font-medium">
-                  Other settings
-                </AccordionTrigger>
-                <AccordionContent className="ml-1">
-                  <h3 className="mb-5">Age</h3>
-                  <div className="flex">
-                    {" "}
-                    <FormField
-                      control={form.control}
-                      name="startAge"
-                      render={({ field }) => (
-                        <FormItem className="space-y-0 max-w-[74px]">
-                          <FormControl>
-                            <Input
-                              className="input input-primary md:min-h-[34px] min-w-full mb-1"
-                              type="number"
-                              placeholder="From"
-                              field={field}
-                            ></Input>
-                          </FormControl>
-                          <FormMessage className="w-[100px] " />
-                        </FormItem>
-                      )}
-                    />
-                    <hr className="text-text-primary-color w-8 mt-4 mx-2 border-t-2" />
-                    <FormField
-                      control={form.control}
-                      name="endAge"
-                      render={({ field }) => (
-                        <FormItem className="space-y-0 max-w-[74px]">
-                          <FormControl>
-                            <Input
-                              className="input input-primary md:min-h-[34px] min-w-full"
-                              type="number"
-                              placeholder="To"
-                              field={field}
-                            ></Input>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <FormField
-                    control={form.control}
-                    name="gender"
-                    render={({ field }) => (
-                      <FormItem className="space-y-1 mt-1 ">
-                        <FormControl>
-                          <RadioGroup
-                            classNames={{
-                              label: "mb-3 text-text-primary-color ",
-                              wrapper: "gap-3 ml-1 text-white",
-                            }}
-                            label="Filters"
-                            orientation="horizontal"
-                            color="primary"
-                            {...field}
-                          >
-                            <Radio
-                              value="0"
-                              size="sm"
-                              classNames={{
-                                label: " text-text-primary-color mr-7",
-                              }}
-                            >
-                              Male
-                            </Radio>
-                            <Radio
-                              value="1"
-                              size="sm"
-                              classNames={{
-                                label: " text-text-primary-color",
-                              }}
-                            >
-                              Female
-                            </Radio>
-                            <Radio
-                              value="2"
-                              size="sm"
-                              classNames={{
-                                label: " text-text-primary-color",
-                              }}
-                            >
-                              Any
-                            </Radio>
-                          </RadioGroup>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <h3 className="mt-4 mb-5">Place</h3>
-                  <FormField
-                    control={form.control}
-                    name="country"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <Popover
-                          open={openCountries}
-                          onOpenChange={setOpenCountries}
-                        >
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <ShadButton.Button
-                                variant="outline"
-                                role="combobox"
-                                className={cn(
-                                  "w-[180px] justify-between",
-                                  !field.value && "text-muted-foreground",
-                                )}
-                              >
-                                {field.value
-                                  ? Object.keys(countries).find(
-                                      country => country === field.value,
-                                    )
-                                  : "Select country"}
-                                <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                              </ShadButton.Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-[180px] p-0">
-                            <Command>
-                              <CommandInput
-                                placeholder="Search country..."
-                                className="h-9"
-                              />
-                              <CommandEmpty>No country found.</CommandEmpty>
-                              <CommandGroup className="overflow-y-auto max-h-[160px]">
-                                {Object.keys(countries).map(country => (
-                                  <CommandItem
-                                    value={country}
-                                    key={country}
-                                    onSelect={() => {
-                                      form.setValue("country", country);
-                                      form.setValue("city", "");
-                                      setOpenCountries(false);
-                                      setCities(
-                                        countries[
-                                          country as string as keyof typeof countries
-                                        ],
-                                      );
-                                    }}
-                                  >
-                                    {country}
-                                    <CheckIcon
-                                      className={cn(
-                                        "ml-auto h-4 w-4",
-                                        country === field.value
-                                          ? "opacity-100"
-                                          : "opacity-0",
-                                      )}
-                                    />
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </Command>
-                          </PopoverContent>
-                        </Popover>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col mt-2 mb-5">
-                        <Popover onOpenChange={setOpenCities} open={openCities}>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <ShadButton.Button
-                                disabled={form.getValues("country") == ""}
-                                variant="outline"
-                                role="combobox"
-                                className={cn(
-                                  "w-[180px] justify-between",
-                                  !field.value && "text-muted-foreground",
-                                )}
-                              >
-                                {field.value
-                                  ? cities.find(city => city === field.value)
-                                  : "Select city"}
-                                <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                              </ShadButton.Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-[180px] p-0">
-                            <Command>
-                              <CommandInput
-                                placeholder="Search city..."
-                                className="h-9"
-                              />
-                              <CommandEmpty>No city found.</CommandEmpty>
-                              <CommandGroup className="overflow-y-auto max-h-[160px]">
-                                {cities.map(city => (
-                                  <CommandItem
-                                    value={city}
-                                    key={city}
-                                    onSelect={() => {
-                                      form.setValue("city", city);
-                                      setOpenCities(false);
-                                    }}
-                                  >
-                                    {city}
-                                    <CheckIcon
-                                      className={cn(
-                                        "ml-auto h-4 w-4",
-                                        city === field.value
-                                          ? "opacity-100"
-                                          : "opacity-0",
-                                      )}
-                                    />
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </Command>
-                          </PopoverContent>
-                        </Popover>
-                      </FormItem>
-                    )}
-                  />
-                  <h3 className="mt-4 mb-5">Different</h3>
-                  <FormField
-                    control={form.control}
-                    name="useHashtegs"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormControl>
-                          <Checkbox
-                            isSelected={form.getValues("useHashtegs")}
-                            onValueChange={() => {
-                              form.setValue(
-                                "useHashtegs",
-                                !form.getValues("useHashtegs"),
-                              );
-                              console.log(!form.getValues("useHashtegs"));
-                            }}
-                            classNames={{
-                              wrapper: "checkbox-wrapper-primary ml-1",
-                              label: "m-auto text-text-primary-color",
-                            }}
-                            radius="sm"
-                            color="secondary"
-                            size="sm"
-                          >
-                            Use hashtegs
-                          </Checkbox>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
-        </Aside>
+        <SubForm
+          openCities={openCities}
+          openCountries={openCountries}
+          setOpenCities={setOpenCities}
+          setOpenCountries={setOpenCountries}
+          form={form}
+          setCities={setCities}
+          cities={cities}
+        ></SubForm>
       </form>
     </Form>
   );

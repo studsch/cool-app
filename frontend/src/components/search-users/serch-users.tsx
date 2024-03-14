@@ -9,7 +9,7 @@ type Props = {
 const SearchUsers: React.FC<Props | any> = props => {
   const { classNames, users, restProps } = props;
   return (
-    <div className={`mt-6 flex flex-col gap-6 ${classNames?.wrapper}`}>
+    <div className={`flex flex-col gap-6 mt-6 ${classNames?.wrapper}`}>
       {users ? (
         users.map((user: any) => (
           <div className="flex flex-col gap-6" key={user.id}>
