@@ -59,4 +59,17 @@ RETURNING
 	phone_number, role, avatar, gender, about,
 	city, country, birthday, created_at, updated_at)
 `
+
+	searchUserQuery = `
+WITH similarity_cte AS (
+	SELECT id, similarity(first_name || ' ' || last_name, 'first1') AS importance
+    FROM users
+) SELECT
+	users.id, first_name, last_name, avatar,
+	gender, about, city, country, birthday
+FROM users
+JOIN similarity_cte ON users.id = similarity_cte.id
+WHERE importance > 0.3
+ORDER BY importance DESC;
+`
 )

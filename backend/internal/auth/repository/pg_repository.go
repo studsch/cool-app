@@ -74,3 +74,5 @@ func (r *authRepo) Update(ctx context.Context, user *models.User) (*models.User,
 
 	return u, nil
 }
+
+func (r *authRepo) Search(ctx context.Context) {}
