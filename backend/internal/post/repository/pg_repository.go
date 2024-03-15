@@ -27,7 +27,10 @@ func (r *postRepo) Create(ctx context.Context, post *models.Post) (*models.Post,
 	if err := r.db.QueryRow(ctx, createPostQuery,
 		&post.UserID, &post.Description, &post.Location, &post.ImageURLs,
 		false, false,
-	).Scan(&p); err != nil {
+	).Scan(
+		&p.ID, &p.UserID, &p.Description, &p.Location,
+		&p.CreatedAt, &p.ImageURLs,
+	); err != nil {
 		return nil, errors.Wrap(err, "postRepo.Create.Scan")
 	}
 
@@ -39,7 +42,10 @@ func (r *postRepo) Update(ctx context.Context, post *models.Post) (*models.Post,
 	var p models.Post
 	if err := r.db.QueryRow(ctx, updatePostQuery,
 		&post.Description, &post.Location, &post.ImageURLs, &post.ID,
-	).Scan(&p); err != nil {
+	).Scan(
+		&p.ID, &p.UserID, &p.Description, &p.Location,
+		&p.CreatedAt, &p.ImageURLs,
+	); err != nil {
 		return nil, errors.Wrap(err, "postRepo.Update.Scan")
 	}
 
@@ -75,7 +81,10 @@ func (r *postRepo) Delete(ctx context.Context, postID uuid.UUID) error {
 // GetByID Get post by id
 func (r *postRepo) GetByID(ctx context.Context, postID uuid.UUID) (*models.PostBase, error) {
 	var p models.PostBase
-	if err := r.db.QueryRow(ctx, getByIdQuery, postID).Scan(&p); err != nil {
+	if err := r.db.QueryRow(ctx, getByIdQuery, postID).Scan(
+		&p.ID, &p.UserID, &p.Description, &p.Location,
+		&p.CreatedAt, &p.ImageURLs, &p.Author,
+	); err != nil {
 		return nil, errors.Wrap(err, "postRepo.GetByID.Scan")
 	}
 
@@ -109,7 +118,10 @@ func (r *postRepo) GetPosts(ctx context.Context, pq *utils.PaginationQuery) (*mo
 
 	for rows.Next() {
 		p := &models.Post{}
-		if err := rows.Scan(p); err != nil {
+		if err := rows.Scan(
+			&p.ID, &p.UserID, &p.Description, &p.Location,
+			&p.CreatedAt, &p.ImageURLs,
+		); err != nil {
 			return nil, errors.Wrap(err, "postRepo.GetPosts.Scan")
 		}
 		postsList = append(postsList, p)
@@ -156,7 +168,10 @@ func (r *postRepo) GetByUserID(ctx context.Context, userID uuid.UUID, pq *utils.
 
 	for rows.Next() {
 		p := &models.Post{}
-		if err := rows.Scan(p); err != nil {
+		if err := rows.Scan(
+			&p.ID, &p.UserID, &p.Description, &p.Location,
+			&p.CreatedAt, &p.ImageURLs,
+		); err != nil {
 			return nil, errors.Wrap(err, "postRepo.GetByUserID.Scan")
 		}
 		postsList = append(postsList, p)

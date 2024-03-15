@@ -19,7 +19,9 @@ func (r *likeRepo) LikeComment(ctx context.Context, like *models.LikeComment) (*
 	commentLike := &models.LikeComment{}
 	if err := r.db.QueryRow(ctx, likeCommentQuery,
 		&like.UserID, &like.CommentID,
-	).Scan(&commentLike); err != nil {
+	).Scan(
+		&commentLike.ID, &commentLike.UserID, &commentLike.CommentID,
+	); err != nil {
 		return nil, errors.Wrap(err, "likeRepo.LikeComment.Scan")
 	}
 	return commentLike, nil
@@ -53,7 +55,9 @@ func (r *likeRepo) LikePost(ctx context.Context, like *models.LikePost) (*models
 	postLike := &models.LikePost{}
 	if err := r.db.QueryRow(ctx, likePostQuery,
 		&like.UserID, &like.PostID,
-	).Scan(&postLike); err != nil {
+	).Scan(
+		&postLike.ID, &postLike.UserID, &postLike.PostID,
+	); err != nil {
 		return nil, errors.Wrap(err, "likeRepo.LikePost.Scan")
 	}
 	return postLike, nil

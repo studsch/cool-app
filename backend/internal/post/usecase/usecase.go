@@ -146,14 +146,14 @@ func (u *postUC) Archive(ctx context.Context, postID uuid.UUID) error {
 
 // Delete Deletes post
 func (u *postUC) Delete(ctx context.Context, postID uuid.UUID) error {
-	postByID, err := u.postRepo.GetByID(ctx, postID)
-	if err != nil {
-		return err
-	}
-
-	if err = utils.ValidateIsOwner(ctx, postByID.UserID.String(), u.logger); err != nil {
-		return httpErrors.NewRestError(http.StatusForbidden, "Forbidden", errors.Wrap(err, "postUC.Delete.ValidateIsOwner"))
-	}
+	// postByID, err := u.postRepo.GetByID(ctx, postID)
+	// if err != nil {
+	// 	return err
+	// }
+	//
+	// if err = utils.ValidateIsOwner(ctx, postByID.UserID.String(), u.logger); err != nil {
+	// 	return httpErrors.NewRestError(http.StatusForbidden, "Forbidden", errors.Wrap(err, "postUC.Delete.ValidateIsOwner"))
+	// }
 
 	if err := u.postRepo.Delete(ctx, postID); err != nil {
 		return err

@@ -25,7 +25,10 @@ func (r *commentRepo) Create(ctx context.Context, comment *models.Comment) (*mod
 	c := &models.Comment{}
 	if err := r.db.QueryRow(ctx, createCommentQuery,
 		comment.UserID, comment.PostID, comment.ReplyTo, comment.Content,
-	).Scan(&c); err != nil {
+	).Scan(
+		&c.ID, &c.UserID, &c.PostID, &c.ReplyTo,
+		&c.Content, &c.CreatedAt,
+	); err != nil {
 		return nil, errors.Wrap(err, "commentRepo.Create.Scan")
 	}
 
@@ -47,7 +50,10 @@ func (r *commentRepo) Delete(ctx context.Context, commentID uuid.UUID) error {
 
 func (r *commentRepo) GetByID(ctx context.Context, commentID uuid.UUID) (*models.CommentBase, error) {
 	c := &models.CommentBase{}
-	if err := r.db.QueryRow(ctx, getByIdQuery, commentID).Scan(&c); err != nil {
+	if err := r.db.QueryRow(ctx, getByIdQuery, commentID).Scan(
+		&c.ID, &c.UserID, &c.PostID, &c.ReplyTo, &c.Content,
+		&c.CreatedAt, &c.Author, &c.AvatarURL,
+	); err != nil {
 		return nil, errors.Wrap(err, "commentRepo.GetByID.Scan")
 	}
 
@@ -80,7 +86,10 @@ func (r *commentRepo) GetAllByPostID(ctx context.Context, postID uuid.UUID, pq *
 
 	for rows.Next() {
 		c := &models.CommentBase{}
-		if err := rows.Scan(c); err != nil {
+		if err := rows.Scan(
+			&c.ID, &c.UserID, &c.PostID, &c.ReplyTo,
+			&c.Content, &c.CreatedAt, &c.Author, &c.AvatarURL,
+		); err != nil {
 			return nil, errors.Wrap(err, "commentRepo.GetAllByPostID.Scan")
 		}
 		commList = append(commList, c)
@@ -126,7 +135,10 @@ func (r *commentRepo) GetReplyByCommentID(ctx context.Context, commentID uuid.UU
 
 	for rows.Next() {
 		c := &models.CommentBase{}
-		if err := rows.Scan(c); err != nil {
+		if err := rows.Scan(
+			&c.ID, &c.UserID, &c.PostID, &c.ReplyTo,
+			&c.Content, &c.CreatedAt, &c.Author, &c.AvatarURL,
+		); err != nil {
 			return nil, errors.Wrap(err, "commentRepo.GetAllByPostID.Scan")
 		}
 		commList = append(commList, c)

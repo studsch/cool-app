@@ -6,9 +6,8 @@ INSERT INTO like_post(
 	id, user_id, post_id
 ) VALUES (
 	default, $1, $2
-) RETURNING (
+) RETURNING
 	id, user_id, post_id
-)
 `
 	unlikePostQuery = `
 DELETE FROM like_post
@@ -24,9 +23,8 @@ INSERT INTO like_comment(
 	id, user_id, comment_id
 ) VALUES (
 	default, $1, $2
-) RETURNING (
+) RETURNING
 	id, user_id, comment_id
-)
 `
 	unlikeCommentQuery = `
 DELETE FROM like_comment

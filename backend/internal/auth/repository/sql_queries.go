@@ -11,31 +11,31 @@ INSERT INTO users(
     $6, $7, $8, $9, $10,
     $11, $12, NOW(), NOW()
 ) RETURNING
-    (id, first_name, last_name, login, password,
+    id, first_name, last_name, login, password,
     phone_number, role, avatar, gender, about,
-    city, country, birthday, created_at, updated_at)
+    city, country, birthday, created_at, updated_at
 `
 	findUserByLoginQuery = `
 SELECT
-	(id, first_name, last_name, login, password,
+	id, first_name, last_name, login, password,
     phone_number, role, avatar, gender, about,
-    city, country, birthday, created_at, updated_at)
+    city, country, birthday, created_at, updated_at
 FROM users
 WHERE login = $1
 `
 	findUserByPhoneQuery = `
 SELECT
-	(id, first_name, last_name, login, password,
+	id, first_name, last_name, login, password,
     phone_number, role, avatar, gender, about,
-    city, country, birthday, created_at, updated_at)
+    city, country, birthday, created_at, updated_at
 FROM users
 WHERE phone_number = $1
 `
 	getUserByIDQuery = `
 SELECT
-	(id, first_name, last_name, login, password,
+	id, first_name, last_name, login, password,
     phone_number, role, avatar, gender, about,
-    city, country, birthday, created_at, updated_at)
+    city, country, birthday, created_at, updated_at
 FROM users
 WHERE id = $1
 `
@@ -55,9 +55,9 @@ UPDATE users
 	updated_at = NOW()
 WHERE id = $12
 RETURNING
-	(id, first_name, last_name, login, password,
+	id, first_name, last_name, login, password,
 	phone_number, role, avatar, gender, about,
-	city, country, birthday, created_at, updated_at)
+	city, country, birthday, created_at, updated_at
 `
 
 	searchUserQuery = `
