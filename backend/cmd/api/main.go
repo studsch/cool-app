@@ -30,7 +30,12 @@ func main() {
 	appLogger := logger.NewApiLogger(cfg)
 
 	appLogger.InitLogger()
-	appLogger.Infof("App version: %s, LogLevel: %s, Mode: %s", cfg.Server.AppVersion, cfg.Logger.Level, cfg.Server.Mode)
+	appLogger.Infof(
+		"App version: %s, LogLevel: %s, Mode: %s",
+		cfg.Server.AppVersion,
+		cfg.Logger.Level,
+		cfg.Server.Mode,
+	)
 
 	psqlDB, err := postgres.NewPsqlDB(cfg)
 	if err != nil {
@@ -40,7 +45,12 @@ func main() {
 	}
 	defer psqlDB.Close()
 
-	awsClient, err := aws.NewAWSClient(cfg.AWS.Endpoint, cfg.AWS.MinioAccessKey, cfg.AWS.MinioSecretKey, cfg.AWS.UseSSL)
+	awsClient, err := aws.NewAWSClient(
+		cfg.AWS.Endpoint,
+		cfg.AWS.MinioAccessKey,
+		cfg.AWS.MinioSecretKey,
+		cfg.AWS.UseSSL,
+	)
 	if err != nil {
 		appLogger.Errorf("AWS Client init: %s", err)
 	}
