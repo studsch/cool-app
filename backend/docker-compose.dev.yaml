@@ -63,6 +63,26 @@ services:
     networks:
       - web_api
 
+  migrate:
+    image: migrate/migrate:v4.16.2
+    profiles: ["tools"]
+    networks:
+      - web_api
+    volumes:
+      - ./migrations:/migrations
+    entrypoint:
+      [
+        "migrate",
+        "-path",
+        "/migrations",
+        "-database",
+        "postgres://postgres:postgres@postgresql:5432/api_db?sslmode=disable",
+      ]
+    command: ["up"]
+    depends_on:
+      - postgresql
+
+
 networks:
   web_api:
     driver: bridge

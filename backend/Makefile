@@ -22,3 +22,6 @@ psql-rm:
 develop:
 	echo "Starting docker environment"
 	docker-compose -f docker-compose.dev.yaml up --build
+
+migrate:
+	docker-compose -f docker-compose.dev.yaml --profile tools run --rm migrate up
