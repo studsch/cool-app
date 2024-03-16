@@ -1,19 +1,25 @@
-FROM golang:1.21 AS builder
+FROM golang:1.22-alpine AS builder
 
-WORKDIR /usr/local/src
+WORKDIR /app
 
-COPY api/go.mod api/go.sum ./
+COPY go.mod .
+COPY go.sum .
+
 RUN go mod download
 
-COPY api ./
-ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
-RUN go build -ldflags="-s -w" -o ./bin/app main.go
+COPY . .
 
-FROM alpine:3.18 AS runner
+ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64 config=docker
+RUN go build -ldflags="-s -w" -o /app/main cmd/api/main.go
 
-WORKDIR /
+FROM alpine:3.9
 
-COPY api/.env ./
-COPY --from=builder /usr/local/src/bin/app /app
+WORKDIR /app
 
-ENTRYPOINT [ "/app" ]
+ENV config=docker
+COPY config/config-docker.yaml ./config/config-docker.yaml
+COPY --from=builder /app/main ./main
+
+EXPOSE 8000
+
+CMD ["/app/main"]

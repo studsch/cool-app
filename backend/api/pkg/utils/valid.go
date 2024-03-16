@@ -20,6 +20,7 @@ func NewValidator() *validator.Validate {
 
 	_ = validate.RegisterValidation("DOB", isDOB)
 	_ = validate.RegisterValidation("date", isDate)
+	_ = validate.RegisterValidation("avatar", isAvatar)
 
 	return validate
 }
@@ -37,6 +38,12 @@ func isDate(fl validator.FieldLevel) bool {
 	if _, err := time.Parse("02-01-2006 15:04:05", field); err != nil {
 		return false
 	}
+	return true
+}
+
+func isAvatar(fl validator.FieldLevel) bool {
+	// field := fl.Field().String()
+	// TODO: add validation to avatar field
 	return true
 }
 
