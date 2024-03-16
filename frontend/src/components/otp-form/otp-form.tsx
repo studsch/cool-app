@@ -56,7 +56,6 @@ export default function OtpForm({ children }: { children: React.ReactNode }) {
       }
     }
   };
-  console.log("dsds");
   const [completedTimer, setCompletedTimer] = useState(false);
   return (
     <div>
