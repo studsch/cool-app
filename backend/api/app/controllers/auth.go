@@ -3,9 +3,11 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 
 	"github.com/studsch/cool-app/backend/app/models"
 	"github.com/studsch/cool-app/backend/pkg/utils"
@@ -46,18 +48,68 @@ func UserSignUp(c *fiber.Ctx) error {
 		})
 	}
 
-	user := &models.User{}
-	user.Login = signUp.Login
-	user.Phone = signUp.Phone
-	user.PasswordHash = utils.GeneratePassword(signUp.Password)
-	user.Name = signUp.Name
-	user.Surname = signUp.Surname
-	user.DateOfBirth, _ = time.Parse("02-01-2006", signUp.DateOfBirth)
-	user.Gender = signUp.Gender
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
-	user.UserRole = role
-	user.Deleted = false
+	form, err := c.MultipartForm()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": true,
+			"msg":   err.Error(),
+		})
+	}
+
+	avatar := form.File["avatar"]
+	if len(avatar) == 0 {
+		signUp.Avatar = "default"
+	} else if len(avatar) > 1 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": true,
+			"msg":   "so many files with field avatar",
+		})
+	} else {
+		file := avatar[0]
+		var fileName string
+		if file.Size > 5*1000*1000 {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": true,
+				"msg":   "image is so big",
+			})
+		}
+		// save only images
+		if !strings.Contains(file.Header["Content-Type"][0], "image") {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": true,
+				"msg":   "avatar can be only image files",
+			})
+		}
+		fileName = fmt.Sprintf(
+			"%s.%s",
+			uuid.NewString(),
+			strings.Split(file.Header["Content-Type"][0], "/")[1],
+		)
+		err = c.SaveFile(file, fmt.Sprintf("tmp/avatars/%s", fileName))
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": true,
+				"msg":   err.Error(),
+			})
+		}
+		signUp.Avatar = fileName
+	}
+
+	dob, _ := time.Parse("02-01-2006", signUp.DateOfBirth)
+	user := &models.User{
+		Login:        signUp.Login,
+		Phone:        signUp.Phone,
+		PasswordHash: utils.GeneratePassword(signUp.Password),
+		Name:         signUp.Name,
+		Surname:      signUp.Surname,
+		DateOfBirth:  dob,
+		Gender:       signUp.Gender,
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
+		UserRole:     role,
+		Deleted:      false,
+		Avatar:       signUp.Avatar,
+	}
 
 	if err := validate.Struct(user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{

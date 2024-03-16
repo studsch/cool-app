@@ -18,3 +18,10 @@ docker-rm:
 
 psql-rm:
 	rm -rf ./data/postgres
+
+develop:
+	echo "Starting docker environment"
+	docker-compose -f docker-compose.dev.yaml up --build
+
+migrate:
+	docker-compose -f docker-compose.dev.yaml --profile tools run --rm migrate up

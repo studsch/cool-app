@@ -11,6 +11,7 @@ type Props = {
 
 const CommentInput: React.FC<Props> = ({ photo, addComment }) => {
   const [inputValue, setInputValue] = useState("");
+  const [showSmileMenu, setShowSmileMenu] = useState(false);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && event.shiftKey) {
@@ -27,8 +28,19 @@ const CommentInput: React.FC<Props> = ({ photo, addComment }) => {
     setInputValue(event.target.value);
   };
 
+  const handleSmileClick = () => {
+    setShowSmileMenu(prevState => !prevState);
+  };
+
+  const handleSmileSelect = (smile: string) => {
+    setInputValue(prevValue => prevValue + smile);
+    setShowSmileMenu(false);
+  };
+
+  const smileys = ["😊", "😄", "😁", "😆", "😅", "😂", "🤣", "😉", "😍", "🥰"];
+
   return (
-    <div className="flex mt-4 mb-4">
+    <div className="flex mt-4 mb-4 relative">
       <img
         src={photo}
         alt="User photo"
@@ -42,11 +54,27 @@ const CommentInput: React.FC<Props> = ({ photo, addComment }) => {
         onKeyDown={handleKeyDown}
         className="ml-4 pl-4 rounded-[10px] w-full bg-[#F9F9F9] border-[#CBCED3] border-[1px]"
       />
-      <Button variant="ghost" className="pl-[1px] pr-[1px]">
-        <Smile strokeWidth={1.5} size={30} color="#9B9B9B" />
+      <Button
+        variant="ghost"
+        className="absolute bottom-[4px] left-[470px] pl-[1px] pr-[1px]"
+        onClick={handleSmileClick}
+      >
+        <Smile strokeWidth={1.5} size={24} color="#9B9B9B" />
       </Button>
-      <Button variant="ghost" className="pl-[1px] pr-[1px]">
-        <Image strokeWidth={1.5} size={30} color="#9B9B9B" />
+      {showSmileMenu && (
+        <div className="absolute bottom-[50px] left-[270px] flex flex-wrap bg-white border border-gray-300 p-2 rounded">
+          {smileys.map((smile, index) => (
+            <button key={index} onClick={() => handleSmileSelect(smile)}>
+              {smile}
+            </button>
+          ))}
+        </div>
+      )}
+      <Button
+        variant="ghost"
+        className="absolute bottom-[4px] left-[440px] pl-[1px] pr-[1px]"
+      >
+        <Image strokeWidth={1.5} size={24} color="#9B9B9B" />
       </Button>
     </div>
   );

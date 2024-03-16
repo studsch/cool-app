@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  postgresql:
+    image: postgres:16-alpine
+    container_name: api_postgresql
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=api_db
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    networks:
+      - web_api
+
+  minio:
+    image: minio/minio:latest
+    container_name: myminio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    volumes:
+      - ./minio:/data
+    command: server --console-address ":9001" /data
+    networks:
+      - web_api
+
+  minio-client:
+    image: minio/mc:latest
+    container_name: minio-client
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host rm local;
+      /usr/bin/mc config host add --quiet --api s3v4 local http://minio:9000 minio minio123;
+      /usr/bin/mc rb --force local/somebucketname1/;
+      /usr/bin/mc mb --quiet local/somebucketname1/;
+      # /usr/bin/mc anonymous set download local/somebucketname1;
+      /usr/bin/mc anonymous policy set public local/somebucketname1;
+      "
+    networks:
+      - web_api
+
+networks:
+  web_api:
+    driver: bridge
