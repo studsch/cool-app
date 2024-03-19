@@ -25,3 +25,10 @@ postgres:
   Password: postgres
   DBName: api_db
   SSLMode: disable
+
+aws:
+  Endpoint: minio:9000
+  MinioAccessKey: minio
+  MinioSecretKey: minio123
+  UseSSL: false
+  MinioEndpoint: http://minio:9000
