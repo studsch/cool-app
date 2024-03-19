@@ -8,4 +8,5 @@ type Handlers interface {
 	Login() fiber.Handler
 	Logout() fiber.Handler
 	UploadAvatar() fiber.Handler
+	Search() fiber.Handler
 }

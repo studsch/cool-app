@@ -8,6 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/studsch/cool-app/backend/internal/auth"
 	"github.com/studsch/cool-app/backend/internal/models"
+	"github.com/studsch/cool-app/backend/pkg/utils"
 )
 
 // authRepo Auth repository
@@ -100,4 +101,51 @@ func (r *authRepo) Update(ctx context.Context, user *models.User) (*models.User,
 	return u, nil
 }
 
-func (r *authRepo) Search(ctx context.Context) {}
+func (r *authRepo) Search(ctx context.Context, q string, pq *utils.PaginationQuery) (*models.UserList, error) {
+	var totalCount int
+	if err := r.db.QueryRow(ctx, searchGetTotalCountQuery, q).Scan(&totalCount); err != nil {
+		return nil, errors.Wrap(err, "authRepo.Search.Scan")
+	}
+
+	if totalCount == 0 {
+		return &models.UserList{
+			TotalCount: totalCount,
+			TotalPages: utils.GetTotalPages(totalCount, pq.GetSize()),
+			Page:       pq.GetPage(),
+			Size:       pq.GetSize(),
+			HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
+			Users:      make([]*models.User, 0),
+		}, nil
+	}
+
+	usersList := make([]*models.User, 0, pq.GetSize())
+	rows, err := r.db.Query(ctx, searchUserQuery, q, pq.GetOffset(), pq.GetLimit())
+	if err != nil {
+		return nil, errors.Wrap(err, "authRepo.Search.Query")
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		u := &models.User{}
+		if err := rows.Scan(
+			&u.ID, &u.FirstName, &u.LastName, &u.Avatar,
+			&u.Gender, &u.About, &u.City, &u.Country, &u.Birthday,
+			&u.CreatedAt, &u.UpdatedAt,
+		); err != nil {
+			return nil, errors.Wrap(err, "authRepo.Search.Scan")
+		}
+		usersList = append(usersList, u)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "authRepo.Search.Err")
+	}
+
+	return &models.UserList{
+		TotalCount: totalCount,
+		TotalPages: utils.GetTotalPages(totalCount, pq.GetSize()),
+		Page:       pq.GetPage(),
+		Size:       pq.GetSize(),
+		HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
+		Users:      usersList,
+	}, nil
+}

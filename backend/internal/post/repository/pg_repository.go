@@ -237,5 +237,5 @@ func (r *postRepo) Search(ctx context.Context, tags []string, q string, pq *util
 		Size:       pq.GetSize(),
 		HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
 		Posts:      postsList,
-	}, err
+	}, nil
 }

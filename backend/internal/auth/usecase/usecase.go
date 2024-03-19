@@ -23,6 +23,11 @@ type authUC struct {
 	logger   logger.Logger
 }
 
+// Search implements auth.UseCase.
+func (u *authUC) Search(ctx context.Context, q string, pq *utils.PaginationQuery) (*models.UserList, error) {
+	return u.authRepo.Search(ctx, q, pq)
+}
+
 // NewAuthUC Auth useCase constructor
 func NewAuthUC(cfg *config.Config, authRepo auth.Repository, logger logger.Logger, awsRepo auth.AWSRepository) auth.UseCase {
 	return &authUC{

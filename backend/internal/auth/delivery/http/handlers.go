@@ -23,6 +23,29 @@ type authHandlers struct {
 	logger logger.Logger
 }
 
+// Search implements auth.Handlers.
+func (h *authHandlers) Search() func(*fiber.Ctx) error {
+	return func(c *fiber.Ctx) error {
+		q := c.Query("q")
+
+		pq, err := utils.GetPaginationFromCtx(c)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		usersList, err := h.authUC.Search(c.UserContext(), q, pq)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(usersList)
+	}
+}
+
 // NewAuthHandlers Auth handlers constructor
 func NewAuthHandlers(cfg *config.Config, authUC auth.UseCase, logger logger.Logger) auth.Handlers {
 	return &authHandlers{
