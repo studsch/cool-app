@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -27,6 +29,44 @@ type authHandlers struct {
 func (h *authHandlers) Search() func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		q := c.Query("q")
+		orderBy := c.Query("orderBy")
+		gender := c.Query("gender")
+		city := c.Query("city")
+		country := c.Query("country")
+		ageStart := c.Query("ageStart")
+		ageEnd := c.Query("ageEnd")
+
+		var dateStart time.Time
+		var dateEnd time.Time
+
+		if ageStart != "" && ageEnd != "" {
+			as, err := strconv.Atoi(ageStart)
+			if err != nil {
+				utils.LogResponseError(c, h.logger, err)
+				status, msg := httpErrors.ErrorResponse(fmt.Errorf("ageStart must be number"))
+				return c.Status(status).JSON(msg)
+			}
+
+			ae, err := strconv.Atoi(ageEnd)
+			if err != nil {
+				utils.LogResponseError(c, h.logger, err)
+				status, msg := httpErrors.ErrorResponse(fmt.Errorf("ageEnd must be number"))
+				return c.Status(status).JSON(msg)
+			}
+
+			if as == 0 || ae == 0 || as > ae {
+				utils.LogResponseError(c, h.logger, err)
+				status, msg := httpErrors.ErrorResponse(fmt.Errorf("ageStart must be less than ageEnd"))
+				return c.Status(status).JSON(msg)
+			} else {
+				currentDate := time.Now().Year()
+				birthYearStart := currentDate - int(ae)
+				brithYearEnd := currentDate - int(as)
+
+				dateStart = time.Date(birthYearStart, time.January, 1, 0, 0, 0, 0, time.UTC)
+				dateEnd = time.Date(brithYearEnd, time.January, 1, 0, 0, 0, 0, time.UTC)
+			}
+		}
 
 		pq, err := utils.GetPaginationFromCtx(c)
 		if err != nil {
@@ -35,7 +75,18 @@ func (h *authHandlers) Search() func(*fiber.Ctx) error {
 			return c.Status(status).JSON(msg)
 		}
 
-		usersList, err := h.authUC.Search(c.UserContext(), q, pq)
+		userFilters := &models.UserFilter{
+			DateStart: &dateStart,
+			DateEnd:   &dateEnd,
+			Q:         q,
+			OrderBy:   orderBy,
+			Gender:    gender,
+			City:      city,
+			Country:   country,
+		}
+
+		// usersList, err := h.authUC.Search(c.UserContext(), q, pq)
+		usersList, err := h.authUC.SearchByFilter(c.UserContext(), userFilters, pq)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			status, msg := httpErrors.ErrorResponse(err)

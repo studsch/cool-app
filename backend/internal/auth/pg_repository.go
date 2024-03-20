@@ -16,4 +16,5 @@ type Repository interface {
 	GetByID(ctx context.Context, userID uuid.UUID) (*models.User, error)
 	Update(ctx context.Context, user *models.User) (*models.User, error)
 	Search(ctx context.Context, q string, pq *utils.PaginationQuery) (*models.UserList, error)
+	SearchByFilter(ctx context.Context, filter *models.UserFilter, pq *utils.PaginationQuery) (*models.UserList, error)
 }

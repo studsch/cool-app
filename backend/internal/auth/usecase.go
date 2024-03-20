@@ -15,4 +15,5 @@ type UseCase interface {
 	Login(ctx context.Context, user *models.User) (*models.UserWithTokens, error)
 	UploadAvatar(ctx context.Context, userID uuid.UUID, file models.UploadInput) (*models.User, error)
 	Search(ctx context.Context, q string, pq *utils.PaginationQuery) (*models.UserList, error)
+	SearchByFilter(ctx context.Context, filter *models.UserFilter, pq *utils.PaginationQuery) (*models.UserList, error)
 }

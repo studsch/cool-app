@@ -23,6 +23,10 @@ type authUC struct {
 	logger   logger.Logger
 }
 
+func (u *authUC) SearchByFilter(ctx context.Context, filter *models.UserFilter, pq *utils.PaginationQuery) (*models.UserList, error) {
+	return u.authRepo.SearchByFilter(ctx, filter, pq)
+}
+
 // Search implements auth.UseCase.
 func (u *authUC) Search(ctx context.Context, q string, pq *utils.PaginationQuery) (*models.UserList, error) {
 	return u.authRepo.Search(ctx, q, pq)

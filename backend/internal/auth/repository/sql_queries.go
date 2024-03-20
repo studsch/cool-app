@@ -82,4 +82,24 @@ JOIN similarity_cte ON users.id = similarity_cte.id
 WHERE importance > 0.3
 ORDER BY importance DESC OFFSET $2 LIMIT $3;
 `
+
+	searchUserByFilterQuery = `
+WITH similarity_cte AS (
+	SELECT id, similarity(first_name || ' ' || last_name, $1) AS importance
+	FROM users
+) SELECT
+	users.id, first_name, last_name, avatar,
+	gender, about, city, country, birthday,
+	created_at, updated_at
+FROM users
+JOIN similarity_cte ON users.id = similarity_cte.id
+`
+
+	searchByFilterGetTotalCountQuery = `
+SELECT COUNT(*)
+FROM (
+	SELECT id, similarity(first_name || ' ' || last_name, $1) AS importance, *
+	FROM users
+) AS res_ids
+`
 )
