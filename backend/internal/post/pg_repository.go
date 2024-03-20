@@ -18,4 +18,5 @@ type Repository interface {
 	GetPosts(ctx context.Context, pq *utils.PaginationQuery) (*models.PostList, error)
 	GetByUserID(ctx context.Context, userID uuid.UUID, pq *utils.PaginationQuery) (*models.PostList, error)
 	Search(ctx context.Context, tags []string, q string, pq *utils.PaginationQuery) (*models.PostList, error)
+	SearchByFilter(ctx context.Context, tags []string, filter *models.PostFilter, pq *utils.PaginationQuery) (*models.PostList, error)
 }

@@ -2,8 +2,10 @@ package http
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"strings"
+	"time"
 	"unicode"
 
 	"github.com/gofiber/fiber/v2"
@@ -48,6 +50,23 @@ func (h *postHandlers) Search() fiber.Handler {
 
 		qWords := strings.Join(otherWords, " ")
 
+		orderBy := c.Query("orderBy")
+		location := c.Query("location")
+		createdAtString := c.Query("createdAt")
+
+		var createdAt time.Time
+
+		if createdAtString != "" {
+			cAt, err := time.Parse("2006-01-02", createdAtString)
+			if err != nil {
+				utils.LogResponseError(c, h.logger, err)
+				status, msg := httpErrors.ErrorResponse(fmt.Errorf("createdAt cannot parse"))
+				return c.Status(status).JSON(msg)
+			}
+
+			createdAt = cAt
+		}
+
 		pq, err := utils.GetPaginationFromCtx(c)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
@@ -55,7 +74,15 @@ func (h *postHandlers) Search() fiber.Handler {
 			return c.Status(status).JSON(msg)
 		}
 
-		postsList, err := h.postUC.Search(c.UserContext(), hashtags, qWords, pq)
+		postFilters := &models.PostFilter{
+			CreatedAt: &createdAt,
+			Q:         qWords,
+			OrderBy:   orderBy,
+			Location:  location,
+		}
+
+		// postsList, err := h.postUC.Search(c.UserContext(), hashtags, qWords, pq)
+		postsList, err := h.postUC.SearchByFilter(c.UserContext(), hashtags, postFilters, pq)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			status, msg := httpErrors.ErrorResponse(err)

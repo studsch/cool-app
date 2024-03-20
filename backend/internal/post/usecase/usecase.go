@@ -23,6 +23,10 @@ type postUC struct {
 	logger   logger.Logger
 }
 
+func (u *postUC) SearchByFilter(ctx context.Context, tags []string, filter *models.PostFilter, pq *utils.PaginationQuery) (*models.PostList, error) {
+	return u.postRepo.SearchByFilter(ctx, tags, filter, pq)
+}
+
 // Search implements post.UseCase.
 func (u *postUC) Search(ctx context.Context, tags []string, q string, pq *utils.PaginationQuery) (*models.PostList, error) {
 	return u.postRepo.Search(ctx, tags, q, pq)

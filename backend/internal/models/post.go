@@ -6,6 +6,15 @@ import (
 	"github.com/google/uuid"
 )
 
+type PostFilter struct {
+	CreatedAt *time.Time `json:"createdAt"`
+	Q         string     `json:"q"`
+	OrderBy   string     `json:"orderBy"`
+	Location  string     `json:"location"`
+	Offset    uint64     `json:"offset"`
+	Limit     uint64     `json:"limit"`
+}
+
 // Post Posts base model
 type Post struct {
 	CreatedAt   time.Time `json:"createdAt,omitempty" validate:"omitempty"`

@@ -2,8 +2,11 @@ package repository
 
 import (
 	"context"
+	"strconv"
+	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pkg/errors"
 	"github.com/studsch/cool-app/backend/internal/models"
@@ -19,6 +22,120 @@ type postRepo struct {
 // NewPostRepository Post repository constructor
 func NewPostRepository(db *pgxpool.Pool) post.Repository {
 	return &postRepo{db: db}
+}
+
+func (r *postRepo) queryRowsWithFilter(ctx context.Context, query string, tags []string, filter *models.PostFilter) (pgx.Rows, error) {
+	var filterValues []interface{}
+
+	filterValues = append(filterValues, tags)
+	filterValues = append(filterValues, filter.Q)
+
+	query += `WHERE importance > 0.3 AND deleted = FALSE AND archived = FALSE `
+
+	if filter.Location != "" {
+		filterValues = append(filterValues, filter.Location)
+		query += `AND location = $` + strconv.Itoa(len(filterValues)) + " "
+	}
+	if !filter.CreatedAt.IsZero() {
+		filterValues = append(filterValues, filter.CreatedAt)
+		query += `AND created_at >= $` + strconv.Itoa(len(filterValues)) + " "
+	}
+
+	switch filter.OrderBy {
+	case "-":
+		query += ``
+	case "date":
+		query += `ORDER BY created_at DESC `
+	case "rate":
+		// TODO: add this
+		query += `ORDER BY importance DESC `
+	default:
+		query += `ORDER BY importance DESC `
+	}
+
+	if filter.Offset != 0 {
+		filterValues = append(filterValues, filter.Offset)
+		query += `OFFSET $` + strconv.Itoa(len(filterValues)) + " "
+	}
+	if filter.Limit != 0 {
+		filterValues = append(filterValues, filter.Limit)
+		query += `LIMIT $` + strconv.Itoa(len(filterValues)) + " "
+	}
+
+	return r.db.Query(ctx, query, filterValues...)
+}
+
+func (r *postRepo) SearchByFilter(ctx context.Context, tags []string, filter *models.PostFilter, pq *utils.PaginationQuery) (*models.PostList, error) {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	var totalCount int
+	rowsC, err := r.queryRowsWithFilter(ctx, searchByFilterGetTotalCountQuery, tags, &models.PostFilter{
+		CreatedAt: filter.CreatedAt,
+		Q:         filter.Q,
+		OrderBy:   "-",
+		Location:  filter.Location,
+		Offset:    0,
+		Limit:     0,
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer rowsC.Close()
+	for rowsC.Next() {
+		if err := rowsC.Scan(&totalCount); err != nil {
+			return nil, errors.Wrap(err, "postRepo.SearchByFilter.Scan")
+		}
+	}
+	if err := rowsC.Err(); err != nil {
+		return nil, errors.Wrap(err, "postRepo.SearchByFilter.Err")
+	}
+
+	if totalCount == 0 {
+		return &models.PostList{
+			TotalCount: totalCount,
+			TotalPages: utils.GetTotalPages(totalCount, pq.GetSize()),
+			Page:       pq.GetPage(),
+			Size:       pq.GetSize(),
+			HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
+			Posts:      make([]*models.Post, 0),
+		}, nil
+	}
+
+	filter.Offset = uint64(pq.GetOffset())
+	filter.Limit = uint64(pq.GetSize())
+
+	rows, err := r.queryRowsWithFilter(ctx, searchByFilterPostQuery, tags, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	postsList := make([]*models.Post, 0, filter.Limit)
+	defer rows.Close()
+	for rows.Next() {
+		p := &models.Post{}
+		if err := rows.Scan(
+			&p.ID, &p.UserID, &p.Description, &p.Location,
+			&p.CreatedAt, &p.ImageURLs,
+			&p.Deleted, &p.Archived,
+		); err != nil {
+			return nil, errors.Wrap(err, "postRepo.Search.Scan")
+		}
+		postsList = append(postsList, p)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "postRepo.SearchByFilter.Err")
+	}
+
+	return &models.PostList{
+		TotalCount: totalCount,
+		TotalPages: utils.GetTotalPages(totalCount, pq.GetSize()),
+		Page:       pq.GetPage(),
+		Size:       pq.GetSize(),
+		HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
+		Posts:      postsList,
+	}, nil
 }
 
 // Create Creates new post
