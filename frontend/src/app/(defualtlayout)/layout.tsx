@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <header>
         <TopBar />
       </header>
-      <main className="md:w-[768px] xl:w-[1280px] mx-auto">
+      <main className="md:w-[768px] xl:w-[1280px] mx-auto h-full">
         <div className="flex gap-4 ">
           <Aside
             minWidth={1280}
