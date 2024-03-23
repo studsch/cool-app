@@ -1,18 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Card } from "./ui/card";
 import PostCard from "./card/card";
 
 type PhotoGridProps = {
   photos: string[];
 };
-type User = {
-  name: string;
-  avatarPhoto: string;
-};
 
 const PhotoGrid: React.FC<PhotoGridProps> = ({ photos }) => {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+  const popUpRef = useRef<HTMLDivElement>(null);
 
   const openPopup = (photo: string) => {
     setSelectedPhoto(photo);
@@ -21,6 +18,22 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos }) => {
   const closePopup = () => {
     setSelectedPhoto(null);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popUpRef.current &&
+        !popUpRef.current.contains(event.target as Node)
+      ) {
+        closePopup();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="flex flex-wrap">
@@ -39,11 +52,11 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos }) => {
       ))}
 
       {selectedPhoto && (
-        <div
-          className="fixed top-0 left-0 z-50 w-full h-full  flex items-center justify-center bg-[#9A9A9A] bg-opacity-50"
-          onClick={closePopup}
-        >
-          <PostCard />
+        <div className="fixed top-0 left-0 z-50 w-full h-full  flex items-center justify-center bg-[#9A9A9A] bg-opacity-50">
+          {/* Добавляем обработчик только к корневому элементу PopUp */}
+          <div ref={popUpRef} onClick={e => e.stopPropagation()}>
+            <PostCard photo={selectedPhoto} />
+          </div>
         </div>
       )}
     </div>
