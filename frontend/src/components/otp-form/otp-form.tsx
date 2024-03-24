@@ -19,7 +19,7 @@ import OtpInput from "react18-input-otp";
 import PhoneNumberInput from "../phone-number/phone-number";
 import { type } from "os";
 import { useRouter } from "next/navigation";
-import { ConfContext } from "../contexts/ConfirmContext";
+import { useConfirmCode } from "@/store";
 
 const formSchema = z.object({
   code: z
@@ -30,15 +30,16 @@ const formSchema = z.object({
     .optional(),
 });
 
-export default function OtpForm({ children, confContext }: { children: React.ReactNode , confContext: ConfContext | null}) {
+export default function OtpForm({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const number = useConfirmCode()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       code: "",
     },
   });
-
+  console.log(number)
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
@@ -62,7 +63,7 @@ export default function OtpForm({ children, confContext }: { children: React.Rea
     <div>
       <PhoneNumberInput
         className={"phone phone-secondary"}
-        defaultValue={confContext?.confirNumber}
+        defaultValue={number.number}
         disabled
       />
       <Form {...form}>

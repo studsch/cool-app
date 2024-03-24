@@ -37,9 +37,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Spinner } from "@nextui-org/react";
 import DialogCaptchaSignup from "../dialog-captcha-signup/dialog-captcha-signup";
-import ConfirmContext from "../contexts/ConfirmContext";
-import { useContext } from "react";
 // import { isValidPhoneNumber } from "react-phone-number-input";
+import { useConfirmCode } from "@/store";
 
 declare global {
   interface Window {
@@ -51,8 +50,8 @@ declare global {
 
 function RegForm({ children }: { children: React.ReactNode }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const confContext = useContext(ConfirmContext)
   const router = useRouter();
+  const confCode = useConfirmCode()
   const [captchaLoading, setCaptchaLoading] = useState(true);
   const formSchema = z.object({
     login: z
@@ -99,8 +98,10 @@ function RegForm({ children }: { children: React.ReactNode }) {
           window.confirmationResult = confirmationResult;
           window.recaptchaVerifier?.clear();
           window.recaptchaVerifier = undefined;
-          confContext?.setConfirmObj(confirmationResult);
-          confContext?.setConfirNumber(phoneNumber);
+          localStorage.setItem('confResult', JSON.stringify(confirmationResult))
+          localStorage.setItem('confNumber', phoneNumber)
+          confCode.updateNumber(phoneNumber)
+          confCode.updateConfirmResult(confirmationResult)
           router.push("/register");
           // ...
         })
@@ -138,6 +139,7 @@ function RegForm({ children }: { children: React.ReactNode }) {
     //   onCheckNumber(form.getValues("number"));
     //   console.log(window.recaptchaVerifier);
   }
+
   return (
     <NextUIProvider {...router.push}>
       <DialogCaptchaSignup

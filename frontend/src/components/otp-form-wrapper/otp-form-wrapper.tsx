@@ -5,15 +5,11 @@ import Link from "next/link";
 import Timer from "../timer/timer";
 import Button from "../ui/button/Button";
 import { useState } from "react";
-import { useContext } from "react";
-import ConfirmContext from "../contexts/ConfirmContext";
 
 export default function OtpFormWrapper() {
   const [needReload, setNeedReload] = useState(false);
-  const confContext = useContext(ConfirmContext)
-  console.log(confContext?.confirmObj)
   return (
-    <OtpForm confContext={confContext}>
+    <OtpForm>
       <div className="flex flex-col gap-3 relative !mt-4">
         <Timer
           time={60}
