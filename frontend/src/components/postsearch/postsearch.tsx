@@ -16,7 +16,7 @@ const Post: React.FC<PostProps> = ({ photo, name, text, avatarImg }) => {
           <img
             src={photo}
             alt="Post"
-            className="w-[65px] h-[65px] rounded-lg"
+            className="w-[65px] h-[65px] rounded-lg object-cover"
           />
         </div>
         <div className="grid content-start h-[70px] my-auto">
