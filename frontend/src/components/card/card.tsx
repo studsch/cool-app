@@ -45,7 +45,11 @@ interface CommentProps {
   dateCom: string;
 }
 
-const PostCard: React.FC = () => {
+interface PostCardProps {
+  photo: string; // Фотография для карточки поста
+}
+
+const PostCard: React.FC<PostCardProps> = ({ photo }) => {
   const [isLiked, setIsLiked] = useState(false);
   const handleLikeClick = () => {
     setIsLiked(!isLiked);
@@ -134,11 +138,11 @@ const PostCard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="grid place-content-center">
-              <Image
-                width={510}
-                alt="NextUI hero Image"
-                src="https://nextui-docs-v2.vercel.app/images/hero-card-complete.jpeg"
-              />
+              <img
+                src={photo}
+                alt="Post"
+                className="w=[400px] h-[500px] object-cover rounded-lg"
+              />{" "}
             </div>
           </CardContent>
           <CardFooter>
