@@ -19,6 +19,7 @@ import OtpInput from "react18-input-otp";
 import PhoneNumberInput from "../phone-number/phone-number";
 import { type } from "os";
 import { useRouter } from "next/navigation";
+import { ConfContext } from "../contexts/ConfirmContext";
 
 const formSchema = z.object({
   code: z
@@ -29,7 +30,7 @@ const formSchema = z.object({
     .optional(),
 });
 
-export default function OtpForm({ children }: { children: React.ReactNode }) {
+export default function OtpForm({ children, confContext }: { children: React.ReactNode , confContext: ConfContext | null}) {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,7 +62,7 @@ export default function OtpForm({ children }: { children: React.ReactNode }) {
     <div>
       <PhoneNumberInput
         className={"phone phone-secondary"}
-        defaultValue={"+79994460356"}
+        defaultValue={confContext?.confirNumber}
         disabled
       />
       <Form {...form}>

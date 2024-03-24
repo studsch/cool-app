@@ -37,6 +37,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Spinner } from "@nextui-org/react";
 import DialogCaptchaSignup from "../dialog-captcha-signup/dialog-captcha-signup";
+import ConfirmContext from "../contexts/ConfirmContext";
+import { useContext } from "react";
 // import { isValidPhoneNumber } from "react-phone-number-input";
 
 declare global {
@@ -49,6 +51,7 @@ declare global {
 
 function RegForm({ children }: { children: React.ReactNode }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const confContext = useContext(ConfirmContext)
   const router = useRouter();
   const [captchaLoading, setCaptchaLoading] = useState(true);
   const formSchema = z.object({
@@ -96,6 +99,8 @@ function RegForm({ children }: { children: React.ReactNode }) {
           window.confirmationResult = confirmationResult;
           window.recaptchaVerifier?.clear();
           window.recaptchaVerifier = undefined;
+          confContext?.setConfirmObj(confirmationResult);
+          confContext?.setConfirNumber(phoneNumber);
           router.push("/register");
           // ...
         })
@@ -124,7 +129,6 @@ function RegForm({ children }: { children: React.ReactNode }) {
     await checkElement("iframe[title=reCAPTCHA]");
     setCaptchaLoading(false);
     console.log(window.recaptchaVerifier);
-
     // 2. Define a submit handler.
     // function onSubmit(values: z.infer<typeof formSchema>) {
     //   // Do something with the form values.
