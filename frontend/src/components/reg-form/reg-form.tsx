@@ -51,7 +51,7 @@ declare global {
 function RegForm({ children }: { children: React.ReactNode }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
-  const confCode = useConfirmCode()
+  const confCode = useConfirmCode();
   const [captchaLoading, setCaptchaLoading] = useState(true);
   const formSchema = z.object({
     login: z
@@ -98,9 +98,9 @@ function RegForm({ children }: { children: React.ReactNode }) {
           window.confirmationResult = confirmationResult;
           window.recaptchaVerifier?.clear();
           window.recaptchaVerifier = undefined;
-          confCode.updateNumber(phoneNumber)
-          confCode.updateConfirmResult(await confirmationResult.confirm)
-          confCode.updateStartTime(new Date().getTime())
+          confCode.updateNumber(phoneNumber);
+          confCode.updateConfirmResult(confirmationResult);
+          confCode.updateStartTime(new Date().getTime());
           router.push("/register");
           // ...
         })

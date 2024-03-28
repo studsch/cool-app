@@ -14,7 +14,7 @@ import {persist, devtools} from 'zustand/middleware'
 
 interface ConfirmState {
     number: string
-    confirmResult: any
+    confirmResult?: ConfirmationResult
     startTime: any
     isLoadLocalStorage: boolean
     updateNumber: (number: string) => void
@@ -23,7 +23,7 @@ interface ConfirmState {
 }
 
 export const useConfirmCode = create<ConfirmState>()(persist(devtools((set => ({
-    number: "", confirmResult: null, startTime: null, isLoadLocalStorage: false,
+    number: "", confirmResult: undefined, startTime: null, isLoadLocalStorage: false,
     updateNumber: (number) => set({number: number}),
     updateConfirmResult: (confirmResult) => set({confirmResult: confirmResult}),
     updateStartTime: (startTime) => set({startTime: startTime})

@@ -10,14 +10,17 @@ import { Spinner } from "@nextui-org/react";
 
 export default function OtpFormWrapper() {
   const [needReload, setNeedReload] = useState(false);
-  const startTime = useConfirmCode(state => state.startTime)
-  return (
-    useConfirmCode(state => state.isLoadLocalStorage) ?
-    (
+  const timeLimit = 60;
+  const startTime = useConfirmCode(state => state.startTime);
+  return useConfirmCode(state => state.isLoadLocalStorage) ? (
     <OtpForm>
       <div className="flex flex-col gap-3 relative !mt-4">
         <Timer
-          time={(new Date().getTime() - Number(startTime)) / 1000 <= 60 ? (new Date().getTime() - Number(startTime)) / 1000 : 0}
+          time={
+            (new Date().getTime() - Number(startTime)) / 1000 <= timeLimit
+              ? timeLimit - (new Date().getTime() - Number(startTime)) / 1000
+              : 0
+          }
           className="mx-auto"
           needReload={needReload}
           setNeedReload={setNeedReload}
@@ -36,8 +39,8 @@ export default function OtpFormWrapper() {
       >
         Did not recieve
       </Link>
-    </OtpForm>)
-    :
+    </OtpForm>
+  ) : (
     <Spinner className="flex mt-4" />
   );
 }

@@ -21,6 +21,14 @@ import { type } from "os";
 import { useRouter } from "next/navigation";
 import { useConfirmCode } from "@/store";
 import { PhoneAuthProvider } from "firebase/auth";
+import { auth } from "@/config/firebase.config";
+import {
+  getAuth,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  signInWithCredential,
+  ConfirmationResult,
+} from "firebase/auth";
 const formSchema = z.object({
   code: z
     .string()
@@ -31,25 +39,31 @@ const formSchema = z.object({
 });
 
 export default function OtpForm({ children }: { children: React.ReactNode }) {
-  useEffect(() => {useConfirmCode.persist.rehydrate()}, [])
-  const confirm = useConfirmCode(state => state.confirmResult)
+  useEffect(() => {
+    useConfirmCode.persist.rehydrate();
+  }, []);
+  const confirm = useConfirmCode(state => state.confirmResult);
   const router = useRouter();
-  const number = useConfirmCode(state => state.number)
-  console.log(confirm)
+  const number = useConfirmCode(state => state.number);
+  console.log(confirm);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       code: "",
     },
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    confirm(values.code);
-};
+    const phoneCredential = PhoneAuthProvider.credential(
+      confirm?.verificationId as string,
+      values.code as string,
+    );
 
-    
-  
+    const res = await signInWithCredential(auth, phoneCredential);
+    console.log(res);
+  }
+
   const changeLogic = () => {
     const result = formSchema.safeParse({ code: form.getValues("code") });
     const button = document.querySelector("#accept");
@@ -87,13 +101,13 @@ export default function OtpForm({ children }: { children: React.ReactNode }) {
                   <OtpInput
                     className="mb-0 sm:mt-10 mt-2"
                     onChange={(event: any[]) => {
-                      console.log(event.toString());
+                      // console.log(event.toString());
                       field.onChange(event);
                       changeLogic();
                     }}
                     value={field.value}
                     ref={ref => {
-                      console.log(ref?.getOtpValue());
+                      // console.log(ref?.getOtpValue());
                       if (field.value?.length) {
                         if (field.value.length == 6) field.onBlur();
                         else

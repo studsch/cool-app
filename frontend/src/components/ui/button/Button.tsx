@@ -11,6 +11,7 @@ const Button = (props: ButtonProps) => {
       type={props.type}
       onClick={props.onClick}
     >
+      {props.children}
       {props.text}
     </button>
   );
