@@ -37,8 +37,6 @@ import { useToast } from "../ui/use-toast";
 function SearchForm({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
   const [cities, setCities] = useState<string[]>([]);
-  const [openCountries, setOpenCountries] = useState<boolean>();
-  const [openCities, setOpenCities] = useState<boolean>();
   const width = useResize();
   const formSchema = z
     .object({
@@ -57,11 +55,17 @@ function SearchForm({ children }: { children: React.ReactNode }) {
       country: z.string(),
       city: z.string(),
       useHashtegs: z.boolean(),
+      startDate: z.date().optional(),
+      endDate: z.date().optional(),
     })
     .refine(obj => Number(obj.startAge) <= Number(obj.endAge), {
       message: "Start is bigger",
       path: ["startAge"],
-    });
+    })
+    .refine(
+      obj => obj.startDate && obj.endDate && obj.startDate <= obj.endDate,
+      { message: "Start is bigger", path: ["endDate"] },
+    );
 
   const defaultValues = {
     search: "",
@@ -72,6 +76,8 @@ function SearchForm({ children }: { children: React.ReactNode }) {
     type: "1",
     country: "",
     city: "",
+    startDate: undefined,
+    endDate: undefined,
     useHashtegs: false,
   };
   const form = useForm<z.infer<typeof formSchema>>({
@@ -88,7 +94,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
     toast({
       title: "Search error",
       description: "bad settings arguments",
-      duration: 1000,
+      duration: 2000,
     });
   }
 
@@ -126,60 +132,59 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                 className="btn btn-primary w-[80px] space-y-1 my-1"
                 text="Search"
               />
-              {width >= 768 ? (
-                <Button
-                  name="reset"
-                  onClick={() => {
-                    form.reset({
-                      ...defaultValues,
-                      type: form.getValues("type"),
-                    });
-                  }}
-                  type="reset"
-                  className="btn btn-secondary w-[80px] space-y-1 my-1 "
-                  text="Reset"
-                />
-              ) : (
+
+              <Button
+                name="reset"
+                onClick={() => {
+                  form.reset({
+                    ...defaultValues,
+                    type: form.getValues("type"),
+                  });
+                }}
+                type="reset"
+                className="btn btn-secondary w-[80px] space-y-1 my-1 md:block hidden"
+                text="Reset"
+              />
+              <div className="block md:hidden">
                 <Drawer>
                   <DrawerTrigger className="btn btn-secondary w-[80px] space-y-1 my-1 ">
                     More
                   </DrawerTrigger>
-                  <DrawerContent>
-                    <div className="overflow-y-auto h-fit max-h-[80vh] transition-all py-auto sm:px-[100px] px-[5%]">
-                      <SubForm
-                        openCities={openCities}
-                        openCountries={openCountries}
-                        setOpenCities={setOpenCities}
-                        setOpenCountries={setOpenCountries}
-                        form={form}
-                        setCities={setCities}
-                        cities={cities}
-                      ></SubForm>
-                      <DrawerFooter>
-                        <Button
-                          name="reset"
-                          onClick={() => {
-                            form.reset({
-                              ...defaultValues,
-                              type: form.getValues("type"),
-                            });
-                          }}
-                          type="reset"
-                          className="btn btn-secondary space-y-1 my-1 "
-                          text="Reset"
-                        />
-                        <DrawerClose asChild>
+                  {width < 768 && (
+                    <DrawerContent>
+                      <div className="overflow-y-auto h-fit max-h-[80vh] transition-all py-auto sm:px-[100px] px-[5%]">
+                        <SubForm
+                          minWidth={1}
+                          form={form}
+                          setCities={setCities}
+                          cities={cities}
+                        ></SubForm>
+                        <DrawerFooter>
                           <Button
-                            className="btn btn-secondary mb-6"
-                            type="button"
-                            text="Close"
-                          ></Button>
-                        </DrawerClose>
-                      </DrawerFooter>
-                    </div>
-                  </DrawerContent>
+                            name="reset"
+                            onClick={() => {
+                              form.reset({
+                                ...defaultValues,
+                                type: form.getValues("type"),
+                              });
+                            }}
+                            type="reset"
+                            className="btn btn-secondary space-y-1 my-1 "
+                            text="Reset"
+                          />
+                          <DrawerClose asChild>
+                            <Button
+                              className="btn btn-secondary mb-6"
+                              type="button"
+                              text="Close"
+                            ></Button>
+                          </DrawerClose>
+                        </DrawerFooter>
+                      </div>
+                    </DrawerContent>
+                  )}
                 </Drawer>
-              )}
+              </div>
             </div>
             <FormField
               control={form.control}
@@ -226,17 +231,18 @@ function SearchForm({ children }: { children: React.ReactNode }) {
             {children}
           </div>
         </div>
-        <Aside minWidth={768} className="my-5 w-[240px] flex flex-col gap-4">
-          <SubForm
-            openCities={openCities}
-            openCountries={openCountries}
-            setOpenCities={setOpenCities}
-            setOpenCountries={setOpenCountries}
-            form={form}
-            setCities={setCities}
-            cities={cities}
-          ></SubForm>
-        </Aside>
+
+        <SubForm
+          minWidth={768}
+          classNames={{
+            datepickerStart: "hidden md:block",
+            datepickerEnd: "hidden md:block",
+          }}
+          className="my-5 w-[240px] hidden flex-col gap-4 md:flex"
+          form={form}
+          setCities={setCities}
+          cities={cities}
+        ></SubForm>
       </form>
     </Form>
   );

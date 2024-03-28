@@ -13,7 +13,8 @@ export default function TopBar() {
   return (
     <div className="h-[90px] flex ml-[10%] mr-[10%] border-2 rounded-lg overflow-hidden bg-white">
       <div className="flex-initial w-[408px] items-center grid place-content-center">
-        {width >= 1280 ? <MemoriesSign className="ml-4" /> : <ToggleNavBar />}
+        <MemoriesSign className="ml-4 xl:flex hidden"/>  
+        <ToggleNavBar className="block xl:hidden"/>
       </div>
       <div className="w-full flex items-center mr-4">
         <UserDropdown />

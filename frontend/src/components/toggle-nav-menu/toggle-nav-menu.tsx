@@ -20,7 +20,7 @@ type Props = {
 const ToggleNavBar: React.FC<Props | any> = props => {
   const [open, setOpen] = useState(false);
   return (
-    <>
+    <div className={props.className}>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger>
           <FontAwesomeIcon icon={faBars} className="text-text-primary-color" />
@@ -38,7 +38,7 @@ const ToggleNavBar: React.FC<Props | any> = props => {
           </DialogHeader>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 };
 

@@ -20,7 +20,7 @@ import PhoneNumberInput from "../phone-number/phone-number";
 import { type } from "os";
 import { useRouter } from "next/navigation";
 import { useConfirmCode } from "@/store";
-
+import { PhoneAuthProvider } from "firebase/auth";
 const formSchema = z.object({
   code: z
     .string()
@@ -32,8 +32,10 @@ const formSchema = z.object({
 
 export default function OtpForm({ children }: { children: React.ReactNode }) {
   useEffect(() => {useConfirmCode.persist.rehydrate()}, [])
+  const confirm = useConfirmCode(state => state.confirmResult)
   const router = useRouter();
   const number = useConfirmCode(state => state.number)
+  console.log(confirm)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,8 +45,11 @@ export default function OtpForm({ children }: { children: React.ReactNode }) {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    router.push("/register/base");
-  }
+    confirm(values.code);
+};
+
+    
+  
   const changeLogic = () => {
     const result = formSchema.safeParse({ code: form.getValues("code") });
     const button = document.querySelector("#accept");

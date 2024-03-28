@@ -11,14 +11,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </header>
       <main className="md:w-[768px] xl:w-[1280px] mx-auto h-full">
         <div className="flex gap-4 ">
-          <Aside
-            minWidth={1280}
-            className="p-7 my-5 w-[240px] flex flex-col rounded-md gap-4 h-fit bg-white "
+          <div
+
+            className="p-7 my-5 w-[240px] flex-col rounded-md gap-4 h-fit bg-white xl:flex hidden"
           >
             <Navbar />
             <hr className="border-t-2 border-r-4 border-dashed w-[140px] mx-auto my-4" />
             <MyContacts />
-          </Aside>
+          </div>
           {children}
         </div>
         <Toaster />

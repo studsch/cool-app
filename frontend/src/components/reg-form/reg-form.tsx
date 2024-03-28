@@ -92,16 +92,15 @@ function RegForm({ children }: { children: React.ReactNode }) {
     setDefRecaptcha();
     if (window.recaptchaVerifier)
       signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier)
-        .then(confirmationResult => {
+        .then(async confirmationResult => {
           // SMS sent. Prompt user to type the code from the message, then sign the
           // user in with confirmationResult.confirm(code).
           window.confirmationResult = confirmationResult;
           window.recaptchaVerifier?.clear();
           window.recaptchaVerifier = undefined;
-          localStorage.setItem('confResult', JSON.stringify(confirmationResult))
-          localStorage.setItem('confNumber', phoneNumber)
           confCode.updateNumber(phoneNumber)
-          confCode.updateConfirmResult(confirmationResult)
+          confCode.updateConfirmResult(await confirmationResult.confirm)
+          confCode.updateStartTime(new Date().getTime())
           router.push("/register");
           // ...
         })
