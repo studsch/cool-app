@@ -158,4 +158,37 @@ WITH similarity_cte AS (
 FROM post
 JOIN similarity_cte ON post.id = similarity_cte.id
 `
+
+	createTag = `
+INSERT INTO tags(
+	id, title
+) VALUES (
+	DEFAULT, $1
+) RETURNING
+	id, title
+`
+
+	getTagByTitle = `
+SELECT
+	id, title
+FROM tags
+WHERE title = $1
+`
+
+	createPostTag = `
+INSERT INTO post_tags(
+	id, post_id, tag_id
+) VALUES (
+	DEFAULT, $1, $2
+) RETURNING
+	id, post_id, tag_id
+`
+
+	getTagsOnPost = `
+SELECT
+	t.title
+FROM post_tags pt
+LEFT JOIN tags t ON pt.tag_id = t.id
+WHERE post_id = $1
+`
 )

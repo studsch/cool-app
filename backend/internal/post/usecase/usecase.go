@@ -107,6 +107,21 @@ func (u *postUC) Create(ctx context.Context, post *models.Post) (*models.Post, e
 		return nil, err
 	}
 
+	var addedTags []string
+	for _, tag := range post.Tags {
+		t, err := u.AddTagByTitle(ctx, tag)
+		if err != nil {
+			return nil, err
+		}
+		postTag, err := u.CreatePostTag(ctx, p.ID, t.ID)
+		if err != nil {
+			return nil, err
+		}
+		fmt.Println(postTag)
+		addedTags = append(addedTags, t.Title)
+	}
+	p.Tags = addedTags
+
 	return p, nil
 }
 
@@ -128,6 +143,7 @@ func (u *postUC) Update(ctx context.Context, post *models.Post) (*models.Post, e
 	}
 
 	return updatedPost, nil
+	// TODO: add updating tags...
 }
 
 // Archive Archives post
@@ -168,7 +184,20 @@ func (u *postUC) Delete(ctx context.Context, postID uuid.UUID) error {
 
 // GetPosts Get all posts
 func (u *postUC) GetPosts(ctx context.Context, pq *utils.PaginationQuery) (*models.PostList, error) {
-	return u.postRepo.GetPosts(ctx, pq)
+	pl, err := u.postRepo.GetPosts(ctx, pq)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, p := range pl.Posts {
+		tags, err := u.postRepo.GetTagsOnPost(ctx, p.ID)
+		if err != nil {
+			return nil, err
+		}
+		p.Tags = tags
+	}
+
+	return pl, err
 }
 
 // GetByID Get post by id
@@ -180,6 +209,12 @@ func (u *postUC) GetByID(ctx context.Context, postID uuid.UUID) (*models.PostBas
 		return nil, err
 	}
 
+	tags, err := u.postRepo.GetTagsOnPost(ctx, postID)
+	if err != nil {
+		return nil, err
+	}
+	p.Tags = tags
+
 	// TODO: set to redis
 
 	return p, nil
@@ -187,5 +222,43 @@ func (u *postUC) GetByID(ctx context.Context, postID uuid.UUID) (*models.PostBas
 
 // GetByUserID Get posts by user id
 func (u *postUC) GetByUserID(ctx context.Context, userID uuid.UUID, pq *utils.PaginationQuery) (*models.PostList, error) {
-	return u.postRepo.GetByUserID(ctx, userID, pq)
+	pl, err := u.postRepo.GetByUserID(ctx, userID, pq)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, p := range pl.Posts {
+		tags, err := u.postRepo.GetTagsOnPost(ctx, p.ID)
+		if err != nil {
+			return nil, err
+		}
+		p.Tags = tags
+	}
+
+	return pl, err
+}
+
+func (u *postUC) AddTagByTitle(ctx context.Context, title string) (*models.Tag, error) {
+	t, err := u.postRepo.GetTagByTitle(ctx, title)
+	if err != nil {
+		return nil, err
+	}
+
+	if t == nil {
+		newTag, err := u.postRepo.CreateTag(ctx, title)
+		if err != nil {
+			return nil, err
+		}
+		return newTag, nil
+	}
+
+	return t, nil
+}
+
+func (u *postUC) CreatePostTag(ctx context.Context, postID uuid.UUID, tagID uuid.UUID) (*models.PostTag, error) {
+	return u.postRepo.CreatePostTag(ctx, postID, tagID)
+}
+
+func (u *postUC) GetTagsOnPost(ctx context.Context, postID uuid.UUID) ([]string, error) {
+	return u.postRepo.GetTagsOnPost(ctx, postID)
 }

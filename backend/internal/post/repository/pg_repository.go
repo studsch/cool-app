@@ -356,3 +356,73 @@ func (r *postRepo) Search(ctx context.Context, tags []string, q string, pq *util
 		Posts:      postsList,
 	}, nil
 }
+
+func (r *postRepo) GetTagByTitle(ctx context.Context, title string) (*models.Tag, error) {
+	var t models.Tag
+
+	if err := r.db.QueryRow(ctx, getTagByTitle, title).Scan(
+		&t.ID, &t.Title,
+	); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
+		return nil, errors.Wrap(err, "postRepo.GetTabByTitle.Scan")
+	}
+
+	return &t, nil
+}
+
+func (r *postRepo) CreateTag(ctx context.Context, title string) (*models.Tag, error) {
+	var t models.Tag
+
+	if err := r.db.QueryRow(ctx, createTag, title).Scan(
+		&t.ID, &t.Title,
+	); err != nil {
+		return nil, errors.Wrap(err, "postRepo.CreateTag.Scan")
+	}
+
+	return &t, nil
+}
+
+func (r *postRepo) CreatePostTag(ctx context.Context, postID uuid.UUID, tagID uuid.UUID) (*models.PostTag, error) {
+	var postTag models.PostTag
+
+	if err := r.db.QueryRow(ctx, createPostTag, postID, tagID).Scan(
+		&postTag.ID, &postTag.PostID, &postTag.TagID,
+	); err != nil {
+		return nil, errors.Wrap(err, "postRepo.CreatePostTag.Scan")
+	}
+
+	return &postTag, nil
+}
+
+func (r *postRepo) GetTagsOnPost(ctx context.Context, postID uuid.UUID) ([]string, error) {
+	var tags []string
+
+	rows, err := r.db.Query(ctx, getTagsOnPost, postID)
+	if err != nil {
+		return nil, errors.Wrap(err, "postRepo.GetTagsOnPost.Query")
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var tag string
+		if err := rows.Scan(&tag); err != nil {
+			if err == pgx.ErrNoRows {
+				return nil, nil
+			}
+			return nil, errors.Wrap(err, "postRepo.GetTagsOnPost.Scan")
+		}
+		tags = append(tags, tag)
+	}
+
+	if err := rows.Err(); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
+
+		return nil, errors.Wrap(err, "postRepo.GetTagsOnPost.Err")
+	}
+
+	return tags, nil
+}

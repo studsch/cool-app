@@ -21,6 +21,7 @@ type Post struct {
 	Description string    `json:"description,omitempty" validate:"required,gte=5,lte=255"`
 	Location    string    `json:"location,omitempty" validate:"omitempty,gte=3,lte=127"`
 	ImageURLs   []string  `json:"imageURLs,omitempty" validate:"omitempty"`
+	Tags        []string  `json:"tags,omitempty" validate:"omitempty"`
 	ID          uuid.UUID `json:"id,omitempty" validate:"omitempty,uuid"`
 	UserID      uuid.UUID `json:"userId,omitempty" validate:"required"`
 	Archived    bool      `json:"archived,omitempty" validate:"omitempty"`
@@ -34,6 +35,7 @@ type PostBase struct {
 	Location    string    `json:"location,omitempty" validate:"omitempty,gte=3,lte=127"`
 	Author      string    `json:"author,omitempty" validate:"omitempty"`
 	ImageURLs   []string  `json:"imageURLs,omitempty" validate:"omitempty"`
+	Tags        []string  `json:"tags,omitempty" validate:"omitempty"`
 	ID          uuid.UUID `json:"id,omitempty" validate:"omitempty,uuid"`
 	UserID      uuid.UUID `json:"userId,omitempty" validate:"required"`
 }

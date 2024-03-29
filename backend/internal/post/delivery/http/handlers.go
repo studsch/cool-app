@@ -343,3 +343,36 @@ func (h *postHandlers) GetByUserID() fiber.Handler {
 		return c.Status(fiber.StatusOK).JSON(postByUserID)
 	}
 }
+
+//
+// func (h *postHandlers) AddTagsByTitles() fiber.Handler {
+// 	return func(c *fiber.Ctx) error {
+// 		type tagTitles struct {
+// 			Tags []string `json:"tags"`
+// 		}
+//
+// 		tags := new(tagTitles)
+// 		if err := c.BodyParser(tags); err != nil {
+// 			utils.LogResponseError(c, h.logger, err)
+// 			status, msg := httpErrors.ErrorResponse(err)
+// 			return c.Status(status).JSON(msg)
+// 		}
+//
+// 		addedTags := make([]string, 0)
+// 		for _, tag := range tags.Tags {
+// 			t, err := h.postUC.AddTagByTitle(c.UserContext(), tag)
+// 			if err != nil {
+// 				utils.LogResponseError(c, h.logger, err)
+// 				status, msg := httpErrors.ErrorResponse(err)
+// 				return c.Status(status).JSON(msg)
+// 			}
+// 			if t.Title != "" {
+// 				addedTags = append(addedTags, t.Title)
+// 			}
+// 		}
+//
+// 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+// 			"addedTags": addedTags,
+// 		})
+// 	}
+// }
