@@ -66,7 +66,7 @@ const Completionist = (props: ICompletionist) => {
       });
     }
   }
-  console.log(grecaptcha);
+
   function onSignUp() {
     setLoading(true);
     onCaptchaVerify();
@@ -80,14 +80,12 @@ const Completionist = (props: ICompletionist) => {
         updateConfirmResult(confirmationResult);
         updateTime(new Date().getTime());
         // ...
-        setLoading(true);
-        window.recaptchaVerifier?.render().then(function (widgetId) {
-          grecaptcha.reset(widgetId);
-        });
+        setLoading(false);
       })
       .catch(error => {
         // Error; SMS not sent
-        setLoading(true);
+        setLoading(false);
+
         // ...
       });
   }
@@ -98,13 +96,15 @@ const Completionist = (props: ICompletionist) => {
   const onSubmite = () => {
     if (props.setNeedReload && props.completed) {
       props.setNeedReload(true);
+      window.recaptchaVerifier?.clear();
+      window.recaptchaVerifier = undefined;
       onSignUp();
       console.log(props.completed);
     } else {
       console.log(props.completed);
     }
   };
-
+  console.log("loading " + loading);
   return (
     <div className="sm:h-[60px] h-[40px] flex items-end">
       <Button
@@ -115,13 +115,13 @@ const Completionist = (props: ICompletionist) => {
         onClick={onSubmite}
         disabled={loading}
       >
-        {(
+        {loading && (
           <Spinner
             color="default"
             size="sm"
             className="absolute -translate-x-[140%] "
           ></Spinner>
-        ) && !loading}
+        )}
       </Button>
     </div>
   );
