@@ -66,7 +66,7 @@ const Completionist = (props: ICompletionist) => {
       });
     }
   }
-
+  console.log(grecaptcha);
   function onSignUp() {
     setLoading(true);
     onCaptchaVerify();
@@ -81,6 +81,9 @@ const Completionist = (props: ICompletionist) => {
         updateTime(new Date().getTime());
         // ...
         setLoading(true);
+        window.recaptchaVerifier?.render().then(function (widgetId) {
+          grecaptcha.reset(widgetId);
+        });
       })
       .catch(error => {
         // Error; SMS not sent
