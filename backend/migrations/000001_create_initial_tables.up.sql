@@ -65,6 +65,12 @@ CREATE TABLE tags
     title VARCHAR(16) NOT NULL
 );
 
+CREATE UNIQUE INDEX CONCURRENTLY tags_title
+ON tags (title);
+
+ALTER TABLE tags
+ADD CONSTRAINT unique_tags_title
+UNIQUE USING INDEX tags_title;
 
 CREATE TABLE post_tags
 (

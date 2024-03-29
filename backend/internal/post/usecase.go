@@ -20,4 +20,7 @@ type UseCase interface {
 	UploadImages(ctx context.Context, postID uuid.UUID, files []models.UploadInput) (*models.Post, error)
 	GetImageURL(ctx context.Context, bucket, key string) (string, error)
 	Search(ctx context.Context, tags []string, q string, pq *utils.PaginationQuery) (*models.PostList, error)
+	SearchByFilter(ctx context.Context, tags []string, filter *models.PostFilter, pq *utils.PaginationQuery) (*models.PostList, error)
+	AddTagByTitle(ctx context.Context, title string) (*models.Tag, error)
+	GetTagsOnPost(ctx context.Context, postID uuid.UUID) ([]string, error)
 }

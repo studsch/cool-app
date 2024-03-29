@@ -1,10 +1,32 @@
 package models
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
+
+type UserFilter struct {
+	DateStart *time.Time `json:"DateStart"`
+	DateEnd   *time.Time `json:"DateEnd"`
+	Q         string     `json:"q"`
+	OrderBy   string     `json:"orderBy"`
+	Gender    string     `json:"gender"`
+	City      string     `json:"city"`
+	Country   string     `json:"country"`
+	Offset    uint64     `json:"offset"`
+	Limit     uint64     `json:"limit"`
+}
+
+type UserList struct {
+	Users      []*User `json:"users"`
+	TotalCount int     `json:"totalCount"`
+	TotalPages int     `json:"totalPages"`
+	Page       int     `json:"page"`
+	Size       int     `json:"size"`
+	HasMore    bool    `json:"hasMore"`
+}
 
 // User Users base model
 type User struct {

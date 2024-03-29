@@ -2,8 +2,10 @@ package http
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"strings"
+	"time"
 	"unicode"
 
 	"github.com/gofiber/fiber/v2"
@@ -48,6 +50,23 @@ func (h *postHandlers) Search() fiber.Handler {
 
 		qWords := strings.Join(otherWords, " ")
 
+		orderBy := c.Query("orderBy")
+		location := c.Query("location")
+		createdAtString := c.Query("createdAt")
+
+		var createdAt time.Time
+
+		if createdAtString != "" {
+			cAt, err := time.Parse("2006-01-02", createdAtString)
+			if err != nil {
+				utils.LogResponseError(c, h.logger, err)
+				status, msg := httpErrors.ErrorResponse(fmt.Errorf("createdAt cannot parse"))
+				return c.Status(status).JSON(msg)
+			}
+
+			createdAt = cAt
+		}
+
 		pq, err := utils.GetPaginationFromCtx(c)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
@@ -55,7 +74,15 @@ func (h *postHandlers) Search() fiber.Handler {
 			return c.Status(status).JSON(msg)
 		}
 
-		postsList, err := h.postUC.Search(c.UserContext(), hashtags, qWords, pq)
+		postFilters := &models.PostFilter{
+			CreatedAt: &createdAt,
+			Q:         qWords,
+			OrderBy:   orderBy,
+			Location:  location,
+		}
+
+		// postsList, err := h.postUC.Search(c.UserContext(), hashtags, qWords, pq)
+		postsList, err := h.postUC.SearchByFilter(c.UserContext(), hashtags, postFilters, pq)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			status, msg := httpErrors.ErrorResponse(err)
@@ -316,3 +343,36 @@ func (h *postHandlers) GetByUserID() fiber.Handler {
 		return c.Status(fiber.StatusOK).JSON(postByUserID)
 	}
 }
+
+//
+// func (h *postHandlers) AddTagsByTitles() fiber.Handler {
+// 	return func(c *fiber.Ctx) error {
+// 		type tagTitles struct {
+// 			Tags []string `json:"tags"`
+// 		}
+//
+// 		tags := new(tagTitles)
+// 		if err := c.BodyParser(tags); err != nil {
+// 			utils.LogResponseError(c, h.logger, err)
+// 			status, msg := httpErrors.ErrorResponse(err)
+// 			return c.Status(status).JSON(msg)
+// 		}
+//
+// 		addedTags := make([]string, 0)
+// 		for _, tag := range tags.Tags {
+// 			t, err := h.postUC.AddTagByTitle(c.UserContext(), tag)
+// 			if err != nil {
+// 				utils.LogResponseError(c, h.logger, err)
+// 				status, msg := httpErrors.ErrorResponse(err)
+// 				return c.Status(status).JSON(msg)
+// 			}
+// 			if t.Title != "" {
+// 				addedTags = append(addedTags, t.Title)
+// 			}
+// 		}
+//
+// 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+// 			"addedTags": addedTags,
+// 		})
+// 	}
+// }
