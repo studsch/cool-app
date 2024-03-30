@@ -1,0 +1,1596 @@
+openapi: 3.0.3
+info:
+  title: Social Media API
+  description: |
+    This is a social media "Memories" API documentation based on the OpenAPI 3.0 specification.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000/api/v1
+
+tags:
+  - name: user
+    description: Oprations with user
+  - name: post
+    description: Operations with posts
+  - name: comment
+    description: Operations with comments
+  - name: like
+    description: Operations with likes
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: Register user
+      operationId: register
+      requestBody:
+        description: User object to register
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: "John"
+                lastName:
+                  type: string
+                  example: "James"
+                login:
+                  type: string
+                  example: "johnjames123"
+                password:
+                  type: string
+                  example: "123456789"
+                phoneNumber:
+                  type: string
+                  example: "+7123456789"
+                role:
+                  type: string
+                  enum:
+                    - user
+                    - admin
+                  example: "user"
+                avatar:
+                  type: string
+                  example: ""
+                gender:
+                  type: string
+                  enum:
+                    - male
+                    - female
+                  example: "male"
+                about:
+                  type: string
+                  example: ""
+                city:
+                  type: string
+                  example: "Russia"
+                country:
+                  type: string
+                  example: "Krasnoyarsk"
+                birthday:
+                  type: string
+                  format: date-time
+                  example: "2024-02-19T00:00:00.000Z"
+              required:
+                - firstName
+                - lastName
+                - login
+                - password
+                - phoneNumber
+                - role
+                - gender
+                - birthday
+      responses:
+        "201":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  tokens:
+                    type: object
+                    properties:
+                      access:
+                        type: string
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTE4MDE5NzgsImlkIjoiMzFmZjY2NmMtMDEwYS00ZjM4LWFkYTctYmNjM2I0MjBlNWE3In0.fs-NaqGQLx-_Up-tvhonywSrrh5d83JBauCb0LwoFvg"
+                      refresh:
+                        type: string
+                        example: "43f5412e381b378d4f406e98eb4c12b849e73b9d237f383cb557ab3ddc7024a8.1712014378"
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        example: "123e4567-e89b-12d3-a456-426655440000"
+                      firstName:
+                        type: string
+                        example: "John"
+                      lastName:
+                        type: string
+                        example: "James"
+                      login:
+                        type: string
+                        example: "johnjames123"
+                      password:
+                        type: string
+                        example: "123456789"
+                      phoneNumber:
+                        type: string
+                        example: "+7123456789"
+                      role:
+                        type: string
+                        enum:
+                          - user
+                          - admin
+                        example: "user"
+                      avatar:
+                        type: string
+                        example: ""
+                      gender:
+                        type: string
+                        enum:
+                          - male
+                          - female
+                        example: "male"
+                      about:
+                        type: string
+                        example: ""
+                      city:
+                        type: string
+                        example: "Russia"
+                      country:
+                        type: string
+                        example: "Krasnoyarsk"
+                      birthday:
+                        type: string
+                        format: date-time
+                        example: "2024-12-01T00:00:00.000Z"
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2024-12-30T18:32:58.469452+07:00"
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: "2024-12-30T18:32:58.469452+07:00"
+  /auth/login:
+    post:
+      tags:
+        - user
+      summary: Login
+      description: Login with existing user
+      operationId: login
+      requestBody:
+        description: User data for login
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                login:
+                  type: string
+                  example: "johnjames123"
+                  description: "Optional if phoneNumber exist"
+                password:
+                  type: string
+                  example: "123456789"
+                phoneNumber:
+                  type: string
+                  example: "+7123456789"
+                  description: "Optional if login exist"
+              required:
+                - password
+      responses:
+        "201":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  tokens:
+                    type: object
+                    properties:
+                      access:
+                        type: string
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTE4MDE5NzgsImlkIjoiMzFmZjY2NmMtMDEwYS00ZjM4LWFkYTctYmNjM2I0MjBlNWE3In0.fs-NaqGQLx-_Up-tvhonywSrrh5d83JBauCb0LwoFvg"
+                      refresh:
+                        type: string
+                        example: "43f5412e381b378d4f406e98eb4c12b849e73b9d237f383cb557ab3ddc7024a8.1712014378"
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        example: "123e4567-e89b-12d3-a456-426655440000"
+                      firstName:
+                        type: string
+                        example: "John"
+                      lastName:
+                        type: string
+                        example: "James"
+                      login:
+                        type: string
+                        example: "johnjames123"
+                      password:
+                        type: string
+                        example: "123456789"
+                      phoneNumber:
+                        type: string
+                        example: "+7123456789"
+                      role:
+                        type: string
+                        enum:
+                          - user
+                          - admin
+                        example: "user"
+                      avatar:
+                        type: string
+                        example: ""
+                      gender:
+                        type: string
+                        enum:
+                          - male
+                          - female
+                        example: "male"
+                      about:
+                        type: string
+                        example: ""
+                      city:
+                        type: string
+                        example: "Russia"
+                      country:
+                        type: string
+                        example: "Krasnoyarsk"
+                      birthday:
+                        type: string
+                        format: date-time
+                        example: "2024-12-01T00:00:00.000Z"
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2024-12-30T18:32:58.469452+07:00"
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: "2024-12-30T18:32:58.469452+07:00"
+  /auth/search/user:
+    get:
+      tags:
+        - user
+      summary: Search users
+      description: Search for user with given query (with pagination)
+      operationId: searchUsers
+      parameters:
+        - name: q
+          in: query
+          description: Query for search
+          required: true
+          explode: true
+          schema:
+            type: string
+          example: "John"
+        - name: page
+          in: query
+          description: Page (for pagination)
+          required: true
+          explode: true
+          schema:
+            type: integer
+          example: 1
+        - name: size
+          in: query
+          description: Size of the amount of users on one page (for pagination)
+          required: true
+          explode: true
+          schema:
+            type: integer
+          example: 5
+        - name: orderBy
+          in: query
+          description: Order of response
+          required: false
+          explode: true
+          schema:
+            type: string
+            enum:
+              - "date"
+              - "rate"
+          example: "date"
+        - name: gender
+          in: query
+          description: The gender specified by the user during registration
+          required: false
+          explode: true
+          schema:
+            type: string
+            enum:
+              - "male"
+              - "female"
+          example: "male"
+        - name: city
+          in: query
+          description: The city specified by the user during registration
+          required: false
+          explode: true
+          schema:
+            type: string
+          example: "Russia"
+        - name: country
+          in: query
+          description: The country specified by the user during registration
+          required: false
+          explode: true
+          schema:
+            type: string
+          example: "Krasnoyarsk"
+        - name: ageStart
+          in: query
+          description: Minimum user age
+          required: false
+          explode: true
+          schema:
+            type: integer
+          example: 20
+        - name: ageEnd
+          in: query
+          description: Maximum user age
+          required: false
+          explode: true
+          schema:
+            type: integer
+          example: 100
+      responses:
+        "200":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        firstName:
+                          type: string
+                          example: "John"
+                        lastName:
+                          type: string
+                          example: "James"
+                        login:
+                          type: string
+                          example: "johnjames123"
+                        password:
+                          type: string
+                          example: "123456789"
+                        phoneNumber:
+                          type: string
+                          example: "+7123456789"
+                        role:
+                          type: string
+                          enum:
+                            - user
+                            - admin
+                          example: "user"
+                        avatar:
+                          type: string
+                          example: ""
+                        gender:
+                          type: string
+                          enum:
+                            - male
+                            - female
+                          example: "male"
+                        about:
+                          type: string
+                          example: ""
+                        city:
+                          type: string
+                          example: "Russia"
+                        country:
+                          type: string
+                          example: "Krasnoyarsk"
+                        birthday:
+                          type: string
+                          format: date-time
+                          example: "2024-12-01T00:00:00.000Z"
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2024-12-30T18:32:58.469452+07:00"
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          example: "2024-12-30T18:32:58.469452+07:00"
+                  totalCount:
+                    type: integer
+                    example: 10
+                  totalPages:
+                    type: integer
+                    example: 2
+                  page:
+                    type: integer
+                    example: 1
+                  size:
+                    type: integer
+                    example: 5
+                  hasMore:
+                    type: boolean
+                    example: true
+  /auth/logout:
+    post:
+      tags:
+        - user
+      summary: Logout user
+      description: Logout from current session
+      operationId: logout
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: "successful opeartion"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /auth/avatar:
+    post:
+      tags:
+        - user
+      summary: Upload avatar
+      description: Upload avatar to user data
+      operationId: uploadAvatar
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: File with avatar for upload to user
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Only png and jpeg
+              required:
+                - file
+      responses:
+        "204":
+          description: "successful opeartion"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /post:
+    post:
+      tags:
+        - post
+      summary: Create post
+      description: ""
+      operationId: createPost
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Object with data of post
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  example: "description"
+                location:
+                  type: string
+                  example: "location"
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  example: ["tag1", "tag2"]
+              required:
+                - description
+      responses:
+        "201":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  description:
+                    type: string
+                    example: "description"
+                  location:
+                    type: string
+                    example: "location"
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                    example: ["tag1", "tag2"]
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2024-12-30T18:32:58.469452+07:00"
+                  id:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  userId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+    get:
+      tags:
+        - post
+      summary: Get all posts
+      description: "Get all posts (with pagination)"
+      operationId: getAllPosts
+      parameters:
+        - name: page
+          in: query
+          description: Page (for pagination)
+          required: true
+          explode: true
+          schema:
+            type: integer
+          example: 1
+        - name: size
+          in: query
+          description: Size of the amount of posts on one page (for pagination)
+          required: true
+          explode: true
+          schema:
+            type: integer
+          example: 5
+      responses:
+        "200":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        description:
+                          type: string
+                          example: "description"
+                        location:
+                          type: string
+                          example: "location"
+                        tags:
+                          description: "can be optional"
+                          type: array
+                          items:
+                            type: string
+                          example: ["tag1", "tag2"]
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2024-12-30T18:32:58.469452+07:00"
+                        id:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        userId:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        author:
+                          type: string
+                          example: "John James"
+                        imageURLs:
+                          description: "can be optional"
+                          type: array
+                          items:
+                            type: string
+                          example:
+                            [
+                              "posts/ff0350db-7552-4016-a361-6d4112ab7589-image-1.png",
+                              "posts/ff0350db-7552-4016-a361-6d4112ab7589-image-2.png",
+                            ]
+                  totalCount:
+                    type: integer
+                    example: 10
+                  totalPages:
+                    type: integer
+                    example: 2
+                  page:
+                    type: integer
+                    example: 1
+                  size:
+                    type: integer
+                    example: 5
+                  hasMore:
+                    type: boolean
+                    example: true
+  /post/{id}:
+    put:
+      tags:
+        - post
+      summary: Update post
+      description: ""
+      operationId: updatePost
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: "post id"
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+      requestBody:
+        description: Object with data of post
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  example: "description"
+                location:
+                  type: string
+                  description: "can be optional"
+                  example: "location"
+              required:
+                - description
+      responses:
+        "200":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  description:
+                    type: string
+                    example: "description"
+                  location:
+                    type: string
+                    example: "location"
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2024-12-30T18:32:58.469452+07:00"
+                  id:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  userId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+    patch:
+      tags:
+        - post
+      summary: Archive post
+      description: ""
+      operationId: archivePost
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: "post id"
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+      responses:
+        "200":
+          description: "successful opeartion"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+    delete:
+      tags:
+        - post
+      summary: Delete post
+      description: ""
+      operationId: deletePost
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: "post id"
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+      responses:
+        "200":
+          description: "successful opeartion"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+    get:
+      tags:
+        - post
+      summary: Get post by id
+      description: ""
+      operationId: getPostById
+      parameters:
+        - name: id
+          in: path
+          description: "post id"
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+      responses:
+        "200":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  description:
+                    type: string
+                    example: "description"
+                  location:
+                    type: string
+                    example: "location"
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                    example: ["tag1", "tag2"]
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2024-12-30T18:32:58.469452+07:00"
+                  id:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  userId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  author:
+                    type: string
+                    example: "John James"
+                  imageURLs:
+                    description: "can be optional"
+                    type: array
+                    items:
+                      type: string
+                    example:
+                      [
+                        "posts/ff0350db-7552-4016-a361-6d4112ab7589-image-1.png",
+                        "posts/ff0350db-7552-4016-a361-6d4112ab7589-image-2.png",
+                      ]
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+    post:
+      tags:
+        - post
+      summary: Save images to post
+      description: Upload images to post
+      operationId: uploadImages
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Image files for upload to post
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                    description: Only png and jpeg
+              required:
+                - file
+      responses:
+        "200":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  description:
+                    type: string
+                    example: "description"
+                  location:
+                    type: string
+                    example: "location"
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                    example: ["tag1", "tag2"]
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2024-12-30T18:32:58.469452+07:00"
+                  id:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  userId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  imageURLs:
+                    description: "can be optional"
+                    type: array
+                    items:
+                      type: string
+                    example:
+                      [
+                        "posts/ff0350db-7552-4016-a361-6d4112ab7589-image-1.png",
+                        "posts/ff0350db-7552-4016-a361-6d4112ab7589-image-2.png",
+                      ]
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /post/user/{id}:
+    get:
+      tags:
+        - post
+      summary: Get all posts by user
+      description: "Get all posts by user (with pagination)"
+      operationId: getAllPostsByUser
+      parameters:
+        - name: id
+          in: path
+          description: "user id"
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+        - name: page
+          in: query
+          description: Page (for pagination)
+          required: true
+          explode: true
+          schema:
+            type: integer
+          example: 1
+        - name: size
+          in: query
+          description: Size of the amount of posts on one page (for pagination)
+          required: true
+          explode: true
+          schema:
+            type: integer
+          example: 5
+      responses:
+        "200":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        description:
+                          type: string
+                          example: "description"
+                        location:
+                          type: string
+                          example: "location"
+                        tags:
+                          description: "can be optional"
+                          type: array
+                          items:
+                            type: string
+                          example: ["tag1", "tag2"]
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2024-12-30T18:32:58.469452+07:00"
+                        id:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        userId:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        author:
+                          type: string
+                          example: "John James"
+                        imageURLs:
+                          description: "can be optional"
+                          type: array
+                          items:
+                            type: string
+                          example:
+                            [
+                              "posts/ff0350db-7552-4016-a361-6d4112ab7589-image-1.png",
+                              "posts/ff0350db-7552-4016-a361-6d4112ab7589-image-2.png",
+                            ]
+                  totalCount:
+                    type: integer
+                    example: 10
+                  totalPages:
+                    type: integer
+                    example: 2
+                  page:
+                    type: integer
+                    example: 1
+                  size:
+                    type: integer
+                    example: 5
+                  hasMore:
+                    type: boolean
+                    example: true
+  /post/image/{bucket}/{key}:
+    get:
+      tags:
+        - post
+      summary: Get image url of the post
+      description: ""
+      operationId: getImageUrl
+      parameters:
+        - name: bucket
+          in: path
+          description: "bucket name"
+          required: true
+          schema:
+            type: string
+          example: "posts"
+        - name: key
+          in: path
+          description: "image id"
+          required: true
+          explode: true
+          schema:
+            type: string
+          example: "ff0350db-7552-4016-a361-6d4112ab7589-image-1.png"
+      responses:
+        "200":
+          description: "successful opeartion"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "http://127.0.0.1:9000/posts/ff0350db-7552-4016-a361-6d4112ab7589-image-1.png"
+  /post/search/post:
+    get:
+      tags:
+        - post
+      summary: Search posts
+      description: Search for posts with given query (with pagination)
+      operationId: searchPosts
+      parameters:
+        - name: q
+          in: query
+          description: Query for search
+          required: true
+          explode: true
+          schema:
+            type: string
+          example: "some description #tag"
+        - name: page
+          in: query
+          description: Page (for pagination)
+          required: true
+          explode: true
+          schema:
+            type: integer
+          example: 1
+        - name: size
+          in: query
+          description: Size of the amount of posts on one page (for pagination)
+          required: true
+          explode: true
+          schema:
+            type: integer
+          example: 5
+        - name: orderBy
+          in: query
+          description: Order of response
+          required: false
+          explode: true
+          schema:
+            type: string
+            enum:
+              - "date"
+              - "rate"
+          example: "date"
+        - name: location
+          in: query
+          description: Location (city and country) specified by the user during registration
+          required: false
+          explode: true
+          schema:
+            type: string
+          example: "Russia Krasnoyarsk"
+        - name: createdAt
+          in: query
+          description: Minimal date of creation post
+          required: false
+          explode: true
+          schema:
+            type: string
+          example: "2024-12-01"
+      responses:
+        "200":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        description:
+                          type: string
+                          example: "description"
+                        location:
+                          type: string
+                          example: "location"
+                        tags:
+                          description: "can be optional"
+                          type: array
+                          items:
+                            type: string
+                          example: ["tag1", "tag2"]
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2024-12-30T18:32:58.469452+07:00"
+                        id:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        userId:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        author:
+                          type: string
+                          example: "John James"
+                        imageURLs:
+                          description: "can be optional"
+                          type: array
+                          items:
+                            type: string
+                          example:
+                            [
+                              "posts/ff0350db-7552-4016-a361-6d4112ab7589-image-1.png",
+                              "posts/ff0350db-7552-4016-a361-6d4112ab7589-image-2.png",
+                            ]
+                  totalCount:
+                    type: integer
+                    example: 10
+                  totalPages:
+                    type: integer
+                    example: 2
+                  page:
+                    type: integer
+                    example: 1
+                  size:
+                    type: integer
+                    example: 5
+                  hasMore:
+                    type: boolean
+                    example: true
+  /comment:
+    post:
+      tags:
+        - comment
+      summary: Create comment or reply to comment
+      description: ""
+      operationId: createComment
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Object with data of comment
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                postId:
+                  type: string
+                  format: uuid
+                  example: "123e4567-e89b-12d3-a456-426655440000"
+                content:
+                  type: string
+                  example: "something"
+                replyTo:
+                  description: "id of the comment to which the reply is created"
+                  type: string
+                  format: uuid
+                  example: "123e4567-e89b-12d3-a456-426655440000"
+              required:
+                - postId
+                - content
+      responses:
+        "201":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  userId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  postId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  replyTo:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  content:
+                    type: string
+                    example: "something"
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2024-12-30T18:32:58.469452+07:00"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /comment/{id}:
+    delete:
+      tags:
+        - comment
+      summary: Delete comment
+      description: ""
+      operationId: deleteComment
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: "comment id"
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+      responses:
+        "200":
+          description: "successful opeartion"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+    get:
+      tags:
+        - comment
+      summary: Get comment by id
+      description: ""
+      operationId: getCommentById
+      parameters:
+        - name: id
+          in: path
+          description: "comment id"
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+      responses:
+        "200":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  userId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  postId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  replyTo:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  content:
+                    type: string
+                    example: "something"
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2024-12-30T18:32:58.469452+07:00"
+                  author:
+                    type: string
+                    example: "John James"
+  /comment/post/{id}:
+    get:
+      tags:
+        - comment
+      summary: Get all comment by post id
+      description: "Get all comment by post id (with pagination)"
+      operationId: getCommentsByPostId
+      parameters:
+        - name: id
+          in: path
+          description: "post id"
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+        - name: page
+          in: query
+          description: Page (for pagination)
+          required: true
+          explode: true
+          schema:
+            type: integer
+          example: 1
+        - name: size
+          in: query
+          description: Size of the amount of comments on one page (for pagination)
+          required: true
+          explode: true
+          schema:
+            type: integer
+          example: 5
+      responses:
+        "200":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalCount:
+                    type: integer
+                    example: 10
+                  totalPages:
+                    type: integer
+                    example: 2
+                  page:
+                    type: integer
+                    example: 1
+                  size:
+                    type: integer
+                    example: 5
+                  hasMore:
+                    type: boolean
+                    example: true
+                  comments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        userId:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        postId:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        replyTo:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        content:
+                          type: string
+                          example: "something"
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2024-12-30T18:32:58.469452+07:00"
+                        author:
+                          type: string
+                          example: "John James"
+  /comment/{id}/reply:
+    get:
+      tags:
+        - comment
+      summary: Get all replys by comment id
+      description: "Get all replys by comment id (with pagination)"
+      operationId: getReplysByCommentId
+      parameters:
+        - name: id
+          in: path
+          description: "comment id"
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+        - name: page
+          in: query
+          description: Page (for pagination)
+          required: true
+          explode: true
+          schema:
+            type: integer
+          example: 1
+        - name: size
+          in: query
+          description: Size of the amount of comments on one page (for pagination)
+          required: true
+          explode: true
+          schema:
+            type: integer
+          example: 5
+      responses:
+        "200":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalCount:
+                    type: integer
+                    example: 10
+                  totalPages:
+                    type: integer
+                    example: 2
+                  page:
+                    type: integer
+                    example: 1
+                  size:
+                    type: integer
+                    example: 5
+                  hasMore:
+                    type: boolean
+                    example: true
+                  comments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        userId:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        postId:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        replyTo:
+                          type: string
+                          format: uuid
+                          example: "123e4567-e89b-12d3-a456-426655440000"
+                        content:
+                          type: string
+                          example: "something"
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2024-12-30T18:32:58.469452+07:00"
+                        author:
+                          type: string
+                          example: "John James"
+  /like/post:
+    post:
+      tags:
+        - like
+      summary: Like post
+      description: ""
+      operationId: likePost
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                postId:
+                  type: string
+                  format: uuid
+                  example: "123e4567-e89b-12d3-a456-426655440000"
+              required:
+                - postId
+      responses:
+        "201":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  userId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  postId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+    delete:
+      tags:
+        - like
+      summary: Unlike post
+      description: ""
+      operationId: unlikePost
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                postId:
+                  type: string
+                  format: uuid
+                  example: "123e4567-e89b-12d3-a456-426655440000"
+              required:
+                - postId
+      responses:
+        "200":
+          description: "successful opeartion"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /like/post/{id}:
+    get:
+      tags:
+        - like
+      summary: Likes count on post
+      description: ""
+      operationId: likesCountPost
+      parameters:
+        - name: id
+          in: path
+          description: "post id"
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+      responses:
+        "200":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  likeCount:
+                    type: integer
+                    example: 0
+  /like/comment:
+    post:
+      tags:
+        - like
+      summary: Like comment
+      description: ""
+      operationId: likeComment
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                commentId:
+                  type: string
+                  format: uuid
+                  example: "123e4567-e89b-12d3-a456-426655440000"
+              required:
+                - commentId
+      responses:
+        "201":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  userId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  commentId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+    delete:
+      tags:
+        - like
+      summary: Unlike comment
+      description: ""
+      operationId: unlikeComment
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                commentId:
+                  type: string
+                  format: uuid
+                  example: "123e4567-e89b-12d3-a456-426655440000"
+              required:
+                - commentId
+      responses:
+        "200":
+          description: "successful opeartion"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
