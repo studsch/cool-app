@@ -88,7 +88,7 @@ const DropSearchMenu: React.FC = () => {
   return (
     <div className="w-[450px] ml-4 mr-4 border-[1px] border-[#6A6A6A] rounded-lg">
       <Input
-        className="w-full h-[30px]  rounded-lg"
+        className="w-full h-[30px]  rounded-lg focus:outline-none"
         type="text"
         value={value}
         onChange={handleChange}

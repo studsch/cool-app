@@ -1,4 +1,5 @@
 import Aside from "@/components/a-side/a-side";
+import PostCard from "@/components/card/card";
 import { RightSidebar } from "@/components/right-sidebar/right-sidebar";
 import Button from "@/components/ui/button/Button";
 
@@ -17,7 +18,6 @@ export default function Feed() {
       name: "Rick",
       link: "@rick",
     },
-
     {
       avatarImage: "https://github.com/shadcn.png",
       avatarFallback: "MP",
@@ -31,7 +31,6 @@ export default function Feed() {
       name: "Rick",
       link: "@rick",
     },
-
     {
       avatarImage: "https://github.com/shadcn.png",
       avatarFallback: "MP",
@@ -53,14 +52,24 @@ export default function Feed() {
     name: "Morty",
     description: "There are some description",
   };
+
+  const photos = [
+    "https://masyamba.ru/леопард-фото/82-леопард-фото-животного.jpg",
+    "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666364979_14-mykaleidoscope-ru-p-krasivie-peizazhi-prirodi-oboi-17.jpg",
+    "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666361504_9-mykaleidoscope-ru-p-peizazhi-prirodi-krasivo-9.jpg",
+    "https://masyamba.ru/леопард-фото/82-леопард-фото-животного.jpg",
+    "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666364979_14-mykaleidoscope-ru-p-krasivie-peizazhi-prirodi-oboi-17.jpg",
+    "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666361504_9-mykaleidoscope-ru-p-peizazhi-prirodi-krasivo-9.jpg",
+    "https://masyamba.ru/леопард-фото/82-леопард-фото-животного.jpg",
+    "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666364979_14-mykaleidoscope-ru-p-krasivie-peizazhi-prirodi-oboi-17.jpg",
+    "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666361504_9-mykaleidoscope-ru-p-peizazhi-prirodi-krasivo-9.jpg",
+  ];
+
   return (
     <>
-      <div className="flex flex-col">
+      <div className="flex flex-col overflow-y-auto h-screen mt-4">
         <div className="bg-white w-[90%] rounded-md p-7 my-5 md:w-[512px] xl:w-[768px] h-[110px] mx-auto">
-          <p>
-            Блок историй, малый приоритет, пока не разрабатывается. Валера
-            поправь Топбар я тебя умоляю
-          </p>
+          <p>Скоро здесь будет блок историй пользователей</p>
         </div>
         <div className="flex gap-4 justify-end my-2 w-[90%] md:w-[512px] xl:w-[768px] h-[110px] mx-auto">
           <Button
@@ -75,7 +84,12 @@ export default function Feed() {
             className="btn btn-primary w-[20px]"
           />
         </div>
-        <p>ВАЛЕРА ниже ВСТАВЛЯЙ КАРТОЧКИ и также пагинацию по скролу</p>
+        {/* Оберните блок с постами в контейнер и добавьте стили для скролла */}
+        <div className="w-full">
+          {photos.map((photo, index) => (
+            <PostCard key={index} photo={photo} />
+          ))}
+        </div>
       </div>
       <div className="my-5 w-[240px] md:flex flex-col gap-4 hidden">
         <RightSidebar

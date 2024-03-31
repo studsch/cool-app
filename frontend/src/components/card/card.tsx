@@ -111,7 +111,7 @@ const PostCard: React.FC<PostCardProps> = ({ photo }) => {
   };
 
   return (
-    <div className="grid place-content-center">
+    <div className="grid place-content-center mt-4 mb-4">
       <span className="align-middle">
         <Card>
           <CardHeader>
@@ -141,8 +141,13 @@ const PostCard: React.FC<PostCardProps> = ({ photo }) => {
               <img
                 src={photo}
                 alt="Post"
-                className="w=[400px] h-[500px] object-cover rounded-lg"
+                className="h-[500px] object-cover rounded-lg"
               />{" "}
+            </div>
+            <div className="w-full h-[50px] mt-4 mb-4">
+              <p className="text text-secondary-colorr">
+                Привет, я сделал новую стрижку, как вам?
+              </p>
             </div>
           </CardContent>
           <CardFooter>
