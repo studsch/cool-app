@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/gofiber/contrib/swagger"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	authHttp "github.com/studsch/cool-app/backend/internal/auth/delivery/http"
@@ -45,6 +46,13 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	a.Use(requestid.New())
 
 	a.Use(mw.RequestLoggerMiddleware())
+
+	a.Use(swagger.New(swagger.Config{
+		BasePath: "/",
+		FilePath: "./docs/swagger.yaml",
+		Path:     "swagger",
+		Title:    "Swagger API Docs",
+	}))
 
 	v1 := a.Group("/api/v1")
 
