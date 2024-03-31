@@ -19,11 +19,11 @@ export const authConfig: AuthOptions = {
                 body: JSON.stringify({login: credentials.login, password: credentials.password}),
               })
               const responeJson = await response.json();
-              const {data, ...errorData} = responeJson;
-              if (errorData.error) return {msg: errorData.msg, error: errorData.error} as User
-            return {id: data['ID'], phone: data['Phone'], name: data['Name'], surname: data['Surname'],
-            date_of_birth: data['DateOfBirth'], gender: data['Gender'], created_at: data['CreatedAt'],
-            updated_at: data['UpdatedAt'], user_role: data['UserRole'], deleted: data['Deleted'], login: data['Login']
+              const {user, error} = responeJson;
+              if (error) return {msg: error, error: error} as User
+            return {id: user['id'], phone: user['phone'], name: user['firstName'], surname: user['lastName'],
+            date_of_birth: user['birthday'], gender: user['gender'], created_at: user['createdAt'],
+            updated_at: user['updatedAt'], user_role: user['userRole'], deleted: user['deleted'], login: user['login']
         } as User
         }}
     )],

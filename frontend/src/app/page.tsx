@@ -1,4 +1,4 @@
-import { CreatePost } from "@/components/create-post/create-post";
+// import { CreatePost } from "@/components/create-post/create-post";
 import { Profile } from "@/components/profile/profile";
 import {
   ProfileInfo,
@@ -61,7 +61,7 @@ export default function Home() {
     <>
       <RightSidebar items={profiles} />
       <Profile info={profileInfo} />
-      <CreatePost />
+      {/* <CreatePost /> */}
     </>
   );
 }
