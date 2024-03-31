@@ -56,7 +56,7 @@ const CommentInput: React.FC<Props> = ({ photo, addComment }) => {
       />
       <Button
         variant="ghost"
-        className="absolute bottom-[4px] left-[470px] pl-[1px] pr-[1px]"
+        className="absolute bottom-[4px] right-0 pl-[1px] pr-[1px] -translate-x-[40%]"
         onClick={handleSmileClick}
       >
         <Smile strokeWidth={1.5} size={24} color="#9B9B9B" />
@@ -72,7 +72,7 @@ const CommentInput: React.FC<Props> = ({ photo, addComment }) => {
       )}
       <Button
         variant="ghost"
-        className="absolute bottom-[4px] left-[440px] pl-[1px] pr-[1px]"
+        className="absolute bottom-[4px] right-0 -translate-x-[160%] pl-[1px] pr-[1px]"
       >
         <Image strokeWidth={1.5} size={24} color="#9B9B9B" />
       </Button>
