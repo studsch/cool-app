@@ -18,6 +18,8 @@ WORKDIR /app
 
 ENV config=docker
 COPY config/config-docker.yaml ./config/config-docker.yaml
+COPY docs/swagger.yaml ./docs/swagger.yaml
+
 COPY --from=builder /app/main ./main
 
 EXPOSE 8000
