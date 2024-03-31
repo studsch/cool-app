@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/gofiber/contrib/swagger"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	authHttp "github.com/studsch/cool-app/backend/internal/auth/delivery/http"
 	authRepository "github.com/studsch/cool-app/backend/internal/auth/repository"
@@ -46,6 +47,11 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	a.Use(requestid.New())
 
 	a.Use(mw.RequestLoggerMiddleware())
+
+	a.Use(cors.New(cors.Config{
+		AllowOrigins: "http://localhost:3000, https://localhost:8000",
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
 
 	a.Use(swagger.New(swagger.Config{
 		BasePath: "/",
