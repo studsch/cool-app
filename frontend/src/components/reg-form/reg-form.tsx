@@ -99,6 +99,7 @@ function RegForm({ children }: { children: React.ReactNode }) {
           window.recaptchaVerifier?.clear();
           window.recaptchaVerifier = undefined;
           confCode.updateNumber(phoneNumber);
+          confCode.updateLogin(form.getValues("login"));
           confCode.updateConfirmResult(confirmationResult);
           confCode.updateStartTime(new Date().getTime());
           router.push("/register");

@@ -12,7 +12,7 @@ export default function OtpFormWrapper() {
   const [needReload, setNeedReload] = useState(false);
   const timeLimit = 60;
   const startTime = useConfirmCode(state => state.startTime);
-  return useConfirmCode(state => state.isLoadLocalStorage) ? (
+  return startTime ? (
     <OtpForm>
       <div className="flex flex-col gap-3 relative !mt-4">
         <Timer

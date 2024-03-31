@@ -29,6 +29,7 @@ import {
   signInWithCredential,
   ConfirmationResult,
 } from "firebase/auth";
+import { useToast } from "../ui/use-toast";
 const formSchema = z.object({
   code: z
     .string()
@@ -44,14 +45,16 @@ export default function OtpForm({ children }: { children: React.ReactNode }) {
   }, []);
   const confirm = useConfirmCode(state => state.confirmResult);
   const router = useRouter();
+  const { toast } = useToast();
   const number = useConfirmCode(state => state.number);
-  console.log(confirm);
+  // console.log(confirm);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       code: "",
     },
   });
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
@@ -59,9 +62,16 @@ export default function OtpForm({ children }: { children: React.ReactNode }) {
       confirm?.verificationId as string,
       values.code as string,
     );
-
-    const res = await signInWithCredential(auth, phoneCredential);
-    console.log(res);
+    try {
+      const res = await signInWithCredential(auth, phoneCredential);
+      router.push("/register/base");
+    } catch (err) {
+      toast({
+        title: "Code error",
+        description: err + "",
+        duration: 2000,
+      });
+    }
   }
 
   const changeLogic = () => {
