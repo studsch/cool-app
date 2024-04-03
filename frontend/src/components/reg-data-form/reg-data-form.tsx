@@ -21,19 +21,29 @@ import Input from "../ui/input/Input";
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import { signOut } from "firebase/auth";
 import { useCallback } from "react";
 import { SelectDatepicker } from "react-select-datepicker";
 import { Spinner } from "@nextui-org/react";
 import { useConfirmCode } from "@/store";
+import RegError from "../errors/reg-error";
 
-function RegDataForm({ children }: { children?: React.ReactNode }) {
+function RegDataForm({
+  children,
+  titles,
+}: {
+  children?: React.ReactNode;
+  titles?: React.ReactNode;
+}) {
   // для даты
   const [dateVal, setDateVal] = useState<Date | null>();
   const [isAuthReady, setIsAuthReady] = useState<boolean>(false);
   const number = useConfirmCode(state => state.number);
   const login = useConfirmCode(state => state.login);
-
+  const startTime = useConfirmCode(state => state.startTime);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const timeLimit = 60;
   const onDateChange = useCallback((date: Date | null) => {
     setDateVal(date);
   }, []);
@@ -87,9 +97,14 @@ function RegDataForm({ children }: { children?: React.ReactNode }) {
         },
       );
       const responeJson = await response.json();
-      console.log(responeJson);
+      if (!responeJson.error) {
+        router.push("/");
+      } else {
+        setIsError(true);
+      }
     }
   }
+
   useEffect(() => {
     const checkAuthState = async () => {
       await auth.authStateReady();
@@ -99,12 +114,19 @@ function RegDataForm({ children }: { children?: React.ReactNode }) {
       setIsAuthReady(true);
       // End of E.g.
     };
+    setIsLoaded(useConfirmCode.persist.hasHydrated());
 
     checkAuthState();
   }, []);
   console.log(login);
-  return isAuthReady && number ? (
-    number == auth.currentUser?.phoneNumber ? (
+  return isAuthReady && isLoaded ? (
+    (console.log(number),
+    auth.currentUser &&
+    number &&
+    !isError &&
+    login &&
+    (new Date().getTime() - Number(startTime)) / 1000 <= timeLimit * 5 &&
+    number == auth.currentUser.phoneNumber ? (
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -235,7 +257,9 @@ function RegDataForm({ children }: { children?: React.ReactNode }) {
           {children}
         </form>
       </Form>
-    ) : null
+    ) : (
+      <RegError></RegError>
+    ))
   ) : (
     <Spinner className="flex mt-4" />
   );
