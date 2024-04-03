@@ -19,11 +19,11 @@ export const authConfig: AuthOptions = {
                 body: JSON.stringify({login: credentials.login, password: credentials.password}),
               })
               const responeJson = await response.json();
-              const {user, error} = responeJson;
+              const {user, error, tokens} = responeJson;
               if (error) return {msg: error, error: error} as User
             return {id: user['id'], phone: user['phone'], name: user['firstName'], surname: user['lastName'],
             date_of_birth: user['birthday'], gender: user['gender'], created_at: user['createdAt'],
-            updated_at: user['updatedAt'], user_role: user['userRole'], deleted: user['deleted'], login: user['login']
+            updated_at: user['updatedAt'], user_role: user['userRole'], deleted: user['deleted'], login: user['login'], tokens: tokens
         } as User
         }}
     )],
@@ -44,8 +44,8 @@ export const authConfig: AuthOptions = {
                     created_at: user.created_at,
                     updated_at: user.updated_at,
                     user_role: user.user_role,
-                    deleted: user.deleted
-                    
+                    deleted: user.deleted,
+                    tokens: user.tokens
                 }
             }
             return token
@@ -64,7 +64,8 @@ export const authConfig: AuthOptions = {
                     created_at: token.created_at,
                     updated_at: token.updated_at,
                     user_role: token.user_role,
-                    deleted: token.deleted
+                    deleted: token.deleted,
+                    tokens: token.tokens
                 }
             }
         },

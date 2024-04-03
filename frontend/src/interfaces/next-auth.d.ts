@@ -12,6 +12,7 @@ declare module "next-auth" {
     updated_at: string,
     user_role: string,
     deleted: string,
+    tokens: {access: string, refresh: string}
     error: boolean | undefined,
     msg: string | undefined
   }
@@ -26,6 +27,7 @@ declare module "next-auth" {
       gender: string,
       created_at: string,
       updated_at: string,
+      tokens: {access: string, refresh: string}
       user_role: string,
       deleted: string,
     }
@@ -38,6 +40,7 @@ declare module "next-auth" {
         gender: string,
         created_at: string,
         updated_at: string,
+        tokens: {access: string, refresh: string}
         user_role: string,
         deleted: string,
     }
