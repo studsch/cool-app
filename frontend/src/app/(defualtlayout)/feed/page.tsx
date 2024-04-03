@@ -67,11 +67,11 @@ export default function Feed() {
 
   return (
     <>
-      <div className="flex flex-col overflow-y-auto h-screen mt-4">
-        <div className="bg-white w-[90%] rounded-md p-7 my-5 md:w-[512px] xl:w-[768px] h-[110px] mx-auto">
+      <div className="flex flex-col overflow-x-hidden w-[90%] mt-5 md:w-[512px] xl:w-[768px] mx-auto">
+        <div className="bg-white rounded-md p-7 mb-5 w-full">
           <p>Скоро здесь будет блок историй пользователей</p>
         </div>
-        <div className="flex gap-4 justify-end my-2 w-[90%] md:w-[512px] xl:w-[768px] h-[110px] mx-auto">
+        <div className="flex gap-4 justify-end my-2">
           <Button
             type="button"
             text="Followers"
@@ -85,7 +85,7 @@ export default function Feed() {
           />
         </div>
         {/* Оберните блок с постами в контейнер и добавьте стили для скролла */}
-        <div className="w-full">
+        <div className="md:w-[512px] xl:w-[768px] overflow-hidden">
           {photos.map((photo, index) => (
             <PostCard key={index} photo={photo} />
           ))}
