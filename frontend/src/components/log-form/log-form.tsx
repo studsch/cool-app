@@ -62,6 +62,7 @@ function LogForm({ children }: { children: React.ReactNode }) {
       toast({
         title: "Sign in Error",
         description: res?.error,
+        duration: 2000,
       });
       // console.log(res);
     }

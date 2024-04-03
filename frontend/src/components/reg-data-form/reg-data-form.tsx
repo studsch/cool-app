@@ -22,6 +22,7 @@ import Input from "../ui/input/Input";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
+import { signIn } from "next-auth/react";
 import { useCallback } from "react";
 import { SelectDatepicker } from "react-select-datepicker";
 import { Spinner } from "@nextui-org/react";
@@ -98,7 +99,18 @@ function RegDataForm({
       );
       const responeJson = await response.json();
       if (!responeJson.error) {
-        router.push("/");
+        const res = await signIn("credentials", {
+          login: login,
+          password: values.password,
+          redirect: false,
+        });
+        // console.log(res);
+        if (res && res.error == null) {
+          // console.log(await getSession());
+          router.push("/register/photo");
+        } else {
+          setIsError(true);
+        }
       } else {
         setIsError(true);
       }

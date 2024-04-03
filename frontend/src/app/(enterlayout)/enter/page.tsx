@@ -11,10 +11,10 @@ import Link from "next/link";
 export default function Enter() {
   return (
     <>
-      <div className="w-full h-[80vh] 2xl:w-[1000px]  2xl:h-[640px] md:h-[500px] sm:h-[460px] lg:w-[800px] m-auto flex relative z-10 shadow-3xl rounded-xl sm:rounded-md overflow-hidden">
+      <div className="w-full h-fit 2xl:w-[1000px]  2xl:h-[640px] md:h-[500px] sm:h-[460px] lg:w-[800px] m-auto flex relative z-10 shadow-3xl rounded-xl sm:rounded-md overflow-hidden">
         <div
           id="log-window"
-          className="py-10 min-h-[400px] w-full px-unit-sm sm:px-unit-xl lg:px-unit-2xl h-full bg-white relative flex flex-col justify-center items-center overflow-auto "
+          className="py-10 min-h-[400px] w-full px-unit-sm sm:px-unit-xl lg:px-unit-2xl h-full bg-white relative sm:flex flex flex-col justify-center items-center overflow-auto "
         >
           <h1 className="w-0 h-0 overflow-hidden">Memories</h1>
           <MemoriesSign className="md:h-24 h-16" />
