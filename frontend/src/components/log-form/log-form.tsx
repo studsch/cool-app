@@ -32,10 +32,12 @@ function LogForm({ children }: { children: React.ReactNode }) {
   const formSchema = z.object({
     login: z
       .string()
-      .min(5, { message: "Логин должен быть длинее 5 символов" }),
+      .min(6, { message: "Логин должен быть длинее 6 символов" })
+      .max(31, { message: "Макимум кол-во символов не более 31" }),
     password: z
       .string()
-      .min(8, { message: "Пароль должен быть длинее 8 символов" }),
+      .min(8, { message: "Пароль должен содержать больше 7 символов" })
+      .max(250, { message: "Пароль не должен превышать 250 символов" }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({

@@ -50,17 +50,31 @@ function RegDataForm({
   }, []);
 
   const router = useRouter();
-  const formSchema = z.object({
-    password: z
-      .string()
-      .min(5, { message: "Логин должен быть длинее 5 символов" }),
-    rePassword: z.string(),
-    // .optional()
-    name: z.string(),
-    surname: z.string(),
-    birthDay: z.date(),
-    gender: z.enum(["any", "female", "male"]),
-  });
+  const formSchema = z
+    .object({
+      password: z
+        .string()
+        .min(8, { message: "Пароль должен содержать больше 7 символов" })
+        .max(250, { message: "Пароль не должен превышать 250 символов" }),
+      rePassword: z.string(),
+      // .optional()
+      name: z
+        .string()
+        .max(31, { message: "Имя не должно превышать 31 символов" })
+        .min(2, { message: "Имя должно содержать более 1 символа" }),
+      surname: z
+        .string()
+        .max(31, { message: "Фамилия не должно превышать 31 символов" })
+        .min(2, { message: "Фамилия должно содержать более 1 символа" }),
+      birthDay: z
+        .date()
+        .max(new Date(), { message: "Вы не могли родиться в будущем" }),
+      gender: z.enum(["any", "female", "male"]),
+    })
+    .refine(obj => obj.password === obj.rePassword, {
+      message: "Пароли не совпадают",
+      path: ["rePassword"],
+    });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
