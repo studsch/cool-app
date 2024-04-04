@@ -31,7 +31,25 @@ export const authConfig: AuthOptions = {
         signIn: '/enter'
     },
     callbacks: {
-        async jwt({token, user}) {
+        async jwt({token, user, trigger, session}) {
+          if (trigger == 'update') {
+            if(session.user) {
+              return {
+                ...token,
+                login: session.user.login,
+                phone: session.user.phone,
+                name: session.user.name,
+                surname: session.user.surname,
+                date_of_birth: session.user.date_of_birth,
+                gender: session.user.gender,
+                created_at: session.user.created_at,
+                updated_at: session.user.updated_at,
+                user_role: session.user.user_role,
+                deleted: session.user.deleted,
+                tokens: session.user.tokens
+              }
+            }
+          }
             if (user) {
                 return{
                     ...token,
