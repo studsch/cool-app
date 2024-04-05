@@ -31,10 +31,10 @@ type UserList struct {
 // User Users base model
 type User struct {
 	ID          uuid.UUID  `json:"id,omitempty" validate:"omitempty"`
-	FirstName   string     `json:"firstName,omitempty" validate:"omitempty,lte=30"`
-	LastName    string     `json:"lastName,omitempty" validate:"omitempty,lte=30"`
-	Login       string     `json:"login,omitempty" validate:"omitempty,gte=8,lte=30"`
-	Password    string     `json:"password,omitempty" validate:"omitempty,gte=8"`
+	FirstName   string     `json:"firstName,omitempty" validate:"omitempty,gte=2,lte=31"`
+	LastName    string     `json:"lastName,omitempty" validate:"omitempty,gte=2,lte=31"`
+	Login       string     `json:"login,omitempty" validate:"omitempty,gte=6,lte=31"`
+	Password    string     `json:"password,omitempty" validate:"omitempty,gte=8,lte=250"`
 	PhoneNumber *string    `json:"phoneNumber,omitempty" validate:"omitempty,e164"`
 	Role        *string    `json:"role,omitempty" validate:"omitempty,lte=10"`
 	Avatar      *string    `json:"avatar,omitempty" validate:"omitempty"`
