@@ -106,3 +106,20 @@ func (mw *MiddlewareManager) validateJWT(tokenString string, c *fiber.Ctx) error
 
 	return nil
 }
+
+func (mw *MiddlewareManager) OwnerMiddleware() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		user, err := utils.GetUserFromCtx(c.UserContext())
+		if err != nil {
+			mw.logger.Error("auth middleware", err)
+			return c.Status(http.StatusUnauthorized).JSON(httpErrors.NewUnauthorizedError(httpErrors.Unauthorized))
+		}
+
+		if user.ID.String() != c.Params("id") {
+			mw.logger.Errorf("auth middleware, not owner")
+			return c.Status(http.StatusForbidden).JSON(httpErrors.NewForbiddenError(httpErrors.Forbidden))
+		}
+
+		return c.Next()
+	}
+}

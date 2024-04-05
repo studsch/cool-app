@@ -155,3 +155,14 @@ func (u *authUC) generateAWSMinioURL(bucket string, key string) string {
 
 	return fmt.Sprintf("%s/%s/%s", u.cfg.AWS.MinioEndpoint, bucket, key)
 }
+
+func (u *authUC) Update(ctx context.Context, user *models.User) (*models.User, error) {
+	updatedUser, err := u.authRepo.Update(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+
+	updatedUser.SanitizePassword()
+
+	return updatedUser, nil
+}

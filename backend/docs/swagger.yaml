@@ -478,6 +478,152 @@ paths:
           description: "successful opeartion"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
+  /auth/{id}:
+    put:
+      tags:
+        - user
+      summary: Update user
+      description: ""
+      operationId: updateUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: "user id"
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+      requestBody:
+        description: User object to update
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: "John"
+                lastName:
+                  type: string
+                  example: "James"
+                login:
+                  type: string
+                  example: "johnjames123"
+                password:
+                  type: string
+                  example: "123456789"
+                phoneNumber:
+                  type: string
+                  example: "+7123456789"
+                role:
+                  type: string
+                  enum:
+                    - user
+                    - admin
+                  example: "user"
+                avatar:
+                  type: string
+                  example: ""
+                gender:
+                  type: string
+                  enum:
+                    - male
+                    - female
+                  example: "male"
+                about:
+                  type: string
+                  example: ""
+                city:
+                  type: string
+                  example: "Russia"
+                country:
+                  type: string
+                  example: "Krasnoyarsk"
+                birthday:
+                  type: string
+                  format: date-time
+                  example: "2024-02-19T00:00:00.000Z"
+      responses:
+        "200":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  tokens:
+                    type: object
+                    properties:
+                      access:
+                        type: string
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTE4MDE5NzgsImlkIjoiMzFmZjY2NmMtMDEwYS00ZjM4LWFkYTctYmNjM2I0MjBlNWE3In0.fs-NaqGQLx-_Up-tvhonywSrrh5d83JBauCb0LwoFvg"
+                      refresh:
+                        type: string
+                        example: "43f5412e381b378d4f406e98eb4c12b849e73b9d237f383cb557ab3ddc7024a8.1712014378"
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        example: "123e4567-e89b-12d3-a456-426655440000"
+                      firstName:
+                        type: string
+                        example: "John"
+                      lastName:
+                        type: string
+                        example: "James"
+                      login:
+                        type: string
+                        example: "johnjames123"
+                      password:
+                        type: string
+                        example: "123456789"
+                      phoneNumber:
+                        type: string
+                        example: "+7123456789"
+                      role:
+                        type: string
+                        enum:
+                          - user
+                          - admin
+                        example: "user"
+                      avatar:
+                        type: string
+                        example: ""
+                      gender:
+                        type: string
+                        enum:
+                          - male
+                          - female
+                        example: "male"
+                      about:
+                        type: string
+                        example: ""
+                      city:
+                        type: string
+                        example: "Russia"
+                      country:
+                        type: string
+                        example: "Krasnoyarsk"
+                      birthday:
+                        type: string
+                        format: date-time
+                        example: "2024-12-01T00:00:00.000Z"
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2024-12-30T18:32:58.469452+07:00"
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: "2024-12-30T18:32:58.469452+07:00"
   /post:
     post:
       tags:
