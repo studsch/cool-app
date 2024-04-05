@@ -1730,6 +1730,128 @@ paths:
           description: "successful opeartion"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
+  /user/follow:
+    post:
+      tags:
+        - user
+      summary: Follow to user
+      description: ""
+      operationId: followToUser
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Object with data of follow
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                followToUserId:
+                  type: string
+                  format: uuid
+                  example: "123e4567-e89b-12d3-a456-426655440000"
+                notificationOn:
+                  type: boolean
+                  example: false
+              required:
+                - followToUserId
+      responses:
+        "201":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  userId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  followToUserId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  notificationOn:
+                    type: boolean
+                    example: false
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /user/follow/{id}:
+    put:
+      tags:
+        - user
+      summary: Update follow notification
+      description: ""
+      operationId: updateFollow
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: "user id who to follow"
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+        - name: notificationOn
+          in: query
+          description: Query for search
+          required: true
+          explode: true
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: "successful opeartion"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  userId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  followToUserId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426655440000"
+                  notificationOn:
+                    type: boolean
+                    example: false
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+    delete:
+      tags:
+        - user
+      summary: Unfollow user
+      description: ""
+      operationId: unfollowUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: "user id who to follow"
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+      responses:
+        "200":
+          description: "successful opeartion"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
 components:
   securitySchemes:

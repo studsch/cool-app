@@ -78,3 +78,14 @@ CREATE TABLE post_tags
     post_id UUID NOT NULL REFERENCES post (id) ON DELETE CASCADE,
     tag_id  UUID NOT NULL REFERENCES tags (id) ON DELETE CASCADE
 );
+
+CREATE TABLE follow
+(
+    id                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id           UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    follow_to_user_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    notification_on   BOOLEAN          DEFAULT FALSE
+);
+
+ALTER TABLE follow
+ADD UNIQUE (user_id, follow_to_user_id);

@@ -37,6 +37,7 @@ var (
 	InternalServerError   = errors.New("internal Server Error")
 	RequestTimeoutError   = errors.New("request Timeout")
 	ExistsEmailError      = errors.New("user with given email already exists")
+	ExistsFollowError     = errors.New("user already followed")
 	InvalidJWTToken       = errors.New("invalid JWT token")
 	InvalidJWTClaims      = errors.New("invalid JWT claims")
 	NotAllowedImageHeader = errors.New("not allowed image header")
@@ -176,6 +177,9 @@ func ParseErrors(err error) RestErr {
 
 func parseSqlErrors(err error) RestErr {
 	if strings.Contains(err.Error(), "23505") {
+		if strings.Contains(err.Error(), "follow_user_id_follow_to_user_id_key") {
+			return NewRestError(http.StatusBadRequest, ExistsFollowError.Error(), err)
+		}
 		return NewRestError(http.StatusBadRequest, ExistsEmailError.Error(), err)
 	}
 
