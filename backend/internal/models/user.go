@@ -31,14 +31,14 @@ type UserList struct {
 // User Users base model
 type User struct {
 	ID          uuid.UUID  `json:"id,omitempty" validate:"omitempty"`
-	FirstName   string     `json:"firstName,omitempty" validate:"required,lte=30"`
-	LastName    string     `json:"lastName,omitempty" validate:"required,lte=30"`
-	Login       string     `json:"login,omitempty" validate:"required,gte=8,lte=30"`
-	Password    string     `json:"password,omitempty" validate:"required,gte=8"`
-	PhoneNumber *string    `json:"phoneNumber,omitempty" validate:"required,e164"`
+	FirstName   string     `json:"firstName,omitempty" validate:"omitempty,lte=30"`
+	LastName    string     `json:"lastName,omitempty" validate:"omitempty,lte=30"`
+	Login       string     `json:"login,omitempty" validate:"omitempty,gte=8,lte=30"`
+	Password    string     `json:"password,omitempty" validate:"omitempty,gte=8"`
+	PhoneNumber *string    `json:"phoneNumber,omitempty" validate:"omitempty,e164"`
 	Role        *string    `json:"role,omitempty" validate:"omitempty,lte=10"`
 	Avatar      *string    `json:"avatar,omitempty" validate:"omitempty"`
-	Gender      *string    `json:"gender,omitempty" validate:"required,oneof=male female"`
+	Gender      *string    `json:"gender,omitempty" validate:"omitempty,oneof=male female"`
 	About       *string    `json:"about,omitempty" validate:"omitempty,lte=1024"`
 	City        *string    `json:"city,omitempty" validate:"omitempty,lte=24"`
 	Country     *string    `json:"country,omitempty" validate:"omitempty,lte=24"`

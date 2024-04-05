@@ -254,3 +254,32 @@ func (h *authHandlers) UploadAvatar() fiber.Handler {
 		return c.Status(fiber.StatusOK).JSON(updatedUser)
 	}
 }
+
+func (h *authHandlers) Update() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		uID, err := uuid.Parse(c.Params("id"))
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		user := &models.User{}
+		user.ID = uID
+
+		if err = utils.ReadRequest(c, user); err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		updatedUser, err := h.authUC.Update(c.UserContext(), user)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(updatedUser)
+	}
+}
