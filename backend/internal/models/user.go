@@ -47,6 +47,13 @@ type User struct {
 	UpdatedAt   time.Time  `json:"updatedAt,omitempty" validate:"omitempty"`
 }
 
+type UserFollow struct {
+	ID             uuid.UUID `json:"id,omitempty" validate:"omitempty"`
+	UserID         uuid.UUID `json:"userId" validate:"required"`
+	FollowToUserID uuid.UUID `json:"followToUserId" validate:"required"`
+	NotificationOn bool      `json:"notificationOn" validate:"omitempty"`
+}
+
 // UserWithTokens Users model with tokens
 type UserWithTokens struct {
 	User         *User  `json:"user"`
