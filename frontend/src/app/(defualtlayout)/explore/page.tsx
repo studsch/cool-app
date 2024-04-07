@@ -9,17 +9,7 @@ export default function Explore() {
         {/* <SearchUser></SearchUser>
           <hr className="rounded-md border-[#F2F2F2] w-full border-t-2" />
           <SearchUser isSubscribed={true}></SearchUser> */}
-        <SearchUsers
-          users={[
-            { id: 1 },
-            { id: 2 },
-            { id: 3 },
-            { id: 4 },
-            { id: 5 },
-            { id: 6 },
-            { id: 7 },
-          ]}
-        ></SearchUsers>
+        <SearchUsers></SearchUsers>
         <LoadMore />
       </SearchForm>
     </>

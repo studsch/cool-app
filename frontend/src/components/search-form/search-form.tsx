@@ -5,7 +5,7 @@ import { useForm, SubmitErrorHandler } from "react-hook-form";
 import * as z from "zod";
 import Aside from "../a-side/a-side";
 import { RadioGroup, Radio } from "@nextui-org/react";
-
+import { useSearch } from "@/store";
 import SubForm from "./sub-form";
 import {
   Drawer,
@@ -33,9 +33,18 @@ import Input from "../ui/input/Input";
 
 import { useState } from "react";
 import { useToast } from "../ui/use-toast";
+import { useRouter } from "next/router";
+import { json } from "stream/consumers";
 
 function SearchForm({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
+  const page = useSearch(state => state.page);
+  const size = useSearch(state => state.size);
+  const updateError = useSearch(state => state.updateError);
+  const updateArgs = useSearch(state => state.updateArgs);
+  const updateType = useSearch(state => state.updateType);
+  const nextSearch = useSearch(state => state.nextSearch);
+  const resetSearch = useSearch(state => state.resetSearch);
   const [cities, setCities] = useState<string[]>([]);
   const width = useResize();
   const formSchema = z
@@ -45,12 +54,12 @@ function SearchForm({ children }: { children: React.ReactNode }) {
       startAge: z
         .string()
         .min(0, { message: "min 0" })
-        .max(130, { message: "max 130" }),
+        .max(100, { message: "max 100" }),
       endAge: z
         .string()
         .min(0, { message: "min 0" })
-        .max(130, { message: "max 130" }),
-      gender: z.string(),
+        .max(100, { message: "max 100" }),
+      gender: z.enum(["any", "female", "male"]),
       type: z.string(),
       country: z.string(),
       city: z.string(),
@@ -63,17 +72,32 @@ function SearchForm({ children }: { children: React.ReactNode }) {
       path: ["startAge"],
     })
     .refine(
-      obj => obj.startDate && obj.endDate && obj.startDate <= obj.endDate,
+      obj =>
+        (obj.startDate && obj.endDate && obj.startDate <= obj.endDate) ||
+        !obj.endDate ||
+        !obj.startDate,
       { message: "Start is bigger", path: ["endDate"] },
     );
 
-  const defaultValues = {
+  const defaultValues: {
+    search: string;
+    filter: string;
+    startAge: string;
+    endAge: string;
+    gender: "male" | "female" | "any";
+    type: string;
+    country: string;
+    city: string;
+    startDate: Date | undefined;
+    endDate: Date | undefined;
+    useHashtegs: boolean;
+  } = {
     search: "",
     filter: "0",
-    startAge: "0",
-    endAge: "130",
-    gender: "0",
-    type: "1",
+    startAge: "20",
+    endAge: "100",
+    gender: "male",
+    type: "users",
     country: "",
     city: "",
     startDate: undefined,
@@ -87,7 +111,24 @@ function SearchForm({ children }: { children: React.ReactNode }) {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("submite");
+    resetSearch();
+    console.log(page);
+    const params = {
+      q: values.search,
+      page: page.toString(),
+      size: size.toString(),
+      gender: values.gender,
+      city: values.city,
+      country: values.country,
+      ageStart: values.startAge,
+      ageEnd: values.endAge,
+    };
+    const u = new URLSearchParams(params).toString();
+    console.log(u);
+    updateType(values.type);
+    updateError(onError);
+    updateArgs(u);
+    nextSearch();
   }
 
   function onError() {
@@ -200,9 +241,30 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                       orientation="horizontal"
                       color="primary"
                       {...field}
+                      onChange={value => {
+                        value.currentTarget.onchange = field.onChange;
+                        form.setValue("type", value.currentTarget.value);
+                        resetSearch();
+                        const values = form.getValues();
+                        const params = {
+                          q: values.search,
+                          page: page.toString(),
+                          size: size.toString(),
+                          gender: values.gender,
+                          city: values.city,
+                          country: values.country,
+                          ageStart: values.startAge,
+                          ageEnd: values.endAge,
+                        };
+                        const u = new URLSearchParams(params).toString();
+                        updateType(values.type);
+                        updateError(onError);
+                        updateArgs(u);
+                        nextSearch();
+                      }}
                     >
                       <Radio
-                        value="0"
+                        value="posts"
                         size="sm"
                         classNames={{
                           label:
@@ -213,7 +275,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                         Posts
                       </Radio>
                       <Radio
-                        value="1"
+                        value="users"
                         size="sm"
                         classNames={{
                           label:

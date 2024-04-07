@@ -54,7 +54,7 @@ type Props = {
       filter: string;
       startAge: string;
       endAge: string;
-      gender: string;
+      gender: "any" | "female" | "male";
       type: string;
       country: string;
       city: string;
@@ -140,7 +140,7 @@ export default function SubForm(props: Props) {
             </AccordionTrigger>
             {props.minWidth && width >= props.minWidth && (
               <AccordionContent className="ml-1">
-                {props.form.getValues("type") == "1" ? (
+                {props.form.getValues("type") == "users" ? (
                   <>
                     <h3 className="mb-5">Age</h3>
                     <div className="flex">
@@ -197,7 +197,7 @@ export default function SubForm(props: Props) {
                               {...field}
                             >
                               <Radio
-                                value="0"
+                                value="male"
                                 size="sm"
                                 classNames={{
                                   label: " text-text-primary-color md:mr-7",
@@ -206,7 +206,7 @@ export default function SubForm(props: Props) {
                                 Male
                               </Radio>
                               <Radio
-                                value="1"
+                                value="female"
                                 size="sm"
                                 classNames={{
                                   label: " text-text-primary-color",
@@ -215,7 +215,7 @@ export default function SubForm(props: Props) {
                                 Female
                               </Radio>
                               <Radio
-                                value="2"
+                                value="any"
                                 size="sm"
                                 classNames={{
                                   label: " text-text-primary-color",
@@ -293,14 +293,19 @@ export default function SubForm(props: Props) {
                                   value={country}
                                   key={country}
                                   onSelect={() => {
-                                    props.form.setValue("country", country);
+                                    if (country != "Select country") {
+                                      props.form.setValue("country", country);
+                                    } else {
+                                      props.form.setValue("country", "");
+                                    }
                                     props.form.setValue("city", "");
                                     setOpenCountries(false);
-                                    props.setCities(
-                                      countries[
+                                    props.setCities([
+                                      "Select city",
+                                      ...countries[
                                         country as string as keyof typeof countries
                                       ],
-                                    );
+                                    ]);
                                   }}
                                 >
                                   {country}
@@ -360,7 +365,11 @@ export default function SubForm(props: Props) {
                                   value={city}
                                   key={city}
                                   onSelect={() => {
-                                    props.form.setValue("city", city);
+                                    if (city != "Select city") {
+                                      props.form.setValue("city", city);
+                                    } else {
+                                      props.form.setValue("city", "");
+                                    }
                                     setOpenCities(false);
                                   }}
                                 >
