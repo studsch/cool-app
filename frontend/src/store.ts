@@ -1,4 +1,4 @@
-import { any, number } from "zod";
+import { any, boolean, number } from "zod";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import FetchUsers from "./fetch/search";
@@ -58,6 +58,7 @@ interface SearchState {
   size: number;
   type: string;
   args: string;
+  isLoading: boolean;
   hasMore: boolean;
   error: () => void;
   updateType: (type: string) => void;
@@ -75,6 +76,7 @@ export const useSearch = create<SearchState>()(
     type: "users",
     hasMore: false,
     args: "",
+    isLoading: false,
     error: () => {},
     updateType: (type: string) => set({ type: type }),
     updateArgs: (args: string) => set({ args: args }),
@@ -89,9 +91,11 @@ export const useSearch = create<SearchState>()(
         error = state.error;
       });
       if (type == "users") {
+        set({ isLoading: true });
         const res = await FetchUsers(args);
         const users = res.users as SearchUser[];
         const totalPages = res.totalPages;
+        set({ isLoading: false });
         if (res.error) {
           error();
         } else {
@@ -99,7 +103,7 @@ export const useSearch = create<SearchState>()(
             state.searchs = [...state.searchs, ...users];
             state.hasMore = res.hasMore;
             if (state.page < totalPages) {
-              state.page = res.page + 1;
+              state.page += 1;
             }
           });
         }
