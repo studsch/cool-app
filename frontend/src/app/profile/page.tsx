@@ -16,14 +16,15 @@ import data from "@/test_data/slider/slider";
 export default function Home() {
   //пример использования
   const { data: session, status, update } = useSession();
+
   // update({ user: { ...session?.user, name: "timur" } }); можно еще использовать await судя по видео с ютуба
   return (
     <>
       <button
         type="button"
         onClick={() => {
-          console.log(session);
-          update({ user: { ...session?.user, name: "timur" } });
+          // console.log(session);
+          // update({ user: { ...session?.user, name: "timur" } });
         }}
       >
         Button
