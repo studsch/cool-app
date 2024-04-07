@@ -54,7 +54,7 @@ export default function Feed() {
   };
 
   const photos = [
-    "https://masyamba.ru/леопард-фото/82-леопард-фото-животного.jpg",
+    "https://i.pinimg.com/originals/eb/fa/11/ebfa114acec9230abc9775b7996e04ea.jpg",
     "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666364979_14-mykaleidoscope-ru-p-krasivie-peizazhi-prirodi-oboi-17.jpg",
     "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666361504_9-mykaleidoscope-ru-p-peizazhi-prirodi-krasivo-9.jpg",
     "https://masyamba.ru/леопард-фото/82-леопард-фото-животного.jpg",
@@ -84,7 +84,6 @@ export default function Feed() {
             className="btn btn-primary w-[20px]"
           />
         </div>
-        {/* Оберните блок с постами в контейнер и добавьте стили для скролла */}
         <div className="md:w-[512px] xl:w-[768px] overflow-hidden">
           {photos.map((photo, index) => (
             <PostCard key={index} photo={photo} />
