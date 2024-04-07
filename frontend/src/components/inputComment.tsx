@@ -62,7 +62,7 @@ const CommentInput: React.FC<Props> = ({ photo, addComment }) => {
         <Smile strokeWidth={1.5} size={24} color="#9B9B9B" />
       </Button>
       {showSmileMenu && (
-        <div className="absolute bottom-[50px] left-[270px] flex flex-wrap bg-white border border-gray-300 p-2 rounded">
+        <div className="absolute bottom-[50px] pl-[1px] pr-[1px] right-0 flex flex-wrap bg-white border border-gray-300 p-2 rounded">
           {smileys.map((smile, index) => (
             <button key={index} onClick={() => handleSmileSelect(smile)}>
               {smile}

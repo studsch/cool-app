@@ -113,7 +113,7 @@ const PostCard: React.FC<PostCardProps> = ({ photo }) => {
   return (
     <div className="grid place-content-center mt-4 mb-4">
       <span className="align-middle">
-        <Card>
+        <Card className="overflow-y-auto max-h-screen">
           <CardHeader>
             <div className="flex justify-between">
               <div className="grid place-content-center ">
@@ -137,15 +137,15 @@ const PostCard: React.FC<PostCardProps> = ({ photo }) => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid place-content-center">
+            <div className="flex justify-center items-center overflow-hidden rounded-lg h-[500px]">
               <img
                 src={photo}
                 alt="Post"
-                className="h-[500px] object-cover rounded-lg"
-              />{" "}
+                className="h-full w-full object-cover"
+              />
             </div>
-            <div className="w-full h-[50px] mt-4 mb-4">
-              <p className="text text-secondary-colorr">
+            <div className="w-full mt-4 mb-4">
+              <p className="text text-secondary-color">
                 Привет, я сделал новую стрижку, как вам?
               </p>
             </div>
@@ -216,7 +216,7 @@ const PostCard: React.FC<PostCardProps> = ({ photo }) => {
                 </Button>
               </div>
               <hr></hr>
-              <div className="overflow-hidden w-full">
+              <div className="overflow-hidden w-full ">
                 {showAllComments ? (
                   commentsData.map((comment, index) => (
                     <Comment
