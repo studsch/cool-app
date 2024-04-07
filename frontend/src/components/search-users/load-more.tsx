@@ -8,23 +8,30 @@ import { useSearch } from "@/store";
 
 export function LoadMore() {
   const nextSearch = useSearch(state => state.nextSearch);
-  const hasMore = useSearch(state => state.hasMore);
+  const totalPages = useSearch(state => state.totalPages);
   const searchs = useSearch(state => state.searchs);
-
+  const updatePage = useSearch(state => state.updatePage);
+  const isLoading = useSearch(state => state.isLoading);
+  const page = useSearch(state => state.page);
+  let error = 0;
   const { ref, inView } = useInView();
-  const loadMoreUsers = async () => {};
+  const loadMoreUsers = async () => {
+    if (page < totalPages && !error) {
+      updatePage(page + 1);
+      error = await nextSearch();
+    }
+  };
   useEffect(() => {
+    console.log(isLoading);
     if (inView) {
       console.log("scrolled to the end");
-      nextSearch();
+      loadMoreUsers();
     }
   }, [inView]);
   return (
     <>
       <SearchUsers searchs={searchs}></SearchUsers>
-      <div ref={ref}>
-        <Spinner className="flex mt-4" />
-      </div>
+      <div ref={ref}>{isLoading && <Spinner className="flex mt-4" />}</div>
     </>
   );
 }

@@ -42,7 +42,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
   const updateArgs = useSearch(state => state.updateArgs);
   const updateType = useSearch(state => state.updateType);
   const nextSearch = useSearch(state => state.nextSearch);
-  const resetSearch = useSearch(state => state.resetSearch);
+  const updatePage = useSearch(state => state.updatePage);
   const [cities, setCities] = useState<string[]>([]);
   const width = useResize();
   const formSchema = z
@@ -109,7 +109,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    resetSearch();
+    updatePage(1);
     const params = {
       q: values.search,
       gender: values.gender,
@@ -238,7 +238,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                       onChange={value => {
                         value.currentTarget.onchange = field.onChange;
                         form.setValue("type", value.currentTarget.value);
-                        resetSearch();
+                        updatePage(1);
                         const values = form.getValues();
                         const params = {
                           q: values.search,

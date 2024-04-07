@@ -11,11 +11,10 @@ type Props = {
   searchs?: any[];
 };
 const SearchUsers: React.FC<Props | any> = props => {
-  const isLoading = useSearch(state => state.isLoading);
   const { classNames, restProps } = props;
   return (
     <div className={`flex flex-col gap-6 mt-6 ${classNames?.wrapper}`}>
-      {isLoading ? null : props.searchs.length != 0 ? (
+      {props.searchs.length != 0 ? (
         props.searchs.map((search: any) => (
           <div className="flex flex-col gap-6" key={search.id}>
             <SearchUser user={search} key={search.id}></SearchUser>
