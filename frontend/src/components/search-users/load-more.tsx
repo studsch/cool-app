@@ -9,6 +9,7 @@ import { useSearch } from "@/store";
 export function LoadMore() {
   const nextSearch = useSearch(state => state.nextSearch);
   const hasMore = useSearch(state => state.hasMore);
+  const searchs = useSearch(state => state.searchs);
 
   const { ref, inView } = useInView();
   const loadMoreUsers = async () => {};
@@ -20,7 +21,10 @@ export function LoadMore() {
   }, [inView]);
   return (
     <>
-      <div ref={ref}>{hasMore && <Spinner className="flex mt-4" />}</div>
+      <SearchUsers searchs={searchs}></SearchUsers>
+      <div ref={ref}>
+        <Spinner className="flex mt-4" />
+      </div>
     </>
   );
 }

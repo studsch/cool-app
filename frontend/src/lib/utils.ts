@@ -7,14 +7,18 @@ export function cn(...inputs: ClassValue[]) {
 
 function rafAsync() {
   return new Promise(resolve => {
-      requestAnimationFrame(resolve); //faster than set time out
+    requestAnimationFrame(resolve); //faster than set time out
   });
 }
 
 export function checkElement(selector: string): any {
   if (document.querySelector(selector) === null) {
-      return rafAsync().then(() => checkElement(selector));
+    return rafAsync().then(() => checkElement(selector));
   } else {
-      return Promise.resolve(true);
+    return Promise.resolve(true);
   }
+}
+
+export function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }

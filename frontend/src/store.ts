@@ -88,7 +88,7 @@ export const useSearch = create<SearchState>()(
       set(state => {
         type = state.type;
         args = state.args;
-        error = state.error;
+        args = args + `&page=${state.page}&size=${state.size}`;
       });
       if (type == "users") {
         set({ isLoading: true });
@@ -100,7 +100,8 @@ export const useSearch = create<SearchState>()(
           error();
         } else {
           set(state => {
-            state.searchs = [...state.searchs, ...users];
+            if (res.totalCount > state.searchs.length)
+              state.searchs = [...state.searchs, ...users];
             state.hasMore = res.hasMore;
             if (state.page < totalPages) {
               state.page += 1;

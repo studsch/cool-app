@@ -38,8 +38,6 @@ import { json } from "stream/consumers";
 
 function SearchForm({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
-  const page = useSearch(state => state.page);
-  const size = useSearch(state => state.size);
   const updateError = useSearch(state => state.updateError);
   const updateArgs = useSearch(state => state.updateArgs);
   const updateType = useSearch(state => state.updateType);
@@ -112,11 +110,8 @@ function SearchForm({ children }: { children: React.ReactNode }) {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     resetSearch();
-    console.log(page);
     const params = {
       q: values.search,
-      page: page.toString(),
-      size: size.toString(),
       gender: values.gender,
       city: values.city,
       country: values.country,
@@ -124,7 +119,6 @@ function SearchForm({ children }: { children: React.ReactNode }) {
       ageEnd: values.endAge,
     };
     const u = new URLSearchParams(params).toString();
-    console.log(u);
     updateType(values.type);
     updateError(onError);
     updateArgs(u);
@@ -248,8 +242,6 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                         const values = form.getValues();
                         const params = {
                           q: values.search,
-                          page: page.toString(),
-                          size: size.toString(),
                           gender: values.gender,
                           city: values.city,
                           country: values.country,
