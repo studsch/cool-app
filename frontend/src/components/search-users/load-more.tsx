@@ -31,7 +31,9 @@ export function LoadMore() {
   return (
     <>
       <SearchUsers searchs={searchs}></SearchUsers>
-      <div ref={ref}>{isLoading && <Spinner className="flex mt-4" />}</div>
+      <div ref={ref}>
+        {isLoading && page != 1 && <Spinner className="flex mt-4" />}
+      </div>
     </>
   );
 }
