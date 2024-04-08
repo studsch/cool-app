@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pkg/errors"
+
 	"github.com/studsch/cool-app/backend/internal/models"
 	"github.com/studsch/cool-app/backend/internal/user"
 )
@@ -68,4 +70,112 @@ func (r *userRepo) UpdateNotification(
 	}
 
 	return followUser, nil
+}
+
+func (r *userRepo) GetUserSubscribersCount(
+	ctx context.Context, userID uuid.UUID,
+) (uint, error) {
+	var count uint
+
+	if err := r.db.QueryRow(
+		ctx, getCountOfSubscribers, &userID,
+	).Scan(&count); err != nil {
+		return 0, errors.Wrap(err, "userRepo.GetUserSubscribersCount.Scan")
+	}
+
+	return count, nil
+}
+
+func (r *userRepo) GetUserSubscriptionsCount(
+	ctx context.Context, userID uuid.UUID,
+) (uint, error) {
+	var count uint
+
+	if err := r.db.QueryRow(
+		ctx, getCountOfSubscriptions, &userID,
+	).Scan(&count); err != nil {
+		return 0, errors.Wrap(err, "userRepo.GetUserSubscriptionsCount.Scan")
+	}
+
+	return count, nil
+}
+
+func (r *userRepo) GetSubscriptionsUserIDs(
+	ctx context.Context, userID uuid.UUID,
+) (*[]uuid.UUID, error) {
+	var subscriptions []uuid.UUID
+
+	rows, err := r.db.Query(ctx, getSubscriptionsUserIDs, userID)
+	if err != nil {
+		return nil, errors.Wrap(err, "userRepo.GetSubscriptionsUserIDs.Query")
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var ID uuid.UUID
+		if err := rows.Scan(&ID); err != nil {
+			return nil, errors.Wrap(
+				err, "userRepo.GetSubscriptionsUserIDs.Scan",
+			)
+		}
+		subscriptions = append(subscriptions, ID)
+	}
+
+	return &subscriptions, nil
+}
+
+func (r *userRepo) GetUsersInfoByIDs(
+	ctx context.Context, userIDs *[]uuid.UUID,
+) (*[]*models.User, error) {
+	var usersList []*models.User
+
+	rows, err := r.db.Query(ctx, getUsersInfoByIDs, &userIDs)
+	if err != nil {
+		return nil, errors.Wrap(
+			err, "userRepo.GetUsersInfoByIDs.Query",
+		)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var u models.User
+		if err := rows.Scan(&u.FirstName); err != nil {
+			return nil, errors.Wrap(
+				err, "userRepo.GetUsersInfoByIDs.Scan",
+			)
+		}
+		usersList = append(usersList, &u)
+	}
+
+	return &usersList, nil
+}
+
+func (r *userRepo) GetSubscriptionsByUserID(
+	ctx context.Context, userID uuid.UUID,
+) (*[]*models.User, error) {
+	var usersList []*models.User
+
+	rows, err := r.db.Query(ctx, getSubscriptionsByUserID, &userID)
+	if err != nil {
+		return nil, errors.Wrap(
+			err, "userRepo.GetSubscriptionsByUserID.Query",
+		)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var u models.User
+		if err := rows.Scan(
+			&u.ID, &u.FirstName, &u.LastName, &u.Login,
+			&u.Avatar, &u.Gender, &u.About, &u.City,
+			&u.Country, &u.Birthday,
+		); err != nil {
+			return nil, errors.Wrap(
+				err, "userRepo.GetSubscriptionsByUserID.Scan",
+			)
+		}
+		usersList = append(usersList, &u)
+	}
+
+	return &usersList, nil
 }

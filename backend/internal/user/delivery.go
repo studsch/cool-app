@@ -6,4 +6,5 @@ type Handlers interface {
 	Follow() fiber.Handler
 	Unfollow() fiber.Handler
 	UpdateNotification() fiber.Handler
+	GetSubscriptions() fiber.Handler
 }

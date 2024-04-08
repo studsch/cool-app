@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+
 	"github.com/studsch/cool-app/backend/config"
 	"github.com/studsch/cool-app/backend/internal/models"
 	"github.com/studsch/cool-app/backend/internal/user"
@@ -96,7 +97,9 @@ func (h *userHandlers) UpdateNotification() fiber.Handler {
 			NotificationOn: notificationOn,
 		}
 
-		updatedFollow, err := h.userUC.UpdateNotification(c.UserContext(), follow)
+		updatedFollow, err := h.userUC.UpdateNotification(
+			c.UserContext(), follow,
+		)
 		if err != nil {
 			utils.LogResponseError(c, h.log, err)
 			status, msg := httpErrors.ErrorResponse(err)
@@ -104,5 +107,35 @@ func (h *userHandlers) UpdateNotification() fiber.Handler {
 		}
 
 		return c.Status(fiber.StatusOK).JSON(updatedFollow)
+	}
+}
+
+func (h *userHandlers) GetSubscriptions() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		userID, err := uuid.Parse(c.Params("userID"))
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		usersList, err := h.userUC.GetSubscriptions(c.UserContext(), userID)
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		for _, value := range *usersList {
+			fmt.Println(value.FirstName)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(
+			fiber.Map{
+				"errors":     false,
+				"users":      *usersList,
+				"totalCount": len(*usersList),
+			},
+		)
 	}
 }

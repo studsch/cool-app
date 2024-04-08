@@ -3,7 +3,9 @@ package usecase
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
+
 	"github.com/studsch/cool-app/backend/config"
 	"github.com/studsch/cool-app/backend/internal/models"
 	"github.com/studsch/cool-app/backend/internal/user"
@@ -31,14 +33,14 @@ func NewUserUC(
 func (u *userUC) FollowToUser(
 	ctx context.Context, follow *models.UserFollow,
 ) (*models.UserFollow, error) {
-	user, err := utils.GetUserFromCtx(ctx)
+	userFromCtx, err := utils.GetUserFromCtx(ctx)
 	if err != nil {
 		return nil, httpErrors.NewUnauthorizedError(
 			errors.WithMessage(err, "userUC.FollowToUser.GetUserFromCtx"),
 		)
 	}
 
-	follow.UserID = user.ID
+	follow.UserID = userFromCtx.ID
 	if err := utils.ValidateStruct(ctx, follow); err != nil {
 		return nil, httpErrors.NewBadRequestError(
 			errors.WithMessage(err, "userUC.FollowToUser.ValidateStruct"),
@@ -56,14 +58,14 @@ func (u *userUC) FollowToUser(
 func (u *userUC) UnfollowUser(
 	ctx context.Context, follow *models.UserFollow,
 ) error {
-	user, err := utils.GetUserFromCtx(ctx)
+	userFromCtx, err := utils.GetUserFromCtx(ctx)
 	if err != nil {
 		return httpErrors.NewUnauthorizedError(
 			errors.WithMessage(err, "userUC.FollowToUser.GetUserFromCtx"),
 		)
 	}
 
-	follow.UserID = user.ID
+	follow.UserID = userFromCtx.ID
 	if err := utils.ValidateStruct(ctx, follow); err != nil {
 		return httpErrors.NewBadRequestError(
 			errors.WithMessage(err, "userUC.FollowToUser.ValidateStruct"),
@@ -80,14 +82,14 @@ func (u *userUC) UnfollowUser(
 func (u *userUC) UpdateNotification(
 	ctx context.Context, follow *models.UserFollow,
 ) (*models.UserFollow, error) {
-	user, err := utils.GetUserFromCtx(ctx)
+	userFromCtx, err := utils.GetUserFromCtx(ctx)
 	if err != nil {
 		return nil, httpErrors.NewUnauthorizedError(
 			errors.WithMessage(err, "userUC.FollowToUser.GetUserFromCtx"),
 		)
 	}
 
-	follow.UserID = user.ID
+	follow.UserID = userFromCtx.ID
 	if err := utils.ValidateStruct(ctx, follow); err != nil {
 		return nil, httpErrors.NewBadRequestError(
 			errors.WithMessage(err, "userUC.FollowToUser.ValidateStruct"),
@@ -100,4 +102,15 @@ func (u *userUC) UpdateNotification(
 	}
 
 	return f, nil
+}
+
+func (u *userUC) GetSubscriptions(
+	ctx context.Context, userID uuid.UUID,
+) (*[]*models.User, error) {
+	usersList, err := u.userRepo.GetSubscriptionsByUserID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return usersList, nil
 }
