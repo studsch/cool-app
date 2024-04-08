@@ -52,7 +52,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos }) => {
       ))}
 
       {selectedPhoto && (
-        <div className="fixed top-0 left-0 z-50 w-full h-full  flex items-center justify-center bg-[#9A9A9A] bg-opacity-50">
+        <div className="fixed overflow-auto top-0 left-0 z-50 w-full h-full bg-[#9A9A9A] bg-opacity-50">
           <div ref={popUpRef} onClick={e => e.stopPropagation()}>
             <PostCard photo={selectedPhoto} />
           </div>
