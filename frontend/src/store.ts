@@ -1,7 +1,7 @@
 import { any, boolean, number } from "zod";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import FetchUsers from "./fetch/search";
+import { FetchUsers, FetchPosts } from "./fetch/search";
 
 // для подтверждения по телефону через firebase
 
@@ -114,7 +114,24 @@ export const useSearch = create<SearchState>()(
           });
         }
       } else {
+        // await new Promise(r => setTimeout(r, 2000)); для теста кружка
+        const res = await FetchPosts(args);
+        set({
+          isLoading: false,
+        });
+        if (res.error) {
+          error();
+          return 1;
+        } else {
+          set(state => {
+            state.page == 1
+              ? (state.searchs = res.posts)
+              : state.searchs.push(...res.posts);
+            state.totalPages = res.totalPages;
+          });
+        }
       }
+      set({ isLoading: true });
       return 0;
     },
   })),

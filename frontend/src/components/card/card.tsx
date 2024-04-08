@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { cn } from "@/lib/utils";
 import AvatarBlock from "@/components/avatarblock/avatarblock";
 import { MoreHorizontal } from "lucide-react";
 import { Image } from "@nextui-org/react";
@@ -47,9 +48,10 @@ interface CommentProps {
 
 interface PostCardProps {
   photo: string; // Фотография для карточки поста
+  className?: string;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ photo }) => {
+const PostCard: React.FC<PostCardProps> = ({ photo, className }) => {
   const [isLiked, setIsLiked] = useState(false);
   const handleLikeClick = () => {
     setIsLiked(!isLiked);
@@ -111,7 +113,7 @@ const PostCard: React.FC<PostCardProps> = ({ photo }) => {
   };
 
   return (
-    <div className="grid place-content-center mt-4 mb-4 ">
+    <div className={cn("grid place-content-center mt-4 mb-4", className)}>
       <span className="align-middle">
         <Card className=" w-full border-none shadow-none">
           <CardHeader>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { Spinner } from "@nextui-org/react";
-import SearchUsers from "./serch-users";
+import Searchs from "./serch-users";
 import { useSearch } from "@/store";
 
 export function LoadMore() {
@@ -12,6 +12,7 @@ export function LoadMore() {
   const searchs = useSearch(state => state.searchs);
   const updatePage = useSearch(state => state.updatePage);
   const isLoading = useSearch(state => state.isLoading);
+  const type = useSearch(state => state.type);
   const page = useSearch(state => state.page);
   let error = 0;
   const { ref, inView } = useInView();
@@ -30,7 +31,7 @@ export function LoadMore() {
   }, [inView]);
   return (
     <>
-      <SearchUsers searchs={searchs}></SearchUsers>
+      <Searchs searchs={searchs} type={type}></Searchs>
       <div ref={ref}>
         {isLoading && page != 1 && <Spinner className="flex mt-4" />}
       </div>
