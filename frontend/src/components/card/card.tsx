@@ -141,7 +141,7 @@ const PostCard: React.FC<PostCardProps> = ({ photo }) => {
               <img
                 src={photo}
                 alt="Post"
-                className="object-cover h-full z-20"
+                className="object-cover max-w-full max-h-[500px] z-20"
               />
               <img
                 src={photo}

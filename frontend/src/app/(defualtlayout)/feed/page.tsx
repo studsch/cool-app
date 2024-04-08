@@ -55,7 +55,7 @@ export default function Feed() {
 
   const photos = [
     "https://i.pinimg.com/originals/eb/fa/11/ebfa114acec9230abc9775b7996e04ea.jpg",
-    "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666364979_14-mykaleidoscope-ru-p-krasivie-peizazhi-prirodi-oboi-17.jpg",
+    "https://kartinki.pics/uploads/posts/2022-03/1647988933_1-kartinkin-net-p-panoramnie-kartinki-1.jpg",
     "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666361504_9-mykaleidoscope-ru-p-peizazhi-prirodi-krasivo-9.jpg",
     "https://masyamba.ru/леопард-фото/82-леопард-фото-животного.jpg",
     "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666364979_14-mykaleidoscope-ru-p-krasivie-peizazhi-prirodi-oboi-17.jpg",
