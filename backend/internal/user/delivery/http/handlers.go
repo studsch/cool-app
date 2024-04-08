@@ -126,15 +126,65 @@ func (h *userHandlers) GetSubscriptions() fiber.Handler {
 			return c.Status(status).JSON(msg)
 		}
 
-		for _, value := range *usersList {
-			fmt.Println(value.FirstName)
-		}
-
 		return c.Status(fiber.StatusOK).JSON(
 			fiber.Map{
 				"errors":     false,
 				"users":      *usersList,
 				"totalCount": len(*usersList),
+			},
+		)
+	}
+}
+
+func (h *userHandlers) GetSubscriptionsCount() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		userID, err := uuid.Parse(c.Params("userID"))
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		count, err := h.userUC.GetUserSubscriptionsCount(
+			c.UserContext(), userID,
+		)
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(
+			fiber.Map{
+				"errors":             false,
+				"countSubscriptions": count,
+			},
+		)
+	}
+}
+
+func (h *userHandlers) GetSubscribersCount() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		userID, err := uuid.Parse(c.Params("userID"))
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		count, err := h.userUC.GetUserSubscribersCount(
+			c.UserContext(), userID,
+		)
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(
+			fiber.Map{
+				"errors":             false,
+				"countSubscriptions": count,
 			},
 		)
 	}

@@ -114,3 +114,25 @@ func (u *userUC) GetSubscriptions(
 
 	return usersList, nil
 }
+
+func (u *userUC) GetUserSubscriptionsCount(
+	ctx context.Context, userID uuid.UUID,
+) (uint, error) {
+	count, err := u.userRepo.GetUserSubscriptionsCount(ctx, userID)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
+func (u *userUC) GetUserSubscribersCount(
+	ctx context.Context, userID uuid.UUID,
+) (uint, error) {
+	count, err := u.userRepo.GetUserSubscribersCount(ctx, userID)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}

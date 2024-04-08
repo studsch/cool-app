@@ -19,4 +19,10 @@ type UseCase interface {
 	GetSubscriptions(
 		ctx context.Context, userID uuid.UUID,
 	) (*[]*models.User, error)
+	GetUserSubscriptionsCount(
+		ctx context.Context, userID uuid.UUID,
+	) (uint, error)
+	GetUserSubscribersCount(
+		ctx context.Context, userID uuid.UUID,
+	) (uint, error)
 }
