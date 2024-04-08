@@ -9,7 +9,7 @@ export default function Explore() {
         {/* <SearchUser></SearchUser>
           <hr className="rounded-md border-[#F2F2F2] w-full border-t-2" />
           <SearchUser isSubscribed={true}></SearchUser> */}
-        <SearchUsers></SearchUsers>
+        {/* <SearchUsers></SearchUsers> */}
         <LoadMore />
       </SearchForm>
     </>

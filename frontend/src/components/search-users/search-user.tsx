@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Button from "../ui/button/Button";
+import { capitalizeFirstLetter } from "@/lib/utils";
 import SubscribeButton from "../subscibe-button/subscribe-button";
 
 type Props = {
@@ -54,8 +54,9 @@ const SearchUser: React.FC<Props | any> = props => {
               {login}
             </h4>
             <div className="flex flex-col xl:flex-row xl:gap-2">
-              <h5 className="text-black text-sm ">
-                {name} {surname}
+              <h5 className="text-black text-sm truncate ... w-[20vw] md:w-[140px] xl:max-w-[180px] xl:w-auto">
+                {capitalizeFirstLetter(user.firstName)}{" "}
+                {capitalizeFirstLetter(user.lastName)}
               </h5>
               <h5 className="text-text-secondary-color font-normal text-sm">
                 {country}, {city}

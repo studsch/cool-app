@@ -111,9 +111,9 @@ const PostCard: React.FC<PostCardProps> = ({ photo }) => {
   };
 
   return (
-    <div className="grid place-content-center mt-4 mb-4">
+    <div className="grid place-content-center mt-4 mb-4 ">
       <span className="align-middle">
-        <Card className="overflow-y-auto max-h-screen w-full">
+        <Card className=" w-full border-none shadow-none">
           <CardHeader>
             <div className="flex justify-between">
               <div className="grid place-content-center ">

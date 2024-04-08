@@ -1,4 +1,4 @@
-import { any, number } from "zod";
+import { any, boolean, number } from "zod";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import FetchUsers from "./fetch/search";
@@ -58,13 +58,16 @@ interface SearchState {
   size: number;
   type: string;
   args: string;
+  isLoading: boolean;
   hasMore: boolean;
+  totalPages: number;
   error: () => void;
   updateType: (type: string) => void;
   updateArgs: (args: string) => void;
+  updatePage: (page: number) => void;
+  updateSize: (size: number) => void;
   updateError: (error: () => void) => void;
-  nextSearch: () => void;
-  resetSearch: () => void;
+  nextSearch: () => Promise<number>;
 }
 
 export const useSearch = create<SearchState>()(
@@ -75,9 +78,13 @@ export const useSearch = create<SearchState>()(
     type: "users",
     hasMore: false,
     args: "",
+    isLoading: false,
+    totalPages: 0,
     error: () => {},
     updateType: (type: string) => set({ type: type }),
     updateArgs: (args: string) => set({ args: args }),
+    updatePage: (page: number) => set({ page: page }),
+    updateSize: (size: number) => set({ size: size }),
     updateError: (error: () => void) => set({ error: error }),
     nextSearch: async () => {
       let type = "";
@@ -86,29 +93,29 @@ export const useSearch = create<SearchState>()(
       set(state => {
         type = state.type;
         args = state.args;
-        error = state.error;
+        args = args + `&page=${state.page}&size=${state.size}`;
       });
       if (type == "users") {
+        set({ isLoading: true });
+        // await new Promise(r => setTimeout(r, 2000)); для теста кружка
         const res = await FetchUsers(args);
-        const users = res.users as SearchUser[];
-        const totalPages = res.totalPages;
+        set({
+          isLoading: false,
+        });
         if (res.error) {
           error();
+          return 1;
         } else {
           set(state => {
-            state.searchs = [...state.searchs, ...users];
-            state.hasMore = res.hasMore;
-            if (state.page < totalPages) {
-              state.page = res.page + 1;
-            }
+            state.page == 1
+              ? (state.searchs = res.users)
+              : state.searchs.push(...res.users);
+            state.totalPages = res.totalPages;
           });
         }
       } else {
       }
-    },
-    resetSearch: () => {
-      console.log("hehe");
-      set({ searchs: [], page: 1, size: 10 });
+      return 0;
     },
   })),
 );
