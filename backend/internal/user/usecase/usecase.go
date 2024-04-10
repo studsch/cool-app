@@ -114,3 +114,55 @@ func (u *userUC) GetSubscriptions(
 
 	return usersList, nil
 }
+
+func (u *userUC) GetUserSubscriptionsCount(
+	ctx context.Context, userID uuid.UUID,
+) (uint, error) {
+	count, err := u.userRepo.GetUserSubscriptionsCount(ctx, userID)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
+func (u *userUC) GetUserSubscribersCount(
+	ctx context.Context, userID uuid.UUID,
+) (uint, error) {
+	count, err := u.userRepo.GetUserSubscribersCount(ctx, userID)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
+func (u *userUC) SearchByFilter(
+	ctx context.Context, filter *models.UserFilter, pq *utils.PaginationQuery,
+) (*models.UserList, error) {
+	usersList, err := u.userRepo.SearchByFilter(ctx, filter, pq)
+	if err != nil {
+		return nil, err
+	}
+	for _, curUser := range usersList.Users {
+		subscribersCount, err := u.userRepo.GetUserSubscribersCount(
+			ctx, curUser.ID,
+		)
+		if err != nil {
+			curUser.SubscribersCount = 0
+		}
+
+		subscriptionsCount, err := u.userRepo.GetUserSubscriptionsCount(
+			ctx,
+			curUser.ID,
+		)
+		if err != nil {
+			curUser.SubscriptionsCount = 0
+		}
+
+		curUser.SubscribersCount = subscribersCount
+		curUser.SubscriptionsCount = subscriptionsCount
+	}
+
+	return usersList, nil
+}

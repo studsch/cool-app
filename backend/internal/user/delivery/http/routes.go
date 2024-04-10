@@ -14,4 +14,7 @@ func MapUserRoutes(
 	userGroup.Delete("/follow/:id", mw.AuthJWTMiddleware(), h.Unfollow())
 	userGroup.Put("follow/:id", mw.AuthJWTMiddleware(), h.UpdateNotification())
 	userGroup.Get("subscriptions/:userID", h.GetSubscriptions())
+	userGroup.Get("subscriptions/count/:userID", h.GetSubscriptionsCount())
+	userGroup.Get("subscribers/count/:userID", h.GetSubscribersCount())
+	userGroup.Get("/search/user", h.Search())
 }
