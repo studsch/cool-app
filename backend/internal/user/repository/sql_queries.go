@@ -51,7 +51,7 @@ WHERE id = ANY ($1)
 SELECT
 	u.id, u.first_name, u.last_name, u.login,
 	u.avatar, u.gender, u.about, u.city,
-	u.country, u.birthday
+	u.country, u.birthday, u.login
 FROM users AS u
 LEFT JOIN follow AS f
 ON f.follow_to_user_id = u.id

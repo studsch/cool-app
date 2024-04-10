@@ -172,7 +172,7 @@ func (r *userRepo) GetSubscriptionsByUserID(
 		if err := rows.Scan(
 			&u.ID, &u.FirstName, &u.LastName, &u.Login,
 			&u.Avatar, &u.Gender, &u.About, &u.City,
-			&u.Country, &u.Birthday,
+			&u.Country, &u.Birthday, &u.Login,
 		); err != nil {
 			return nil, errors.Wrap(
 				err, "userRepo.GetSubscriptionsByUserID.Scan",
