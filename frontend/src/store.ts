@@ -99,9 +99,6 @@ export const useSearch = create<SearchState>()(
         set({ isLoading: true });
         // await new Promise(r => setTimeout(r, 2000)); для теста кружка
         const res = await FetchUsers(args);
-        set({
-          isLoading: false,
-        });
         if (res.error) {
           error();
           return 1;
@@ -115,10 +112,8 @@ export const useSearch = create<SearchState>()(
         }
       } else {
         // await new Promise(r => setTimeout(r, 2000)); для теста кружка
+        set({ isLoading: true });
         const res = await FetchPosts(args);
-        set({
-          isLoading: false,
-        });
         if (res.error) {
           error();
           return 1;
@@ -131,7 +126,7 @@ export const useSearch = create<SearchState>()(
           });
         }
       }
-      set({ isLoading: true });
+      set({ isLoading: false });
       return 0;
     },
   })),
