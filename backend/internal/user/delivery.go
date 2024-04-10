@@ -9,4 +9,5 @@ type Handlers interface {
 	GetSubscriptions() fiber.Handler
 	GetSubscriptionsCount() fiber.Handler
 	GetSubscribersCount() fiber.Handler
+	Search() fiber.Handler
 }

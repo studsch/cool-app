@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/studsch/cool-app/backend/internal/models"
+	"github.com/studsch/cool-app/backend/pkg/utils"
 )
 
 type Repository interface {
@@ -31,4 +32,8 @@ type Repository interface {
 	GetSubscriptionsByUserID(
 		ctx context.Context, userID uuid.UUID,
 	) (*[]*models.User, error)
+	SearchByFilter(
+		ctx context.Context, filter *models.UserFilter,
+		pq *utils.PaginationQuery,
+	) (*models.UserList, error)
 }
