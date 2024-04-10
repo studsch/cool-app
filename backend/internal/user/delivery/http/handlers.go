@@ -254,7 +254,6 @@ func (h *userHandlers) Search() func(*fiber.Ctx) error {
 			Country:   country,
 		}
 
-		// usersList, err := h.userUC.Search(c.UserContext(), q, pq)
 		usersList, err := h.userUC.SearchByFilter(
 			c.UserContext(), userFilters, pq,
 		)
@@ -265,5 +264,42 @@ func (h *userHandlers) Search() func(*fiber.Ctx) error {
 		}
 
 		return c.Status(fiber.StatusOK).JSON(usersList)
+	}
+}
+
+func (h *userHandlers) GetRecommendedUsers() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		recUsers, err := h.userUC.GetRecommendedUsers(c.UserContext())
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(
+			fiber.Map{
+				"errors": false,
+				"recs":   recUsers,
+			},
+		)
+	}
+}
+
+func (h *userHandlers) GetFriends() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		friends, err := h.userUC.GetFriends(c.UserContext())
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(
+			fiber.Map{
+				"errors":       false,
+				"users":        friends,
+				"friendsCount": len(*friends),
+			},
+		)
 	}
 }

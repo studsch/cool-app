@@ -319,3 +319,73 @@ func (r *userRepo) SearchByFilter(
 		Users:      usersList,
 	}, nil
 }
+
+func (r *userRepo) GetRecommendedUsersIDs(
+	ctx context.Context, userID uuid.UUID,
+) (*[]*models.UserFollow, error) {
+	var usersList []*models.UserFollow
+
+	rows, err := r.db.Query(ctx, getRecommendedUsersIDs, &userID)
+	if err != nil {
+		return nil, errors.Wrap(
+			err, "userRepo.GetRecommendedUsers.Query",
+		)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var u models.UserFollow
+		if err := rows.Scan(
+			&u.UserID, &u.FollowToUserID,
+		); err != nil {
+			return nil, errors.Wrap(
+				err, "userRepo.GetRecommendedUsers.Scan",
+			)
+		}
+		usersList = append(usersList, &u)
+	}
+
+	return &usersList, nil
+}
+
+func (r *userRepo) GetFriendsIDs(
+	ctx context.Context, userID uuid.UUID,
+) (*[]*uuid.UUID, error) {
+	var usersIDs []*uuid.UUID
+
+	rows, err := r.db.Query(ctx, getFriendsIDs, &userID)
+	if err != nil {
+		return nil, errors.Wrap(
+			err, "userRepo.GetFriendsIDs.Query",
+		)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var uID uuid.UUID
+		if err := rows.Scan(&uID); err != nil {
+			return nil, errors.Wrap(
+				err, "userRepo.GetFriendsIDs.Scan",
+			)
+		}
+		usersIDs = append(usersIDs, &uID)
+	}
+
+	return &usersIDs, nil
+}
+
+func (r *userRepo) GetMiniUsersByID(
+	ctx context.Context, userID uuid.UUID,
+) (*models.MiniUser, error) {
+	miniUser := &models.MiniUser{}
+	if err := r.db.QueryRow(
+		ctx, getMiniUsersByID, &userID,
+	).Scan(
+		&miniUser.ID, &miniUser.FirstName, &miniUser.LastName,
+		&miniUser.Login, &miniUser.Avatar,
+	); err != nil {
+		return nil, errors.Wrap(err, "userRepo.getMiniUsersByID.Scan")
+	}
+
+	return miniUser, nil
+}

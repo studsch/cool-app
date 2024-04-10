@@ -77,4 +77,27 @@ WITH similarity_cte AS (
 FROM users
 JOIN similarity_cte ON users.id = similarity_cte.id
 `
+
+	getRecommendedUsersIDs = `
+SELECT user_id, follow_to_user_id
+FROM follow
+WHERE user_id = ANY (
+SELECT follow_to_user_id
+FROM follow
+WHERE user_id = $1
+)
+`
+
+	getFriendsIDs = `
+SELECT DISTINCT f1.follow_to_user_id
+FROM follow f1
+INNER JOIN follow f2
+ON f1.user_id = f2.follow_to_user_id AND f1.follow_to_user_id = f2.user_id
+WHERE f1.user_id = $1
+`
+	getMiniUsersByID = `
+SELECT id, first_name, last_name, login, avatar
+FROM users
+WHERE id = $1
+`
 )
