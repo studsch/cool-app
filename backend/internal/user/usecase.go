@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/studsch/cool-app/backend/internal/models"
+	"github.com/studsch/cool-app/backend/pkg/utils"
 )
 
 type UseCase interface {
@@ -19,4 +20,14 @@ type UseCase interface {
 	GetSubscriptions(
 		ctx context.Context, userID uuid.UUID,
 	) (*[]*models.User, error)
+	GetUserSubscriptionsCount(
+		ctx context.Context, userID uuid.UUID,
+	) (uint, error)
+	GetUserSubscribersCount(
+		ctx context.Context, userID uuid.UUID,
+	) (uint, error)
+	SearchByFilter(
+		ctx context.Context, filter *models.UserFilter,
+		pq *utils.PaginationQuery,
+	) (*models.UserList, error)
 }

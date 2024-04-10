@@ -30,21 +30,23 @@ type UserList struct {
 
 // User Users base model
 type User struct {
-	ID          uuid.UUID  `json:"id,omitempty" validate:"omitempty"`
-	FirstName   string     `json:"firstName,omitempty" validate:"omitempty,gte=2,lte=31"`
-	LastName    string     `json:"lastName,omitempty" validate:"omitempty,gte=2,lte=31"`
-	Login       string     `json:"login,omitempty" validate:"omitempty,gte=6,lte=31"`
-	Password    string     `json:"password,omitempty" validate:"omitempty,gte=8,lte=250"`
-	PhoneNumber *string    `json:"phoneNumber,omitempty" validate:"omitempty,e164"`
-	Role        *string    `json:"role,omitempty" validate:"omitempty,lte=10"`
-	Avatar      *string    `json:"avatar,omitempty" validate:"omitempty"`
-	Gender      *string    `json:"gender,omitempty" validate:"omitempty,oneof=male female"`
-	About       *string    `json:"about,omitempty" validate:"omitempty,lte=1024"`
-	City        *string    `json:"city,omitempty" validate:"omitempty,lte=24"`
-	Country     *string    `json:"country,omitempty" validate:"omitempty,lte=24"`
-	Birthday    *time.Time `json:"birthday,omitempty" validate:"omitempty"`
-	CreatedAt   time.Time  `json:"createdAt,omitempty" validate:"omitempty"`
-	UpdatedAt   time.Time  `json:"updatedAt,omitempty" validate:"omitempty"`
+	ID                 uuid.UUID  `json:"id,omitempty" validate:"omitempty"`
+	FirstName          string     `json:"firstName,omitempty" validate:"omitempty,gte=2,lte=31"`
+	LastName           string     `json:"lastName,omitempty" validate:"omitempty,gte=2,lte=31"`
+	Login              string     `json:"login,omitempty" validate:"omitempty,gte=6,lte=31"`
+	Password           string     `json:"password,omitempty" validate:"omitempty,gte=8,lte=250"`
+	PhoneNumber        *string    `json:"phoneNumber,omitempty" validate:"omitempty,e164"`
+	Role               *string    `json:"role,omitempty" validate:"omitempty,lte=10"`
+	Avatar             *string    `json:"avatar,omitempty" validate:"omitempty"`
+	Gender             *string    `json:"gender,omitempty" validate:"omitempty,oneof=male female"`
+	About              *string    `json:"about,omitempty" validate:"omitempty,lte=1024"`
+	City               *string    `json:"city,omitempty" validate:"omitempty,lte=24"`
+	Country            *string    `json:"country,omitempty" validate:"omitempty,lte=24"`
+	Birthday           *time.Time `json:"birthday,omitempty" validate:"omitempty"`
+	CreatedAt          time.Time  `json:"createdAt,omitempty" validate:"omitempty"`
+	UpdatedAt          time.Time  `json:"updatedAt,omitempty" validate:"omitempty"`
+	SubscriptionsCount uint       `json:"subscriptionsCount,omitempty" validate:"omitempty"`
+	SubscribersCount   uint       `json:"subscribersCount,omitempty" validate:"omitempty"`
 }
 
 type UserFollow struct {
@@ -63,7 +65,9 @@ type UserWithTokens struct {
 
 // HashPassword Hash user password with bcrypt
 func (u *User) HashPassword() error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword(
+		[]byte(u.Password), bcrypt.DefaultCost,
+	)
 	if err != nil {
 		return err
 	}
@@ -73,7 +77,9 @@ func (u *User) HashPassword() error {
 
 // ComparePasswords Compare user password and payload
 func (u *User) ComparePasswords(password string) error {
-	if err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword(
+		[]byte(u.Password), []byte(password),
+	); err != nil {
 		return err
 	}
 	return nil
