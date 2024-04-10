@@ -10,4 +10,6 @@ type Handlers interface {
 	GetSubscriptionsCount() fiber.Handler
 	GetSubscribersCount() fiber.Handler
 	Search() fiber.Handler
+	GetRecommendedUsers() fiber.Handler
+	GetFriends() fiber.Handler
 }

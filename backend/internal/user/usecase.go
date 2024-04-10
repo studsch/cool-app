@@ -30,4 +30,6 @@ type UseCase interface {
 		ctx context.Context, filter *models.UserFilter,
 		pq *utils.PaginationQuery,
 	) (*models.UserList, error)
+	GetRecommendedUsers(ctx context.Context) (*[]*models.RecUserList, error)
+	GetFriends(ctx context.Context) (*[]*models.MiniUser, error)
 }

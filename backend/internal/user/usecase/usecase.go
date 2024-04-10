@@ -166,3 +166,80 @@ func (u *userUC) SearchByFilter(
 
 	return usersList, nil
 }
+
+func (u *userUC) GetRecommendedUsers(ctx context.Context) (
+	*[]*models.RecUserList, error,
+) {
+	userFromCtx, err := utils.GetUserFromCtx(ctx)
+	if err != nil {
+		return nil, httpErrors.NewUnauthorizedError(
+			errors.WithMessage(err, "userUC.GetFriends.GetUserFromCtx"),
+		)
+	}
+	userID := userFromCtx.ID
+
+	userFollow, err := u.userRepo.GetRecommendedUsersIDs(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	m := make(map[uuid.UUID][]uuid.UUID)
+	for _, uf := range *userFollow {
+		if uf.FollowToUserID == userID {
+			continue
+		}
+		m[uf.FollowToUserID] = append(m[uf.FollowToUserID], uf.UserID)
+	}
+
+	var recs []*models.RecUserList
+	for k, v := range m {
+		recUser, err := u.userRepo.GetMiniUsersByID(ctx, k)
+		if err != nil {
+			return nil, err
+		}
+		var fromUsers []*models.MiniUser
+		for _, uID := range v {
+			u, err := u.userRepo.GetMiniUsersByID(ctx, uID)
+			if err != nil {
+				return nil, err
+			}
+			fromUsers = append(fromUsers, u)
+		}
+
+		recs = append(
+			recs, &models.RecUserList{
+				RecUser:        recUser,
+				FromUsers:      fromUsers,
+				FromUsersCount: len(fromUsers),
+			},
+		)
+	}
+
+	return &recs, nil
+}
+
+func (u *userUC) GetFriends(ctx context.Context) (*[]*models.MiniUser, error) {
+	userFromCtx, err := utils.GetUserFromCtx(ctx)
+	if err != nil {
+		return nil, httpErrors.NewUnauthorizedError(
+			errors.WithMessage(err, "userUC.GetFriends.GetUserFromCtx"),
+		)
+	}
+	userID := userFromCtx.ID
+
+	uIDs, err := u.userRepo.GetFriendsIDs(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	var friends []*models.MiniUser
+	for _, uID := range *uIDs {
+		userByID, err := u.userRepo.GetMiniUsersByID(ctx, *uID)
+		if err != nil {
+			return nil, err
+		}
+		friends = append(friends, userByID)
+	}
+
+	return &friends, nil
+}

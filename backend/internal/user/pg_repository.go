@@ -36,4 +36,13 @@ type Repository interface {
 		ctx context.Context, filter *models.UserFilter,
 		pq *utils.PaginationQuery,
 	) (*models.UserList, error)
+	GetRecommendedUsersIDs(
+		ctx context.Context, userID uuid.UUID,
+	) (*[]*models.UserFollow, error)
+	GetFriendsIDs(
+		ctx context.Context, userID uuid.UUID,
+	) (*[]*uuid.UUID, error)
+	GetMiniUsersByID(
+		ctx context.Context, userID uuid.UUID,
+	) (*models.MiniUser, error)
 }

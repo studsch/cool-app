@@ -56,6 +56,20 @@ type UserFollow struct {
 	NotificationOn bool      `json:"notificationOn" validate:"omitempty"`
 }
 
+type MiniUser struct {
+	ID        uuid.UUID `json:"id,omitempty" validate:"omitempty"`
+	FirstName string    `json:"firstName,omitempty" validate:"omitempty,gte=2,lte=31"`
+	LastName  string    `json:"lastName,omitempty" validate:"omitempty,gte=2,lte=31"`
+	Login     string    `json:"login,omitempty" validate:"omitempty,gte=6,lte=31"`
+	Avatar    *string   `json:"avatar,omitempty" validate:"omitempty"`
+}
+
+type RecUserList struct {
+	RecUser        *MiniUser   `json:"recUser,omitempty" validate:"omitempty"`
+	FromUsers      []*MiniUser `json:"fromUsers,omitempty" validate:"omitempty"`
+	FromUsersCount int         `json:"fromUsersCount,omitempty" validate:"omitempty"`
+}
+
 // UserWithTokens Users model with tokens
 type UserWithTokens struct {
 	User         *User  `json:"user"`
