@@ -14,5 +14,6 @@ type Handlers interface {
 	UploadImages() fiber.Handler
 	GetImageURL() fiber.Handler
 	Search() fiber.Handler
+	GetLikedPostsByUserID() fiber.Handler
 	// AddTagsByTitles() fiber.Handler
 }

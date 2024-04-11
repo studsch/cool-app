@@ -69,7 +69,7 @@ FROM (
         FROM post
         JOIN post_tags ON post.id = post_tags.post_id AND post.deleted = FALSE AND post.archived = FALSE
         JOIN tags ON post_tags.tag_id = tags.id
-        WHERE tags.title = any ($1)
+        WHERE tags.title = ANY ($1)
         GROUP BY post.id
 
         UNION ALL
@@ -120,7 +120,7 @@ FROM (
         FROM post
         JOIN post_tags ON post.id = post_tags.post_id AND post.deleted = FALSE AND post.archived = FALSE
         JOIN tags ON post_tags.tag_id = tags.id
-        WHERE tags.title = any ($1)
+        WHERE tags.title = ANY ($1)
         GROUP BY post.id
 
         UNION ALL
@@ -190,5 +190,24 @@ SELECT
 FROM post_tags pt
 LEFT JOIN tags t ON pt.tag_id = t.id
 WHERE post_id = $1
+`
+
+	getTotalCountLikedPostsByUserID = `
+SELECT COUNT(id)
+FROM post
+WHERE deleted=FALSE AND archived=FALSE AND id = ANY (
+SELECT post_id FROM like_post
+WHERE user_id = $1
+)
+`
+
+	getLikedPostsByUserID = `
+SELECT id, user_id, description, location, created_at, image_urls
+FROM post
+WHERE id = ANY (
+SELECT post_id FROM like_post
+WHERE user_id = $1 AND deleted=FALSE AND archived=FALSE
+ORDER BY created_at OFFSET $2 LIMIT $3
+)
 `
 )
