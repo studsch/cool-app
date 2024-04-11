@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
+
 	"github.com/studsch/cool-app/backend/config"
 	"github.com/studsch/cool-app/backend/internal/models"
 	"github.com/studsch/cool-app/backend/internal/post"
@@ -23,17 +24,24 @@ type postUC struct {
 	logger   logger.Logger
 }
 
-func (u *postUC) SearchByFilter(ctx context.Context, tags []string, filter *models.PostFilter, pq *utils.PaginationQuery) (*models.PostList, error) {
+func (u *postUC) SearchByFilter(
+	ctx context.Context, tags []string, filter *models.PostFilter,
+	pq *utils.PaginationQuery,
+) (*models.PostList, error) {
 	return u.postRepo.SearchByFilter(ctx, tags, filter, pq)
 }
 
 // Search implements post.UseCase.
-func (u *postUC) Search(ctx context.Context, tags []string, q string, pq *utils.PaginationQuery) (*models.PostList, error) {
+func (u *postUC) Search(
+	ctx context.Context, tags []string, q string, pq *utils.PaginationQuery,
+) (*models.PostList, error) {
 	return u.postRepo.Search(ctx, tags, q, pq)
 }
 
 // GetImagesURLs implements post.UseCase.
-func (u *postUC) GetImageURL(ctx context.Context, bucket, key string) (string, error) {
+func (u *postUC) GetImageURL(ctx context.Context, bucket, key string) (
+	string, error,
+) {
 	imageURL, err := u.awsRepo.GetAWSMinioURL(ctx, bucket, key)
 	if err != nil {
 		return "", err
@@ -45,33 +53,46 @@ func (u *postUC) GetImageURL(ctx context.Context, bucket, key string) (string, e
 }
 
 // UploadImage implements post.UseCase.
-func (u *postUC) UploadImages(ctx context.Context, postID uuid.UUID, files []models.UploadInput) (*models.Post, error) {
+func (u *postUC) UploadImages(
+	ctx context.Context, postID uuid.UUID, files []models.UploadInput,
+) (*models.Post, error) {
 	postByID, err := u.postRepo.GetByID(ctx, postID)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = utils.ValidateIsOwner(ctx, postByID.UserID.String(), u.logger); err != nil {
-		return nil, httpErrors.NewRestError(http.StatusForbidden, "Forbidden", errors.Wrap(err, "postUC.Update.ValidateIsOwner"))
+	if err = utils.ValidateIsOwner(
+		ctx, postByID.UserID.String(), u.logger,
+	); err != nil {
+		return nil, httpErrors.NewRestError(
+			http.StatusForbidden, "Forbidden",
+			errors.Wrap(err, "postUC.Update.ValidateIsOwner"),
+		)
 	}
 
 	var imageURLs []string
 	for _, f := range files {
 		uploadInfo, err := u.awsRepo.PutObject(ctx, f)
 		if err != nil {
-			return nil, httpErrors.NewInternalServerError(errors.Wrap(err, "postUC.UploadImage.PutObject"))
+			return nil, httpErrors.NewInternalServerError(
+				errors.Wrap(
+					err, "postUC.UploadImage.PutObject",
+				),
+			)
 		}
 
 		imageInfo := fmt.Sprintf("%s/%s", f.BucketName, uploadInfo.Key)
 		imageURLs = append(imageURLs, imageInfo)
 	}
 
-	updatedPost, err := u.postRepo.Update(ctx, &models.Post{
-		ID:          postID,
-		Description: postByID.Description,
-		Location:    postByID.Location,
-		ImageURLs:   imageURLs,
-	})
+	updatedPost, err := u.postRepo.Update(
+		ctx, &models.Post{
+			ID:          postID,
+			Description: postByID.Description,
+			Location:    postByID.Location,
+			ImageURLs:   imageURLs,
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +101,10 @@ func (u *postUC) UploadImages(ctx context.Context, postID uuid.UUID, files []mod
 }
 
 // NewPostUC Post useCase constructor
-func NewPostUC(cfg *config.Config, postRepo post.Repository, logger logger.Logger, awsRepo post.AWSRepository) post.UseCase {
+func NewPostUC(
+	cfg *config.Config, postRepo post.Repository, logger logger.Logger,
+	awsRepo post.AWSRepository,
+) post.UseCase {
 	return &postUC{
 		cfg:      cfg,
 		postRepo: postRepo,
@@ -90,16 +114,26 @@ func NewPostUC(cfg *config.Config, postRepo post.Repository, logger logger.Logge
 }
 
 // Create Creates new post
-func (u *postUC) Create(ctx context.Context, post *models.Post) (*models.Post, error) {
+func (u *postUC) Create(ctx context.Context, post *models.Post) (
+	*models.Post, error,
+) {
 	user, err := utils.GetUserFromCtx(ctx)
 	if err != nil {
-		return nil, httpErrors.NewUnauthorizedError(errors.WithMessage(err, "postUC.Create.GetUserFromCtx"))
+		return nil, httpErrors.NewUnauthorizedError(
+			errors.WithMessage(
+				err, "postUC.Create.GetUserFromCtx",
+			),
+		)
 	}
 
 	post.UserID = user.ID
 
 	if err := utils.ValidateStruct(ctx, post); err != nil {
-		return nil, httpErrors.NewBadRequestError(errors.WithMessage(err, "postUC.Create.ValidateStruct"))
+		return nil, httpErrors.NewBadRequestError(
+			errors.WithMessage(
+				err, "postUC.Create.ValidateStruct",
+			),
+		)
 	}
 
 	p, err := u.postRepo.Create(ctx, post)
@@ -126,14 +160,21 @@ func (u *postUC) Create(ctx context.Context, post *models.Post) (*models.Post, e
 }
 
 // Update Updates post
-func (u *postUC) Update(ctx context.Context, post *models.Post) (*models.Post, error) {
+func (u *postUC) Update(ctx context.Context, post *models.Post) (
+	*models.Post, error,
+) {
 	postByID, err := u.postRepo.GetByID(ctx, post.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = utils.ValidateIsOwner(ctx, postByID.UserID.String(), u.logger); err != nil {
-		return nil, httpErrors.NewRestError(http.StatusForbidden, "Forbidden", errors.Wrap(err, "postUC.Update.ValidateIsOwner"))
+	if err = utils.ValidateIsOwner(
+		ctx, postByID.UserID.String(), u.logger,
+	); err != nil {
+		return nil, httpErrors.NewRestError(
+			http.StatusForbidden, "Forbidden",
+			errors.Wrap(err, "postUC.Update.ValidateIsOwner"),
+		)
 	}
 	post.ImageURLs = postByID.ImageURLs
 
@@ -153,8 +194,13 @@ func (u *postUC) Archive(ctx context.Context, postID uuid.UUID) error {
 		return err
 	}
 
-	if err = utils.ValidateIsOwner(ctx, postByID.UserID.String(), u.logger); err != nil {
-		return httpErrors.NewRestError(http.StatusForbidden, "Forbidden", errors.Wrap(err, "postUC.Archive.ValidateIsOwner"))
+	if err = utils.ValidateIsOwner(
+		ctx, postByID.UserID.String(), u.logger,
+	); err != nil {
+		return httpErrors.NewRestError(
+			http.StatusForbidden, "Forbidden",
+			errors.Wrap(err, "postUC.Archive.ValidateIsOwner"),
+		)
 	}
 
 	if err := u.postRepo.Archive(ctx, postID); err != nil {
@@ -183,7 +229,9 @@ func (u *postUC) Delete(ctx context.Context, postID uuid.UUID) error {
 }
 
 // GetPosts Get all posts
-func (u *postUC) GetPosts(ctx context.Context, pq *utils.PaginationQuery) (*models.PostList, error) {
+func (u *postUC) GetPosts(
+	ctx context.Context, pq *utils.PaginationQuery,
+) (*models.PostList, error) {
 	pl, err := u.postRepo.GetPosts(ctx, pq)
 	if err != nil {
 		return nil, err
@@ -201,7 +249,9 @@ func (u *postUC) GetPosts(ctx context.Context, pq *utils.PaginationQuery) (*mode
 }
 
 // GetByID Get post by id
-func (u *postUC) GetByID(ctx context.Context, postID uuid.UUID) (*models.PostBase, error) {
+func (u *postUC) GetByID(
+	ctx context.Context, postID uuid.UUID,
+) (*models.PostBase, error) {
 	// TODO: get from redis and return it
 
 	p, err := u.postRepo.GetByID(ctx, postID)
@@ -221,7 +271,9 @@ func (u *postUC) GetByID(ctx context.Context, postID uuid.UUID) (*models.PostBas
 }
 
 // GetByUserID Get posts by user id
-func (u *postUC) GetByUserID(ctx context.Context, userID uuid.UUID, pq *utils.PaginationQuery) (*models.PostList, error) {
+func (u *postUC) GetByUserID(
+	ctx context.Context, userID uuid.UUID, pq *utils.PaginationQuery,
+) (*models.PostList, error) {
 	pl, err := u.postRepo.GetByUserID(ctx, userID, pq)
 	if err != nil {
 		return nil, err
@@ -238,7 +290,9 @@ func (u *postUC) GetByUserID(ctx context.Context, userID uuid.UUID, pq *utils.Pa
 	return pl, err
 }
 
-func (u *postUC) AddTagByTitle(ctx context.Context, title string) (*models.Tag, error) {
+func (u *postUC) AddTagByTitle(ctx context.Context, title string) (
+	*models.Tag, error,
+) {
 	t, err := u.postRepo.GetTagByTitle(ctx, title)
 	if err != nil {
 		return nil, err
@@ -255,10 +309,43 @@ func (u *postUC) AddTagByTitle(ctx context.Context, title string) (*models.Tag, 
 	return t, nil
 }
 
-func (u *postUC) CreatePostTag(ctx context.Context, postID uuid.UUID, tagID uuid.UUID) (*models.PostTag, error) {
+func (u *postUC) CreatePostTag(
+	ctx context.Context, postID uuid.UUID, tagID uuid.UUID,
+) (*models.PostTag, error) {
 	return u.postRepo.CreatePostTag(ctx, postID, tagID)
 }
 
-func (u *postUC) GetTagsOnPost(ctx context.Context, postID uuid.UUID) ([]string, error) {
+func (u *postUC) GetTagsOnPost(ctx context.Context, postID uuid.UUID) (
+	[]string, error,
+) {
 	return u.postRepo.GetTagsOnPost(ctx, postID)
+}
+
+func (u *postUC) GetLikedPostsByUserID(
+	ctx context.Context, pq *utils.PaginationQuery,
+) (*models.PostList, error) {
+	user, err := utils.GetUserFromCtx(ctx)
+	if err != nil {
+		return nil, httpErrors.NewUnauthorizedError(
+			errors.WithMessage(
+				err, "postUC.GetLikedPostsByUserID.GetUserFromCtx",
+			),
+		)
+	}
+	userID := user.ID
+
+	pl, err := u.postRepo.GetLikedPostsByUserID(ctx, userID, pq)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, p := range pl.Posts {
+		tags, err := u.postRepo.GetTagsOnPost(ctx, p.ID)
+		if err != nil {
+			return nil, err
+		}
+		p.Tags = tags
+	}
+
+	return pl, err
 }

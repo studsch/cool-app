@@ -10,6 +10,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+
 	"github.com/studsch/cool-app/backend/config"
 	"github.com/studsch/cool-app/backend/internal/models"
 	"github.com/studsch/cool-app/backend/internal/post"
@@ -31,15 +32,19 @@ func (h *postHandlers) Search() fiber.Handler {
 		q := c.Query("q")
 
 		// get words without punctuation and others symbols
-		words := strings.FieldsFunc(q, func(r rune) bool {
-			return !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '#'
-		})
+		words := strings.FieldsFunc(
+			q, func(r rune) bool {
+				return !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '#'
+			},
+		)
 
 		var hashtags []string
 		var otherWords []string
 
 		for _, word := range words {
-			if strings.HasPrefix(word, "#") && (unicode.IsLetter(rune(word[len(word)-1])) || unicode.IsDigit(rune(word[len(word)-1]))) {
+			if strings.HasPrefix(
+				word, "#",
+			) && (unicode.IsLetter(rune(word[len(word)-1])) || unicode.IsDigit(rune(word[len(word)-1]))) {
 				w := strings.TrimLeft(word, "#")
 				hashtags = append(hashtags, w)
 				otherWords = append(otherWords, w)
@@ -82,7 +87,9 @@ func (h *postHandlers) Search() fiber.Handler {
 		}
 
 		// postsList, err := h.postUC.Search(c.UserContext(), hashtags, qWords, pq)
-		postsList, err := h.postUC.SearchByFilter(c.UserContext(), hashtags, postFilters, pq)
+		postsList, err := h.postUC.SearchByFilter(
+			c.UserContext(), hashtags, postFilters, pq,
+		)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			status, msg := httpErrors.ErrorResponse(err)
@@ -155,16 +162,20 @@ func (h *postHandlers) UploadImages() fiber.Handler {
 
 			reader := bytes.NewReader(binaryImage.Bytes())
 
-			files = append(files, models.UploadInput{
-				File:        reader,
-				Name:        image.Filename,
-				ContentType: contentType,
-				BucketName:  bucket,
-				Size:        image.Size,
-			})
+			files = append(
+				files, models.UploadInput{
+					File:        reader,
+					Name:        image.Filename,
+					ContentType: contentType,
+					BucketName:  bucket,
+					Size:        image.Size,
+				},
+			)
 		}
 
-		updatedPost, err := h.postUC.UploadImages(c.UserContext(), postID, files)
+		updatedPost, err := h.postUC.UploadImages(
+			c.UserContext(), postID, files,
+		)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			status, msg := httpErrors.ErrorResponse(err)
@@ -176,7 +187,9 @@ func (h *postHandlers) UploadImages() fiber.Handler {
 }
 
 // NewPostHandlers Post handlers constructor
-func NewPostHandlers(cfg *config.Config, postUC post.UseCase, logger logger.Logger) post.Handlers {
+func NewPostHandlers(
+	cfg *config.Config, postUC post.UseCase, logger logger.Logger,
+) post.Handlers {
 	return &postHandlers{
 		cfg:    cfg,
 		postUC: postUC,
@@ -334,6 +347,26 @@ func (h *postHandlers) GetByUserID() fiber.Handler {
 		}
 
 		postByUserID, err := h.postUC.GetByUserID(c.UserContext(), userID, pq)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(postByUserID)
+	}
+}
+
+func (h *postHandlers) GetLikedPostsByUserID() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		pq, err := utils.GetPaginationFromCtx(c)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		postByUserID, err := h.postUC.GetLikedPostsByUserID(c.UserContext(), pq)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			status, msg := httpErrors.ErrorResponse(err)
