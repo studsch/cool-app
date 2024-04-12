@@ -56,7 +56,7 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 
 	a.Use(cors.New(cors.Config{
 		AllowOrigins: "http://localhost:3000, https://localhost:8000",
-		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 	}))
 
 	a.Use(swagger.New(swagger.Config{
