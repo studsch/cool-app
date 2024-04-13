@@ -22,5 +22,5 @@ func MapUserRoutes(
 		h.GetRecommendedUsers(),
 	)
 	userGroup.Get("/friends", mw.AuthJWTMiddleware(), h.GetFriends())
-	// userGroup.Get("/:userID")
+	userGroup.Get("/:userID", h.GetMiniUserByID())
 }
