@@ -243,3 +243,13 @@ func (u *userUC) GetFriends(ctx context.Context) (*[]*models.MiniUser, error) {
 
 	return &friends, nil
 }
+
+func (u *userUC) GetMiniUsersByID(
+	ctx context.Context, userID uuid.UUID,
+) (*models.MiniUser, error) {
+	userByID, err := u.userRepo.GetMiniUsersByID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	return userByID, nil
+}

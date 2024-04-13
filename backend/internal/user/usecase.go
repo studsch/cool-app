@@ -32,4 +32,7 @@ type UseCase interface {
 	) (*models.UserList, error)
 	GetRecommendedUsers(ctx context.Context) (*[]*models.RecUserList, error)
 	GetFriends(ctx context.Context) (*[]*models.MiniUser, error)
+	GetMiniUsersByID(
+		ctx context.Context, userID uuid.UUID,
+	) (*models.MiniUser, error)
 }

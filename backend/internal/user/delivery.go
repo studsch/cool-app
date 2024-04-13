@@ -12,4 +12,5 @@ type Handlers interface {
 	Search() fiber.Handler
 	GetRecommendedUsers() fiber.Handler
 	GetFriends() fiber.Handler
+	GetMiniUserByID() fiber.Handler
 }

@@ -303,3 +303,28 @@ func (h *userHandlers) GetFriends() fiber.Handler {
 		)
 	}
 }
+
+func (h *userHandlers) GetMiniUserByID() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		userID, err := uuid.Parse(c.Params("userID"))
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		userByID, err := h.userUC.GetMiniUsersByID(c.UserContext(), userID)
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(
+			fiber.Map{
+				"errors": false,
+				"user":   userByID,
+			},
+		)
+	}
+}
