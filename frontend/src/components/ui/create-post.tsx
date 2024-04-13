@@ -1,15 +1,16 @@
 import React, { useState, ChangeEvent, DragEvent, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import AvatarBlock from "../avatarblock/avatarblock";
-import { Smile } from "lucide-react";
-import { Image } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 interface CreatePostProps {
   onCreatePost: (photo: File, description: string) => void;
+  session: any;
 }
 
 const CreatePost: React.FC<CreatePostProps> = ({ onCreatePost }) => {
+  const { data: session } = useSession();
+
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [photo, setPhoto] = useState<File | null>(null);
   const [description, setDescription] = useState<string>("");
@@ -21,11 +22,23 @@ const CreatePost: React.FC<CreatePostProps> = ({ onCreatePost }) => {
     };
   }, [showPopup]);
 
-  const handleCreatePost = () => {
-    if (photo && description.trim() !== "") {
-      onCreatePost(photo, description);
-      setShowPopup(false);
+  const checkSession = () => {
+    if (session) {
+      console.log("User is authenticated");
+      return true;
+    } else {
+      console.log("User is not authenticated");
+      return false;
     }
+  };
+
+  const handleCreatePostClick = () => {
+    const isAuthenticated = checkSession();
+    if (!isAuthenticated) {
+      alert("Авторизуйтесь для создания поста");
+      return;
+    }
+    setShowPopup(true);
   };
 
   const handleFileDrop = (e: DragEvent<HTMLTextAreaElement>) => {
@@ -49,11 +62,55 @@ const CreatePost: React.FC<CreatePostProps> = ({ onCreatePost }) => {
     }
   };
 
+  const handleCreatePost = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("photo", photo as Blob);
+      formData.append("description", description);
+
+      const postResponse = await fetch("http://localhost:8000/api/v1/post", {
+        method: "POST",
+        body: JSON.stringify({ description: description }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.user.tokens.access}`,
+        },
+      });
+      const postData = await postResponse.json();
+
+      if (postResponse.ok && postData.id) {
+        console.log("Post ID:", postData.id);
+        const uploadResponse = await fetch(
+          `http://localhost:8000/api/v1/post/${postData.id}?bucket=posts`,
+          {
+            method: "POST",
+            body: formData,
+            headers: {
+              Authorization: `Bearer ${session?.user.tokens.access}`,
+            },
+          },
+        );
+
+        if (uploadResponse.ok) {
+          console.log("Post created successfully");
+          onCreatePost(photo as File, description);
+          setShowPopup(false);
+        } else {
+          console.error("Failed to upload photo and description");
+        }
+      } else {
+        console.error("Failed to create post");
+      }
+    } catch (error) {
+      console.error("Error creating post:", error);
+    }
+  };
+
   return (
     <div className="flex justify-center mt-2 w-full">
       <Button
         className="text-white font-bold py-2 px-4 rounded w-full"
-        onClick={() => setShowPopup(true)}
+        onClick={handleCreatePostClick}
       >
         Create Post
       </Button>
@@ -97,7 +154,6 @@ const CreatePost: React.FC<CreatePostProps> = ({ onCreatePost }) => {
               onChange={handleInputChange}
               className="hidden"
             />
-            <div></div>
             <hr />
             <div className="flex justify-end mt-4">
               <Button

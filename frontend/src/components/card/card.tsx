@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState } from "react";
 
 import {
@@ -48,10 +46,15 @@ interface CommentProps {
 
 interface PostCardProps {
   photo: string; // Фотография для карточки поста
+  description: string; // Описание для карточки поста
   className?: string;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ photo, className }) => {
+const PostCard: React.FC<PostCardProps> = ({
+  photo,
+  description,
+  className,
+}) => {
   const [isLiked, setIsLiked] = useState(false);
   const handleLikeClick = () => {
     setIsLiked(!isLiked);
@@ -62,7 +65,7 @@ const PostCard: React.FC<PostCardProps> = ({ photo, className }) => {
     setIsSaved(!isSaved);
   };
 
-  const [commentsData, setCommentsData] = useState([
+  const [commentsData, setCommentsData] = useState<CommentProps[]>([
     {
       name: "User1",
       photo:
@@ -152,9 +155,7 @@ const PostCard: React.FC<PostCardProps> = ({ photo, className }) => {
               />
             </div>
             <div className="w-full mt-4 mb-4">
-              <p className="text text-secondary-color">
-                Привет, я сделал новую стрижку, как вам?
-              </p>
+              <p className="text text-secondary-color">{description}</p>
             </div>
           </CardContent>
           <CardFooter>

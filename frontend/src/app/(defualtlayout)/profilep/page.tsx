@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import PhotoGrid from "@/components/mediaProfile";
+import { useSession } from "next-auth/react";
 import { Profile } from "@/components/profile/profile";
 import {
   ProfileInfo,
@@ -94,6 +95,31 @@ export default function Home() {
     { id: 3, name: "Bob", lastName: "Brown" },
   ];
 
+  const { data: session, status, update } = useSession();
+
+  const postId = "15ac316b-d68f-41e6-9d44-b56550a3b26b"; // Замените на реальный id поста
+
+  fetch(`http://localhost:8000/api/v1/post/${postId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      // Добавьте любые необходимые заголовки, например, авторизацию
+    },
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then(postData => {
+      // В переменной postData будет содержаться информация о посте
+      console.log("Post Data:", postData);
+    })
+    .catch(error => {
+      console.error("There was a problem with the fetch operation:", error);
+    });
+
   return (
     <>
       <div>
@@ -115,7 +141,7 @@ export default function Home() {
             </p>
           </div>
           <div className="mr-4 ml-4">
-            <CreatePost onCreatePost={handleCreatePost} />
+            <CreatePost onCreatePost={handleCreatePost} session={session} />
           </div>
         </div>
         <div className="bg-white rounded-xl w-full">

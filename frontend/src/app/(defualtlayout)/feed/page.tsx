@@ -1,69 +1,44 @@
-import Aside from "@/components/a-side/a-side";
+"use client";
+import React, { useState, useEffect } from "react";
 import PostCard from "@/components/card/card";
-import { RightSidebar } from "@/components/right-sidebar/right-sidebar";
 import Button from "@/components/ui/button/Button";
 
+interface Post {
+  id: string;
+  description: string;
+  location: string;
+  imageURLs?: string[];
+}
+
 export default function Feed() {
-  const profiles = [
-    {
-      avatarImage: "https://github.com/shadcn.png",
-      avatarFallback: "MP",
-      name: "Morty",
-      link: "@morty",
-    },
-    {
-      avatarImage:
-        "https://i.pinimg.com/736x/6e/51/32/6e5132a90812ad1abf3711135a5cf406.jpg",
-      avatarFallback: "RP",
-      name: "Rick",
-      link: "@rick",
-    },
-    {
-      avatarImage: "https://github.com/shadcn.png",
-      avatarFallback: "MP",
-      name: "Morty",
-      link: "@morty",
-    },
-    {
-      avatarImage:
-        "https://i.pinimg.com/736x/6e/51/32/6e5132a90812ad1abf3711135a5cf406.jpg",
-      avatarFallback: "RP",
-      name: "Rick",
-      link: "@rick",
-    },
-    {
-      avatarImage: "https://github.com/shadcn.png",
-      avatarFallback: "MP",
-      name: "Morty",
-      link: "@morty",
-    },
-    {
-      avatarImage:
-        "https://i.pinimg.com/736x/6e/51/32/6e5132a90812ad1abf3711135a5cf406.jpg",
-      avatarFallback: "RP",
-      name: "Rick",
-      link: "@rick",
-    },
-  ];
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [pageSize, setPageSize] = useState<number>(33);
 
-  const profileInfo = {
-    avatarImage: "https://github.com/shadcn.png",
-    avatarFallback: "MP",
-    name: "Morty",
-    description: "There are some description",
-  };
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8000/api/v1/post?size=10",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setPosts(data.posts);
+        setPageSize(data.size);
+      } catch (error) {
+        console.error("There was a problem with fetching posts:", error);
+      }
+    };
 
-  const photos = [
-    "https://i.pinimg.com/originals/eb/fa/11/ebfa114acec9230abc9775b7996e04ea.jpg",
-    "https://kartinki.pics/uploads/posts/2022-03/1647988933_1-kartinkin-net-p-panoramnie-kartinki-1.jpg",
-    "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666361504_9-mykaleidoscope-ru-p-peizazhi-prirodi-krasivo-9.jpg",
-    "https://masyamba.ru/леопард-фото/82-леопард-фото-животного.jpg",
-    "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666364979_14-mykaleidoscope-ru-p-krasivie-peizazhi-prirodi-oboi-17.jpg",
-    "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666361504_9-mykaleidoscope-ru-p-peizazhi-prirodi-krasivo-9.jpg",
-    "https://masyamba.ru/леопард-фото/82-леопард-фото-животного.jpg",
-    "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666364979_14-mykaleidoscope-ru-p-krasivie-peizazhi-prirodi-oboi-17.jpg",
-    "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666361504_9-mykaleidoscope-ru-p-peizazhi-prirodi-krasivo-9.jpg",
-  ];
+    fetchPosts();
+  }, []);
 
   return (
     <>
@@ -85,16 +60,18 @@ export default function Feed() {
           />
         </div>
         <div className="md:w-[512px] xl:w-[768px] overflow-hidden">
-          {photos.map((photo, index) => (
-            <PostCard key={index} photo={photo} />
+          {posts.slice(0, pageSize).map(post => (
+            <PostCard
+              key={post.id}
+              photo={`http://localhost:9000/${
+                post.imageURLs ? post.imageURLs[0] : ""
+              }`}
+              description={post.description}
+            />
           ))}
         </div>
       </div>
       <div className="my-5 w-[240px] md:flex flex-col gap-4 hidden">
-        <RightSidebar
-          items={profiles}
-          className=" bg-white rounded-md w-full  flex p-7 flex-col gap-4"
-        />
         <div className=" bg-white rounded-md w-full p-7 ">
           Будут кастомные виджеты, пока не в приоритете
         </div>
