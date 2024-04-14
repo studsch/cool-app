@@ -32,3 +32,14 @@ aws:
   MinioSecretKey: minio123
   UseSSL: false
   MinioEndpoint: http://minio:9000
+
+redis:
+  RedisAddr: redis:6379
+  RedisPassword:
+  RedisDb: 0
+  RedisDefaultdb: 0
+  MinIdleConns: 200
+  PoolSize: 12000
+  PoolTimeout: 240
+  Password: ""
+  DB: 0
