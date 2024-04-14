@@ -33,10 +33,11 @@ WHERE id=$1 AND deleted=FALSE
 `
 	getByIdQuery = `
 SELECT
-    p.id, p.user_id, p.description, p.location,
-	p.created_at, p.image_urls, CONCAT(u.first_name, ' ', u.last_name)
+	p.id, p.user_id, p.description, p.location,
+	p.created_at, p.image_urls, u.first_name,
+	u.last_name, u.login, u.avatar
 FROM post p LEFT JOIN users u ON u.id = p.user_id
-WHERE p.id=$1 AND p.deleted=FALSE AND p.archived=FALSE
+WHERE p.id= $1 AND p.deleted=FALSE AND p.archived=FALSE
 `
 	getTotalCountQuery = `
 SELECT COUNT(id)
@@ -45,17 +46,19 @@ WHERE deleted=FALSE AND archived=FALSE
 `
 	getPostsQuery = `
 SELECT
-	id, user_id, description, location, created_at,
-	image_urls
-FROM post
+	p.id, p.user_id, p.description, p.location,
+	p.created_at, p.image_urls, u.first_name,
+	u.last_name, u.login, u.avatar
+FROM post p LEFT JOIN users u ON u.id = p.user_id
 WHERE deleted=FALSE AND archived=FALSE
 ORDER BY created_at OFFSET $1 LIMIT $2
 `
 	getByUserIdQuery = `
 SELECT
-	id, user_id, description, location, created_at,
-	image_urls
-FROM post
+	p.id, p.user_id, p.description, p.location,
+	p.created_at, p.image_urls, u.first_name,
+	u.last_name, u.login, u.avatar
+FROM post p LEFT JOIN users u ON u.id = p.user_id
 WHERE user_id=$1 AND deleted=FALSE AND archived=FALSE
 ORDER BY created_at OFFSET $2 LIMIT $3
 `
@@ -135,28 +138,31 @@ FROM (
 	searchByFilterPostQuery = `
 WITH similarity_cte AS (
 	SELECT id, SUM(importance) AS importance
-    FROM (
+	FROM (
 		SELECT id, importance
-        FROM (
+		FROM (
 			SELECT post.id, COUNT(*) AS importance
-            FROM post
-            JOIN post_tags ON post.id = post_tags.post_id AND post.deleted = FALSE AND post.archived = FALSE
-            JOIN tags ON post_tags.tag_id = tags.id
+			FROM post
+			JOIN post_tags ON post.id = post_tags.post_id AND post.deleted = FALSE AND post.archived = FALSE
+			JOIN tags ON post_tags.tag_id = tags.id
 			WHERE tags.title = any ($1)
 			GROUP BY post.id
 
-            UNION ALL
+			UNION ALL
 
 			SELECT id, similarity(description, $2) AS importance
-            FROM post
-            WHERE deleted = FALSE AND archived = FALSE
+			FROM post
+			WHERE deleted = FALSE AND archived = FALSE
 		) AS combined_result
 	) AS res_ids
-    WHERE importance > 0.3
-    GROUP BY id
-) SELECT post.id, user_id, description, location, created_at, image_urls, deleted, archived
-FROM post
-JOIN similarity_cte ON post.id = similarity_cte.id
+	WHERE importance > 0.3
+	GROUP BY id
+) SELECT
+	p.id, p.user_id, p.description, p.location,
+	p.created_at, p.image_urls, p.deleted, p.archived,
+	u.first_name, u.last_name, u.login, u.avatar
+FROM post p LEFT JOIN users u ON u.id = p.user_id
+JOIN similarity_cte ON p.id = similarity_cte.id
 `
 
 	createTag = `
@@ -202,12 +208,14 @@ WHERE user_id = $1
 `
 
 	getLikedPostsByUserID = `
-SELECT id, user_id, description, location, created_at, image_urls
-FROM post
-WHERE id = ANY (
-SELECT post_id FROM like_post
-WHERE user_id = $1 AND deleted=FALSE AND archived=FALSE
-ORDER BY created_at OFFSET $2 LIMIT $3
+SELECT
+	p.id, p.user_id, p.description, p.location, p.created_at, p.image_urls,
+	u.first_name, u.last_name, u.login, u.avatar
+FROM post p LEFT JOIN users u ON u.id = p.user_id
+WHERE p.id = ANY (
+	SELECT post_id FROM like_post
+	WHERE user_id = $1 AND deleted=FALSE AND archived=FALSE
+	ORDER BY created_at OFFSET $2 LIMIT $3
 )
 `
 )
