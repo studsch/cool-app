@@ -130,6 +130,8 @@ func (r *postRepo) SearchByFilter(
 			&p.ID, &p.UserID, &p.Description, &p.Location,
 			&p.CreatedAt, &p.ImageURLs,
 			&p.Deleted, &p.Archived,
+			&p.UserFirstName, &p.UserLastName, &p.UserLogin,
+			&p.UserAvatar,
 		); err != nil {
 			return nil, errors.Wrap(err, "postRepo.Search.Scan")
 		}
@@ -224,7 +226,8 @@ func (r *postRepo) GetByID(
 	var p models.PostBase
 	if err := r.db.QueryRow(ctx, getByIdQuery, postID).Scan(
 		&p.ID, &p.UserID, &p.Description, &p.Location,
-		&p.CreatedAt, &p.ImageURLs, &p.Author,
+		&p.CreatedAt, &p.ImageURLs, &p.UserFirstName, &p.UserLastName,
+		&p.UserLogin, &p.UserAvatar,
 	); err != nil {
 		return nil, errors.Wrap(err, "postRepo.GetByID.Scan")
 	}
@@ -267,7 +270,8 @@ func (r *postRepo) GetPosts(
 		p := &models.Post{}
 		if err := rows.Scan(
 			&p.ID, &p.UserID, &p.Description, &p.Location,
-			&p.CreatedAt, &p.ImageURLs,
+			&p.CreatedAt, &p.ImageURLs, &p.UserFirstName, &p.UserLastName,
+			&p.UserLogin, &p.UserAvatar,
 		); err != nil {
 			return nil, errors.Wrap(err, "postRepo.GetPosts.Scan")
 		}
@@ -325,7 +329,8 @@ func (r *postRepo) GetByUserID(
 		p := &models.Post{}
 		if err := rows.Scan(
 			&p.ID, &p.UserID, &p.Description, &p.Location,
-			&p.CreatedAt, &p.ImageURLs,
+			&p.CreatedAt, &p.ImageURLs, &p.UserFirstName, &p.UserLastName,
+			&p.UserLogin, &p.UserAvatar,
 		); err != nil {
 			return nil, errors.Wrap(err, "postRepo.GetByUserID.Scan")
 		}
@@ -414,7 +419,7 @@ func (r *postRepo) GetTagByTitle(
 		if err == pgx.ErrNoRows {
 			return nil, nil
 		}
-		return nil, errors.Wrap(err, "postRepo.GetTabByTitle.Scan")
+		return nil, errors.Wrap(err, "postRepo.GetTagByTitle.Scan")
 	}
 
 	return &t, nil
@@ -517,7 +522,8 @@ func (r *postRepo) GetLikedPostsByUserID(
 		p := &models.Post{}
 		if err := rows.Scan(
 			&p.ID, &p.UserID, &p.Description, &p.Location,
-			&p.CreatedAt, &p.ImageURLs,
+			&p.CreatedAt, &p.ImageURLs, &p.UserFirstName,
+			&p.UserLastName, &p.UserLogin, &p.UserAvatar,
 		); err != nil {
 			return nil, errors.Wrap(err, "postRepo.GetLikedPostsByUserID.Scan")
 		}
