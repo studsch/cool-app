@@ -1,2 +1,2 @@
 команда: python src/data_execution/users.py запускается из пути cool-app/rec-sys
- команда: python src/data_execution/posts.py запускается из пути cool-app/rec-sys        колонки которые есть id, user_id, description, location, created_at, image_urls
+команда: python src/data_execution/posts.py запускается из пути cool-app/rec-sys        колонки которые есть id, user_id, description, location, created_at, image_urls
