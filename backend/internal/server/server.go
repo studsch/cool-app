@@ -10,6 +10,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/minio/minio-go/v7"
+	"github.com/redis/go-redis/v9"
 	"github.com/studsch/cool-app/backend/pkg/logger"
 
 	"github.com/gofiber/fiber/v2"
@@ -22,20 +23,22 @@ const (
 
 // Server struct
 type Server struct {
-	fiber     *fiber.App
-	cfg       *config.Config
-	db        *pgxpool.Pool
-	logger    logger.Logger
-	awsClient *minio.Client
+	fiber       *fiber.App
+	cfg         *config.Config
+	db          *pgxpool.Pool
+	logger      logger.Logger
+	awsClient   *minio.Client
+	redisClient *redis.Client
 }
 
 // NewServer New server constructor
-func NewServer(cfg *config.Config, db *pgxpool.Pool, logger logger.Logger, awsS3Client *minio.Client) *Server {
+func NewServer(cfg *config.Config, db *pgxpool.Pool, logger logger.Logger, awsS3Client *minio.Client, redisClient *redis.Client) *Server {
 	return &Server{
-		cfg:       cfg,
-		db:        db,
-		logger:    logger,
-		awsClient: awsS3Client,
+		cfg:         cfg,
+		db:          db,
+		logger:      logger,
+		awsClient:   awsS3Client,
+		redisClient: redisClient,
 	}
 }
 

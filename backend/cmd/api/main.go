@@ -8,6 +8,7 @@ import (
 	"github.com/studsch/cool-app/backend/internal/server"
 	"github.com/studsch/cool-app/backend/pkg/db/aws"
 	"github.com/studsch/cool-app/backend/pkg/db/postgres"
+	"github.com/studsch/cool-app/backend/pkg/db/redis"
 	"github.com/studsch/cool-app/backend/pkg/logger"
 	"github.com/studsch/cool-app/backend/pkg/utils"
 )
@@ -56,7 +57,11 @@ func main() {
 	}
 	appLogger.Info("AWS S3 connected")
 
-	s := server.NewServer(cfg, psqlDB, appLogger, awsClient)
+	redisClient := redis.NewRedisClient(cfg)
+	defer redisClient.Close()
+	appLogger.Info("Redis connected")
+
+	s := server.NewServer(cfg, psqlDB, appLogger, awsClient, redisClient)
 	if err := s.Run(); err != nil {
 		log.Fatal(err)
 	}

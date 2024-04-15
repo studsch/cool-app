@@ -11,6 +11,7 @@ import (
 // Config app config struct
 type Config struct {
 	Postgres PostgresConfig
+	Redis    RedisConfig
 	AWS      AWS
 	Server   ServerConfig
 	Logger   Logger
@@ -59,6 +60,18 @@ type AWS struct {
 	MinioSecretKey string
 	MinioEndpoint  string
 	UseSSL         bool
+}
+
+type RedisConfig struct {
+	RedisAddr      string
+	RedisPassword  string
+	RedisDB        string
+	RedisDefaultdb string
+	MinIdleConns   int
+	PoolSize       int
+	PoolTimeout    int
+	Password       string
+	DB             int
 }
 
 // LoadConfig load config file from given path
