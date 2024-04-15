@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
@@ -15,12 +16,17 @@ import (
 	"github.com/studsch/cool-app/backend/pkg/utils"
 )
 
+const (
+	cacheDuration = 7 * 24 * 60 * 60
+)
+
 // authUC Auth useCase
 type authUC struct {
-	cfg      *config.Config
-	authRepo auth.Repository
-	awsRepo  auth.AWSRepository
-	logger   logger.Logger
+	cfg       *config.Config
+	authRepo  auth.Repository
+	awsRepo   auth.AWSRepository
+	logger    logger.Logger
+	redisRepo auth.RedisRepository
 }
 
 func (u *authUC) SearchByFilter(ctx context.Context, filter *models.UserFilter, pq *utils.PaginationQuery) (*models.UserList, error) {
@@ -33,12 +39,16 @@ func (u *authUC) Search(ctx context.Context, q string, pq *utils.PaginationQuery
 }
 
 // NewAuthUC Auth useCase constructor
-func NewAuthUC(cfg *config.Config, authRepo auth.Repository, logger logger.Logger, awsRepo auth.AWSRepository) auth.UseCase {
+func NewAuthUC(
+	cfg *config.Config, authRepo auth.Repository, logger logger.Logger,
+	awsRepo auth.AWSRepository, redisRepo auth.RedisRepository,
+) auth.UseCase {
 	return &authUC{
-		cfg:      cfg,
-		authRepo: authRepo,
-		awsRepo:  awsRepo,
-		logger:   logger,
+		cfg:       cfg,
+		authRepo:  authRepo,
+		awsRepo:   awsRepo,
+		logger:    logger,
+		redisRepo: redisRepo,
 	}
 }
 
@@ -67,6 +77,12 @@ func (u *authUC) Register(ctx context.Context, user *models.User) (*models.UserW
 	tokens, err := utils.GenerateJWTTokens(createdUser, u.cfg)
 	if err != nil {
 		return nil, httpErrors.NewInternalServerError(errors.Wrap(err, "authUC.Register.GenerateJWTToken"))
+	}
+
+	if err = u.redisRepo.SetRefreshToken(
+		ctx, createdUser.ID.String(), tokens.Refresh, cacheDuration,
+	); err != nil {
+		u.logger.Errorf("authUC.Register.SetRefreshToken: %v", err)
 	}
 
 	return &models.UserWithTokens{
@@ -118,6 +134,12 @@ func (u *authUC) Login(ctx context.Context, user *models.User) (*models.UserWith
 		return nil, httpErrors.NewInternalServerError(errors.Wrap(err, "authUC.Login.GenerateJWTToken"))
 	}
 
+	if err = u.redisRepo.SetRefreshToken(
+		ctx, foundUser.ID.String(), tokens.Refresh, cacheDuration,
+	); err != nil {
+		u.logger.Errorf("authUC.Login.SetRefreshToken: %v", err)
+	}
+
 	return &models.UserWithTokens{
 		User:         foundUser,
 		AccessToken:  tokens.Access,
@@ -165,4 +187,61 @@ func (u *authUC) Update(ctx context.Context, user *models.User) (*models.User, e
 	updatedUser.SanitizePassword()
 
 	return updatedUser, nil
+}
+
+func (u *authUC) Logout(ctx context.Context, userID string) error {
+	if err := u.redisRepo.DeleteRefreshToken(ctx, userID); err != nil {
+		u.logger.Errorf("authUC.Logout.DeleteRefreshToken: %v", err)
+	}
+
+	return nil
+}
+
+func (u *authUC) RenewTokens(
+	ctx context.Context, inRefreshToken string,
+) (*models.UserWithTokens, error) {
+	userCtx, err := utils.GetUserFromCtx(ctx)
+	if err != nil {
+		return nil, httpErrors.NewUnauthorizedError(
+			errors.WithMessage(
+				err, "postUC.Create.GetUserFromCtx",
+			),
+		)
+	}
+
+	refreshToken, err := u.redisRepo.GetRefreshTokenByID(ctx, userCtx.ID.String())
+	if err != nil {
+		return nil, fmt.Errorf("not valid refresh token")
+	}
+
+	if inRefreshToken != *refreshToken {
+		return nil, fmt.Errorf("not valid refresh token")
+	}
+
+	expiresRefreshToken, err := utils.ParseRefreshToken(inRefreshToken)
+	if err != nil {
+		return nil, err
+	}
+
+	now := time.Now().Unix()
+	if now >= expiresRefreshToken {
+		return nil, fmt.Errorf("refresh token is expire")
+	}
+
+	tokens, err := utils.GenerateJWTTokens(userCtx, u.cfg)
+	if err != nil {
+		return nil, httpErrors.NewInternalServerError(errors.Wrap(err, "authUC.Register.GenerateJWTToken"))
+	}
+
+	if err = u.redisRepo.SetRefreshToken(
+		ctx, userCtx.ID.String(), tokens.Refresh, cacheDuration,
+	); err != nil {
+		u.logger.Errorf("authUC.Register.SetRefreshToken: %v", err)
+	}
+
+	return &models.UserWithTokens{
+		User:         userCtx,
+		AccessToken:  tokens.Access,
+		RefreshToken: tokens.Refresh,
+	}, nil
 }

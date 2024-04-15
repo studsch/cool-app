@@ -111,3 +111,7 @@ func (u *User) PrepareCreate() error {
 	}
 	return nil
 }
+
+type RenewTokens struct {
+	RefreshToken string `json:"refreshToken`
+}
