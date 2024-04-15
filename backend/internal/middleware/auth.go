@@ -12,6 +12,7 @@ import (
 	"github.com/studsch/cool-app/backend/pkg/utils"
 )
 
+// TODO: check expiresion time
 func (mw *MiddlewareManager) AuthJWTMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		tokenMetadata, err := utils.ExtractTokenMetadata(c, mw.cfg)

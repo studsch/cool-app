@@ -34,9 +34,12 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	authAWSRepo := authRepository.NewAuthAWSRepository(s.awsClient)
 	postAWSRepo := postRepository.NewPostAWSRepository(s.awsClient)
 	postRedisRepo := postRepository.NewPostRedisRepo(s.redisClient)
+	authRedisRepo := authRepository.NewAuthRedisRepo(s.redisClient)
 
 	// Init useCases
-	authUC := authUseCase.NewAuthUC(s.cfg, authRepo, s.logger, authAWSRepo)
+	authUC := authUseCase.NewAuthUC(
+		s.cfg, authRepo, s.logger, authAWSRepo, authRedisRepo,
+	)
 	postUC := postUseCase.NewPostUC(s.cfg, postRepo, s.logger, postAWSRepo, postRedisRepo)
 	commUC := commUseCase.NewCommentUC(s.cfg, commRepo, s.logger)
 	likeUC := likeUseCase.NewLikeUC(s.cfg, likeRepo, s.logger)

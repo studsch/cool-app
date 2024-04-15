@@ -10,4 +10,5 @@ type Handlers interface {
 	UploadAvatar() fiber.Handler
 	Search() fiber.Handler
 	Update() fiber.Handler
+	RenewTokens() fiber.Handler
 }

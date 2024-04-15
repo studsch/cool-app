@@ -17,4 +17,6 @@ type UseCase interface {
 	Search(ctx context.Context, q string, pq *utils.PaginationQuery) (*models.UserList, error)
 	SearchByFilter(ctx context.Context, filter *models.UserFilter, pq *utils.PaginationQuery) (*models.UserList, error)
 	Update(ctx context.Context, user *models.User) (*models.User, error)
+	Logout(ctx context.Context, userID string) error
+	RenewTokens(ctx context.Context, inRefreshToken string) (*models.UserWithTokens, error)
 }

@@ -4,13 +4,15 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/studsch/cool-app/backend/config"
 	"github.com/studsch/cool-app/backend/internal/models"
 	"github.com/studsch/cool-app/backend/pkg/httpErrors"
-	"strings"
-	"time"
 )
 
 type Tokens struct {
@@ -97,7 +99,6 @@ func ExtractTokenMetadata(c *fiber.Ctx, cfg *config.Config) (*TokenMetadata, err
 		secret := []byte(cfg.JWT.SecretKey)
 		return secret, nil
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -123,6 +124,6 @@ func ExtractTokenMetadata(c *fiber.Ctx, cfg *config.Config) (*TokenMetadata, err
 	return nil, err
 }
 
-//func ParseRefreshToken(refreshToken string) (int64, error) {
-//	return strconv.ParseInt(strings.Split(refreshToken, ".")[1], 0, 64)
-//}
+func ParseRefreshToken(refreshToken string) (int64, error) {
+	return strconv.ParseInt(strings.Split(refreshToken, ".")[1], 0, 64)
+}
