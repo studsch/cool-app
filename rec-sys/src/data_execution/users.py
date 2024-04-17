@@ -5,7 +5,7 @@ import pandas as pd
 import os
 
 @click.command()
-@click.option("--out", "-o", "output", default="data", help="path where need save users: '../data'", type=click.Path(exists=True), required=True)
+@click.option("--out", "-o", "output", default="data/raw", help="path where need save users: 'data/raw'", type=click.Path(exists=True), required=True)
 @click.option("--col", "-c", "columns", default="id gender about city country birthday", help="columns to execute: 'id gender city'", required=True)
 @click.option("--table", "-t", "table", default="users", help="name of table: 'users'", required=True)
 def execute_useres(output, columns, table):
@@ -20,6 +20,7 @@ def execute_useres(output, columns, table):
         str_select = ", ".join(columns)
         str_select = str_select.replace('birthday', "date_part('year',age(birthday))")
         cursor.execute(f"""SELECT {str_select} FROM {table};""") # "rel" is short for relation.
+        columns[columns.index('birthday')] = 'age'
         users = pd.DataFrame(cursor.fetchall(), columns=columns) # A list() of tables.
         users.to_csv(os.path.join(output, "users.csv"), index=False)
         conn.close()
