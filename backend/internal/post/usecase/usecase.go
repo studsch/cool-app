@@ -16,12 +16,18 @@ import (
 	"github.com/studsch/cool-app/backend/pkg/utils"
 )
 
+const (
+	basePrefix    = "api-post:"
+	cacheDuration = 3600
+)
+
 // postUC Post useCase
 type postUC struct {
-	cfg      *config.Config
-	postRepo post.Repository
-	awsRepo  post.AWSRepository
-	logger   logger.Logger
+	cfg       *config.Config
+	postRepo  post.Repository
+	awsRepo   post.AWSRepository
+	logger    logger.Logger
+	redisRepo post.RedisRepository
 }
 
 func (u *postUC) SearchByFilter(
@@ -103,13 +109,14 @@ func (u *postUC) UploadImages(
 // NewPostUC Post useCase constructor
 func NewPostUC(
 	cfg *config.Config, postRepo post.Repository, logger logger.Logger,
-	awsRepo post.AWSRepository,
+	awsRepo post.AWSRepository, redisRepo post.RedisRepository,
 ) post.UseCase {
 	return &postUC{
-		cfg:      cfg,
-		postRepo: postRepo,
-		awsRepo:  awsRepo,
-		logger:   logger,
+		cfg:       cfg,
+		postRepo:  postRepo,
+		awsRepo:   awsRepo,
+		logger:    logger,
+		redisRepo: redisRepo,
 	}
 }
 
@@ -225,6 +232,10 @@ func (u *postUC) Delete(ctx context.Context, postID uuid.UUID) error {
 		return err
 	}
 
+	if err := u.redisRepo.DeletePostByIDCtx(ctx, u.getKeyWithPrefix(postID.String())); err != nil {
+		u.logger.Errorf("postUC.Delete.DeletePostByIDCtx: %v", err)
+	}
+
 	return nil
 }
 
@@ -253,6 +264,26 @@ func (u *postUC) GetByID(
 	ctx context.Context, postID uuid.UUID,
 ) (*models.PostBase, error) {
 	// TODO: get from redis and return it
+	postRedis, err := u.redisRepo.GetPostByIDCtx(ctx, u.getKeyWithPrefix(postID.String()))
+	if err != nil {
+		u.logger.Errorf("postUC.GetByID.GetPostByIDCtx: %v", err)
+	}
+	if postRedis != nil {
+		p := &models.PostBase{
+			CreatedAt:     postRedis.CreatedAt,
+			Description:   postRedis.Description,
+			Location:      postRedis.Location,
+			UserFirstName: postRedis.UserFirstName,
+			UserLastName:  postRedis.UserLastName,
+			UserLogin:     postRedis.UserLogin,
+			UserAvatar:    postRedis.UserAvatar,
+			ImageURLs:     postRedis.ImageURLs,
+			Tags:          postRedis.Tags,
+			ID:            postRedis.ID,
+			UserID:        postRedis.UserID,
+		}
+		return p, nil
+	}
 
 	p, err := u.postRepo.GetByID(ctx, postID)
 	if err != nil {
@@ -265,7 +296,24 @@ func (u *postUC) GetByID(
 	}
 	p.Tags = tags
 
-	// TODO: set to redis
+	post := &models.Post{
+		CreatedAt:     p.CreatedAt,
+		Description:   p.Description,
+		Location:      p.Location,
+		ImageURLs:     p.ImageURLs,
+		Tags:          p.Tags,
+		ID:            p.ID,
+		UserID:        p.UserID,
+		UserFirstName: p.UserFirstName,
+		UserLastName:  p.UserLastName,
+		UserLogin:     p.UserLogin,
+		UserAvatar:    p.UserAvatar,
+	}
+	if err = u.redisRepo.SetPostByIDCtx(
+		ctx, u.getKeyWithPrefix(postID.String()), cacheDuration, post,
+	); err != nil {
+		u.logger.Errorf("postUC.GetByID.SetPostByIDCtx: %v", err)
+	}
 
 	return p, nil
 }
@@ -348,4 +396,8 @@ func (u *postUC) GetLikedPostsByUserID(
 	}
 
 	return pl, err
+}
+
+func (u *postUC) getKeyWithPrefix(postID string) string {
+	return fmt.Sprintf("%s: %s", basePrefix, postID)
 }

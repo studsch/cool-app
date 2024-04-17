@@ -181,14 +181,16 @@ func (h *authHandlers) Logout() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		claims, err := utils.ExtractTokenMetadata(c, h.cfg)
 		if err != nil {
-			return c.Status(http.StatusUnauthorized).JSON(httpErrors.NewUnauthorizedError(httpErrors.Unauthorized))
+			return c.Status(http.StatusUnauthorized).JSON(
+				httpErrors.NewUnauthorizedError(httpErrors.Unauthorized),
+			)
 		}
 
 		userID := claims.ID
-		fmt.Println(userID)
 
-		// TODO: connect to redis
-		// TODO: delete refresh token in redis
+		if err := h.authUC.Logout(c.Context(), userID); err != nil {
+			return c.SendStatus(fiber.StatusInternalServerError)
+		}
 
 		return c.SendStatus(fiber.StatusNoContent)
 	}
@@ -281,5 +283,48 @@ func (h *authHandlers) Update() fiber.Handler {
 		}
 
 		return c.Status(fiber.StatusOK).JSON(updatedUser)
+	}
+}
+
+func (h *authHandlers) RenewTokens() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		renew := &models.RenewTokens{}
+		if err := c.BodyParser(renew); err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		userWithTokens, err := h.authUC.RenewTokens(c.UserContext(), renew.RefreshToken)
+		if err != nil {
+			if err.Error() == "not valid refresh token" {
+				return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+					"status": fiber.StatusUnprocessableEntity,
+					"error":  err.Error(),
+				},
+				)
+			}
+
+			if err.Error() == "refresh token is expire" {
+				return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+					"status": fiber.StatusUnprocessableEntity,
+					"error":  err.Error(),
+				},
+				)
+			}
+
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+			"error": false,
+			"user":  userWithTokens.User,
+			"tokens": fiber.Map{
+				"access":  userWithTokens.AccessToken,
+				"refresh": userWithTokens.RefreshToken,
+			},
+		})
 	}
 }
