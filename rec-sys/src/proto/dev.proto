@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+message PredictPostsForOneUserRequest {
+  string user_id = 1;
+  repeated string post_id = 2;
+}
+
+message PredictPostsForOneUserResponse {
+  repeated string post_id = 1;
+}
+
+service RecSystem {
+  rpc PredictPostsForOneUser (PredictPostsForOneUserRequest) returns (PredictPostsForOneUserResponse);
+}
