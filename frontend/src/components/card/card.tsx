@@ -52,6 +52,7 @@ interface PostCardProps {
   photo: string; // Фотография для карточки поста
   description: string; // Описание для карточки поста
   className?: string;
+  createdAt: string;
 }
 
 const PostCard: React.FC<PostCardProps> = ({
@@ -61,6 +62,7 @@ const PostCard: React.FC<PostCardProps> = ({
   photo,
   description,
   className,
+  createdAt,
 }) => {
   const [likesCount, setLikesCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
@@ -123,6 +125,13 @@ const PostCard: React.FC<PostCardProps> = ({
     ]);
   };
 
+  const dateObject = new Date(createdAt);
+
+  const day = dateObject.getDate(); // День
+  const month = dateObject.getMonth() + 1; // Месяц (начиная с 0, поэтому добавляем 1)
+  const year = dateObject.getFullYear(); // Год
+  const formattedDate = `${day}/${month}/${year}`;
+
   return (
     <div className={cn("grid place-content-center mt-4 mb-4", className)}>
       <span className="align-middle">
@@ -133,21 +142,26 @@ const PostCard: React.FC<PostCardProps> = ({
                 <img
                   src={userPhoto}
                   alt={userName}
-                  className="rounded-full h-10 w-10 mr-2"
+                  className="rounded-full h-[55px] w-[55px] mr-2 object-cover"
                 />{" "}
-                <span>{`${userName} ${userSName}`}</span>
+                <div className="grid">
+                  <span className="text-text-primary-color">{`${userName} ${userSName}`}</span>
+                  <span className="text-text-secondary-color">
+                    {formattedDate}
+                  </span>
+                </div>
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <MoreHorizontal />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                  <DropdownMenuLabel>Настройки</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Удалить пост</DropdownMenuItem>
-                  <DropdownMenuItem>Repost</DropdownMenuItem>
-                  <DropdownMenuItem>Don't show this content</DropdownMenuItem>
-                  <DropdownMenuItem>Subscription</DropdownMenuItem>
+                  <DropdownMenuItem>Пожаловаться(ну ты ябида)</DropdownMenuItem>
+                  <DropdownMenuItem>ПотомПридумаем1</DropdownMenuItem>
+                  <DropdownMenuItem>ПотомПридумаем2</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

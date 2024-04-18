@@ -19,6 +19,7 @@ export default function Home() {
   const [firstName, setFirstName] = useState<string | null>(null);
 
   const { data: session, status, update } = useSession();
+  console.log("Session data:", session);
 
   if (!session) {
     return <div>Loading...</div>;
@@ -105,14 +106,13 @@ export default function Home() {
 
   const { user } = session;
   const { name, surname } = user;
-
   return (
     <>
       <div>
         <div className="mt-5 mb-5">
           <Profile
             info={{
-              avatarImage: "https://example.com/avatar.jpg",
+              avatarImage: `http://localhost:9000/${session.user.avatar}`,
               avatarFallback: "JD", // Инициалы пользователя, если нет изображения
               name: name,
               surname: surname,

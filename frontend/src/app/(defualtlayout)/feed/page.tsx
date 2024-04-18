@@ -11,6 +11,7 @@ interface Post {
   userAvatar: string; // Фотография пользователя
   userFirstName: string; // Имя пользователя
   userLastName: string; // Фамилия пользователя
+  createdAt: string; // Дата публикации
 }
 
 export default function Feed() {
@@ -73,6 +74,7 @@ export default function Feed() {
               userPhoto={`http://localhost:9000/${post.userAvatar}`}
               userName={post.userFirstName}
               userSName={post.userLastName}
+              createdAt={post.createdAt}
             />
           ))}
         </div>

@@ -40,7 +40,7 @@ const FormSchema = z.object({
 
 export interface ProfileProps {
   info: {
-    avatarImage: string;
+    avatarImage: string | undefined;
     avatarFallback: string;
     name: string;
     surname: string;
@@ -66,7 +66,7 @@ export function Profile({ info }: ProfileProps) {
         <div className="bg-white rounded-full w-[108px] h-[108px] -mt-[50px]">
           <div className="p-1">
             <Avatar className="w-[100px] h-[100px]">
-              <AvatarImage src={info.avatarImage} />
+              <AvatarImage src={info.avatarImage} className="object-cover" />
               <AvatarFallback>{info.avatarFallback}</AvatarFallback>
             </Avatar>
           </div>
