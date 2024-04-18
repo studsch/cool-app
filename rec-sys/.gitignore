@@ -3,3 +3,4 @@ data/ratings
 models
 *__pycache__*
 __pycache__
+*pb2*
