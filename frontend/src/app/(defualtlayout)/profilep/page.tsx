@@ -1,7 +1,5 @@
 "use client";
-import React, { useState } from "react";
 import PhotoGrid from "@/components/mediaProfile";
-import { useSession } from "next-auth/react";
 import { Profile } from "@/components/profile/profile";
 import {
   ProfileInfo,
@@ -13,9 +11,18 @@ import { Film } from "lucide-react";
 import { BookHeart } from "lucide-react";
 import CreatePost from "@/components/ui/create-post";
 import UserWidget from "@/components/ui/userwidget";
+import { useSession } from "next-auth/react";
+import React, { useState, useEffect } from "react";
 
 export default function Home() {
   const [photos, setPhotos] = useState<string[]>([]);
+  const [firstName, setFirstName] = useState<string | null>(null);
+
+  const { data: session, status, update } = useSession();
+
+  if (!session) {
+    return <div>Loading...</div>;
+  }
 
   const profiles: ProfileInfo[] = [
     {
@@ -82,6 +89,7 @@ export default function Home() {
       avatarImage: string;
       avatarFallback: string;
       name: string;
+      surname: string;
       description: string;
     };
   }
@@ -95,44 +103,22 @@ export default function Home() {
     { id: 3, name: "Bob", lastName: "Brown" },
   ];
 
-  const { data: session, status, update } = useSession();
-
-  const postId = "15ac316b-d68f-41e6-9d44-b56550a3b26b"; // Замените на реальный id поста
-
-  fetch(`http://localhost:8000/api/v1/post/${postId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      // Добавьте любые необходимые заголовки, например, авторизацию
-    },
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then(postData => {
-      // В переменной postData будет содержаться информация о посте
-      console.log("Post Data:", postData);
-    })
-    .catch(error => {
-      console.error("There was a problem with the fetch operation:", error);
-    });
+  const { user } = session;
+  const { name, surname } = user;
 
   return (
     <>
       <div>
-        {/* <div className="app">
-          <UserWidget
-            userPhoto={userPhoto}
-            userName={userName}
-            userLastName={userLastName}
-            friends={friends}
-          />
-        </div> */}
         <div className="mt-5 mb-5">
-          <Profile info={profileInfo} />
+          <Profile
+            info={{
+              avatarImage: "https://example.com/avatar.jpg",
+              avatarFallback: "JD", // Инициалы пользователя, если нет изображения
+              name: name,
+              surname: surname,
+              description: "В сессии нет about. покрайне мере пока что",
+            }}
+          />
         </div>
         <div className="bg-white rounded-xl w-full h-[50px] mt-4 mb-4 flex place-content-center justify-between">
           <div className="h-full grid content-center">

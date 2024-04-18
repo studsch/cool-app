@@ -8,6 +8,9 @@ interface Post {
   description: string;
   location: string;
   imageURLs?: string[];
+  userAvatar: string; // Фотография пользователя
+  userFirstName: string; // Имя пользователя
+  userLastName: string; // Фамилия пользователя
 }
 
 export default function Feed() {
@@ -67,12 +70,15 @@ export default function Feed() {
                 post.imageURLs ? post.imageURLs[0] : ""
               }`}
               description={post.description}
+              userPhoto={`http://localhost:9000/${post.userAvatar}`}
+              userName={post.userFirstName}
+              userSName={post.userLastName}
             />
           ))}
         </div>
       </div>
       <div className="my-5 w-[240px] md:flex flex-col gap-4 hidden">
-        <div className=" bg-white rounded-md w-full p-7 ">
+        <div className="bg-white rounded-md w-full p-7">
           Будут кастомные виджеты, пока не в приоритете
         </div>
       </div>

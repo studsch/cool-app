@@ -43,6 +43,7 @@ export interface ProfileProps {
     avatarImage: string;
     avatarFallback: string;
     name: string;
+    surname: string;
     description: string;
   };
 }
@@ -72,7 +73,7 @@ export function Profile({ info }: ProfileProps) {
         </div>
         <div className="flex w-full justify-between my-2 mx-2">
           <div className="grid gap-1">
-            <p className="text-lg font-medium leading-none">{info.name}</p>
+            <p className="text-lg font-medium leading-none">{`${info.name} ${info.surname}`}</p>
             <p className="text-sm font-medium leading-none text-muted-foreground">
               {info.description}
             </p>
