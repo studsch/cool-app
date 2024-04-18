@@ -1,1 +1,0 @@
-команда: python src/eval/evaluate.py -n 'rec-sys v1.0.0' запускается из пути cool-app/rec-sys

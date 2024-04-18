@@ -1,0 +1,1 @@
+команда: python src/logic/train/train.py -n 'rec-model v1.0.0' запускается из пути cool-app/rec-sys

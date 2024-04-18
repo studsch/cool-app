@@ -6,7 +6,7 @@ import glob
 from lightfm import LightFM
 from lightfm.data import Dataset
 from lightfm.cross_validation import random_train_test_split
-sys.path.insert(1, 'src')
+sys.path.insert(1, 'src/logic/')
 from features.FeaturesPreprocess import age_to_group
 from utils import save, load
 

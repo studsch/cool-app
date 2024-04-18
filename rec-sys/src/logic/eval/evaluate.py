@@ -7,7 +7,7 @@ from lightfm import LightFM
 from lightfm.data import Dataset
 from lightfm.cross_validation import random_train_test_split
 from lightfm.evaluation import precision_at_k, auc_score
-sys.path.insert(1, 'src')
+sys.path.insert(1, 'src/logic/')
 from features.FeaturesPreprocess import age_to_group
 from utils import save_json, load
 import json

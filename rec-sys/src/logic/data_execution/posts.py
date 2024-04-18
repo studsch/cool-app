@@ -12,7 +12,7 @@ TAGS_LIMIT = 2
 @click.command()
 @click.option("--out", "-o", "output", default="data/raw", help="path where need save posts: 'data/raw'", type=click.Path(exists=True), required=True)
 @click.option("--col", "-c", "columns", default="id user_id description tag_ids created_at", help="columns to execute: 'id user_id description created_at image_urls'", required=True)
-@click.option("--table", "-t", "table", default="post", help="name of table: 'posts'", required=True)
+@click.option("--table", "-t", "table", default="post", help="name of table: 'post'", required=True)
 def execute_posts(output, columns, table):
     data = None
     with open('../backend/config/config-docker.yaml') as f:
