@@ -1,3 +1,1 @@
-команда: python src/logic/data_execution/users.py запускается из пути cool-app/rec-sys
-команда: python src/logic/data_execution/posts.py запускается из пути cool-app/rec-sys        колонки которые есть id, user_id, description, location, created_at, image_urls
-команда: python src/logic/data_execution/ratings.py запускается из пути cool-app/rec-sys      Но скорее всего не нужно будет, так как буду считывать построчно с sql и дообучивать (так как может быть слишком много данных, но на всякий случай сделал)
+команда: python src/logic/data_execution/execute.py запускается из пути cool-app/rec-sys    
