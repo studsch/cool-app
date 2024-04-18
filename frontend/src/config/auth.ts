@@ -45,6 +45,8 @@ export const authConfig: AuthOptions = {
           user_role: user["userRole"],
           deleted: user["deleted"],
           login: user["login"],
+          about: user["about"],
+          avatar: user["avatar"],
           tokens: tokens,
         } as User;
       },
@@ -78,6 +80,7 @@ export const authConfig: AuthOptions = {
                 password: session.user.password,
                 phoneNumber: session.user.phone,
                 gender: session.user.gender,
+                about: session.user.about,
               }),
             },
           );
@@ -98,6 +101,8 @@ export const authConfig: AuthOptions = {
               updated_at: session.user.updated_at,
               user_role: session.user.user_role,
               deleted: session.user.deleted,
+              about: session.user.about,
+              avatar: session.user.avatar,
               tokens: session.user.tokens,
             };
         }
@@ -116,6 +121,8 @@ export const authConfig: AuthOptions = {
           updated_at: user.updated_at,
           user_role: user.user_role,
           deleted: user.deleted,
+          about: user.about,
+          avatar: user.avatar,
           tokens: user.tokens,
         };
       }
@@ -137,6 +144,8 @@ export const authConfig: AuthOptions = {
           updated_at: token.updated_at,
           user_role: token.user_role,
           deleted: token.deleted,
+          about: token.about,
+          avatar: token.avatar,
           tokens: token.tokens,
         },
       };

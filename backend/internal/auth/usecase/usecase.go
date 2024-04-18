@@ -175,7 +175,9 @@ func (u *authUC) generateAWSMinioURL(bucket string, key string) string {
 	}
 	fmt.Println("Generated presigned URL", url)
 
-	return fmt.Sprintf("%s/%s/%s", u.cfg.AWS.MinioEndpoint, bucket, key)
+	return fmt.Sprintf("%s/%s", bucket, key)
+
+	// return fmt.Sprintf("%s/%s/%s", u.cfg.AWS.MinioEndpoint, bucket, key)
 }
 
 func (u *authUC) Update(ctx context.Context, user *models.User) (*models.User, error) {

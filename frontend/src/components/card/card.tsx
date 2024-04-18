@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 
 import {
@@ -45,16 +46,25 @@ interface CommentProps {
 }
 
 interface PostCardProps {
+  userPhoto: string; // Фотография пользователя
+  userName: string; // Имя пользователя
+  userSName: string; // Фамилия пользователя
   photo: string; // Фотография для карточки поста
   description: string; // Описание для карточки поста
   className?: string;
+  createdAt: string;
 }
 
 const PostCard: React.FC<PostCardProps> = ({
+  userPhoto,
+  userName,
+  userSName,
   photo,
   description,
   className,
+  createdAt,
 }) => {
+  const [likesCount, setLikesCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const handleLikeClick = () => {
     setIsLiked(!isLiked);
@@ -115,30 +125,45 @@ const PostCard: React.FC<PostCardProps> = ({
     ]);
   };
 
+  const dateObject = new Date(createdAt);
+
+  const day = dateObject.getDate(); // День
+  const month = dateObject.getMonth() + 1; // Месяц (начиная с 0, поэтому добавляем 1)
+  const year = dateObject.getFullYear(); // Год
+  const formattedDate = `${day}/${month}/${year}`;
+
   return (
     <div className={cn("grid place-content-center mt-4 mb-4", className)}>
       <span className="align-middle">
         <Card className=" w-full border-none shadow-none">
           <CardHeader>
-            <div className="flex justify-between">
-              <div className="grid place-content-center ">
-                <AvatarBlock avatarPosition="card" className="" />
+            <div className="flex justify-between items-center">
+              <div className="flex items-center">
+                <img
+                  src={userPhoto}
+                  alt={userName}
+                  className="rounded-full h-[55px] w-[55px] mr-2 object-cover"
+                />{" "}
+                <div className="grid">
+                  <span className="text-text-primary-color">{`${userName} ${userSName}`}</span>
+                  <span className="text-text-secondary-color">
+                    {formattedDate}
+                  </span>
+                </div>
               </div>
-              <div className="grid place-content-center">
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <MoreHorizontal />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuLabel>Settings</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>Report</DropdownMenuItem>
-                    <DropdownMenuItem>Repost</DropdownMenuItem>
-                    <DropdownMenuItem>Don't show this content</DropdownMenuItem>
-                    <DropdownMenuItem>Subscription</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <MoreHorizontal />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Настройки</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Удалить пост</DropdownMenuItem>
+                  <DropdownMenuItem>Пожаловаться(ну ты ябида)</DropdownMenuItem>
+                  <DropdownMenuItem>ПотомПридумаем1</DropdownMenuItem>
+                  <DropdownMenuItem>ПотомПридумаем2</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </CardHeader>
           <CardContent className="md:w-[512px] xl:w-[768px]">

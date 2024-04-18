@@ -16,6 +16,8 @@ declare module "next-auth" {
     tokens: { access: string; refresh: string };
     error: boolean | undefined;
     msg: string | undefined;
+    about: string | undefined;
+    avatar: string | undefined;
   }
   interface Session {
     user: User & {
@@ -27,6 +29,8 @@ declare module "next-auth" {
       surname: string;
       date_of_birth: string;
       gender: string;
+      about: string | undefined;
+      avatar: string | undefined;
       created_at: string;
       updated_at: string;
       tokens: { access: string; refresh: string };
@@ -39,6 +43,8 @@ declare module "next-auth" {
       phone: string;
       name: string;
       surname: string;
+      about: string | undefined;
+      avatar: string | undefined;
       date_of_birth: string;
       gender: string;
       created_at: string;
