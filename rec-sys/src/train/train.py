@@ -54,6 +54,7 @@ def train(output, users, posts, ratings, name, dataset, model, valid):
         if valid:
             sm_interactions, sm_test_interactions = random_train_test_split(sm_interactions, test_percentage=0.2, random_state=42)
             save(sm_test_interactions, os.path.join(output, name, "valid_data"))
+            save(sm_interactions, os.path.join(output, name, "train_data"))
         if model and os.path.exists(model):
             md: LightFM = load(model)
         else:
@@ -69,6 +70,8 @@ def train(output, users, posts, ratings, name, dataset, model, valid):
                 epochs=NO_EPOCHS)
         save(md, os.path.join(output, name, "model"))
         save(ds, os.path.join(output, name, "dataset"))
+        save(sm_user_features, os.path.join(output, name, "user_features"))
+        save(sm_item_features, os.path.join(output, name, "item_features"))
         # print(list(user_id_map.values()))
         # print(md.predict(list(user_id_map.values())[0], list(item_id_map.values()), item_features=sm_item_features, user_features=sm_user_features))
     
