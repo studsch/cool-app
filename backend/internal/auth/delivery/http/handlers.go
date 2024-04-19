@@ -142,9 +142,9 @@ func (h *authHandlers) Login() fiber.Handler {
 	// required_without=PhoneNumber,excluded_with=PhoneNumber,
 	// required_without=Login,excluded_with=Login,
 	type Login struct {
-		Login       string  `json:"login,omitempty" validate:"omitempty,gte=8,lte=30"`
+		Login       string  `json:"login,omitempty" validate:"omitempty,gte=6,lte=31"`
 		PhoneNumber *string `json:"phoneNumber,omitempty" validate:"omitempty,e164"`
-		Password    string  `json:"password,omitempty" validate:"required,gte=8"`
+		Password    string  `json:"password,omitempty" validate:"required,gte=8,lte=250"`
 	}
 	return func(c *fiber.Ctx) error {
 		login := &Login{}
