@@ -126,7 +126,7 @@ def execute_user_by_id(user_id):
         return user
 
 
-def execute_posts_for_user_after(model_t, user_id):
+def execute_posts_after(model_t):
     with open("../backend/config/config-docker.yaml") as f:
         data = yaml.load(f, Loader=yaml.FullLoader)
     try:
@@ -145,12 +145,11 @@ def execute_posts_for_user_after(model_t, user_id):
         )
         cursor = conn.cursor()
         cursor.execute(
-            f"""DROP VIEW IF EXISTS tmp_posts;
-CREATE VIEW tmp_posts AS SELECT id, user_id, description, location, EXTRACT(EPOCH FROM created_at) as timestamp FROM post WHERE EXTRACT(EPOCH FROM created_at) > {model_t["last_timestamp"]} AND deleted = false;
-WITH top_tags as (SELECT post_id, ARRAY_AGG(tag_id) as tag_ids from post_tags WHERE tag_id IN (SELECT tag_id from (SELECT tag_id, count(distinct (tag_id, post_id)) as unique_tags
+            f"""WITH top_tags as (SELECT post_id, ARRAY_AGG(tag_id) as tag_ids from post_tags WHERE tag_id IN (SELECT tag_id from (SELECT tag_id, count(distinct (tag_id, post_id)) as unique_tags
 	FROM post_tags
 	GROUP BY tag_id
-	ORDER By unique_tags DESC limit {TAGS_LIMIT})) GROUP BY post_id)
+	ORDER By unique_tags DESC limit {TAGS_LIMIT})) GROUP BY post_id),
+	tmp_posts as (SELECT id, user_id, description, location, EXTRACT(EPOCH FROM created_at) as timestamp FROM post WHERE EXTRACT(EPOCH FROM created_at) > {model_t["last_timestamp"]} AND deleted = false)
 SELECT id, user_id, description, location, tag_ids, timestamp FROM tmp_posts LEFT JOIN top_tags tt on tt.post_id = id ORDER BY timestamp ASC;"""
         )
         posts = pd.DataFrame(
@@ -168,6 +167,32 @@ SELECT id, user_id, description, location, tag_ids, timestamp FROM tmp_posts LEF
         posts.fillna({"tag_ids": ""}, inplace=True)
         conn.close()
         return posts
+
+
+def execute_ratings_for_user_after(user_id, posts):
+    with open("../backend/config/config-docker.yaml") as f:
+        data = yaml.load(f, Loader=yaml.FullLoader)
+    if data and data["postgres"]:
+        postgres = data["postgres"]
+        conn = psycopg2.connect(
+            host="localhost",
+            dbname=postgres["DBName"],
+            user=postgres["User"],
+            password=postgres["Password"],
+        )
+        cursor = conn.cursor()
+        cursor.execute(
+            f"""WITH comment_rating AS (SELECT DISTINCT user_id, post_id, 2 as rating
+FROM comment WHERE deleted = false AND user_id = '{user_id}'),
+like_rating as (SELECT user_id, post_id, 1 as rating from like_post WHERE user_id = '{user_id}')
+SELECT r.user_id, r.post_id, r.rating FROM (SELECT user_id, post_id, SUM(rating) as rating FROM (SELECT * FROM comment_rating UNION SELECT * FROM like_rating)
+GROUP BY user_id, post_id) r JOIN post p on r.user_id = p.user_id AND post_id = p.id WHERE EXTRACT(EPOCH FROM p.created_at) >= {str(posts["timestamp"].iloc[0])} AND EXTRACT(EPOCH FROM p.created_at) <= {str(posts["timestamp"].iloc[-1])};"""
+        )
+        ratings = pd.DataFrame(
+            cursor.fetchall(), columns=["user_id", "post_id", "rating"]
+        )  # A list() of tables.
+        conn.close()
+        return ratings
 
 
 def execute_all_models(model_name):
