@@ -6,7 +6,7 @@ import os
 import sys
 
 sys.path.insert(1, "src/logic/")
-from utils import save_json, load
+from utils import save_json, load, load_json
 import json
 from features.FeaturesPreprocess import age_to_group
 
@@ -39,7 +39,7 @@ WITH top_tags as (SELECT post_id, ARRAY_AGG(tag_id) as tag_ids from post_tags WH
 	FROM post_tags
 	GROUP BY tag_id
 	ORDER By unique_tags DESC limit {TAGS_LIMIT})) GROUP BY post_id)
-SELECT id, user_id, description, location, tag_ids, timestamp FROM posts JOIN top_tags tt on tt.post_id = id ORDER BY timestamp ASC;"""
+SELECT id, user_id, description, location, tag_ids, timestamp FROM posts LEFT JOIN top_tags tt on tt.post_id = id ORDER BY timestamp ASC;"""
         )
         posts = pd.DataFrame(
             cursor.fetchall(),
@@ -52,6 +52,7 @@ SELECT id, user_id, description, location, tag_ids, timestamp FROM posts JOIN to
                 "timestamp",
             ],
         )  # A list() of tables.
+        posts.fillna({"tag_ids": ""}, inplace=True)
         posts.to_csv(os.path.join("data/raw", "posts.csv"), index=False)
         save_json(
             {"last_timestamp": str(posts["timestamp"].iloc[-1])},
@@ -121,11 +122,55 @@ def execute_user_by_id(user_id):
             columns=["id", "gender", "about", "city", "country", "age"],
         )  # A list() of tables.
         user = age_to_group(user, "age")
-        conn.close
+        conn.close()
         return user
 
 
-def execute_all_pickle(model_name):
+def execute_posts_for_user_after(model_t, user_id):
+    with open("../backend/config/config-docker.yaml") as f:
+        data = yaml.load(f, Loader=yaml.FullLoader)
+    try:
+        model_t["last_timestamp"]
+    except KeyError:
+        model_t["last_timestamp"] = load_json("data/raw/last_timestamp")[
+            "last_timestamp"
+        ]
+    if data and data["postgres"]:
+        postgres = data["postgres"]
+        conn = psycopg2.connect(
+            host="localhost",
+            dbname=postgres["DBName"],
+            user=postgres["User"],
+            password=postgres["Password"],
+        )
+        cursor = conn.cursor()
+        cursor.execute(
+            f"""DROP VIEW IF EXISTS tmp_posts;
+CREATE VIEW tmp_posts AS SELECT id, user_id, description, location, EXTRACT(EPOCH FROM created_at) as timestamp FROM post WHERE EXTRACT(EPOCH FROM created_at) > {model_t["last_timestamp"]} AND deleted = false;
+WITH top_tags as (SELECT post_id, ARRAY_AGG(tag_id) as tag_ids from post_tags WHERE tag_id IN (SELECT tag_id from (SELECT tag_id, count(distinct (tag_id, post_id)) as unique_tags
+	FROM post_tags
+	GROUP BY tag_id
+	ORDER By unique_tags DESC limit {TAGS_LIMIT})) GROUP BY post_id)
+SELECT id, user_id, description, location, tag_ids, timestamp FROM tmp_posts LEFT JOIN top_tags tt on tt.post_id = id ORDER BY timestamp ASC;"""
+        )
+        posts = pd.DataFrame(
+            cursor.fetchall(),
+            columns=[
+                "id",
+                "user_id",
+                "description",
+                "location",
+                "tag_ids",
+                "timestamp",
+            ],
+        )  # A list() of tables.
+        model_t["last_timestamp"] = str(posts["timestamp"].iloc[-1])
+        posts.fillna({"tag_ids": ""}, inplace=True)
+        conn.close()
+        return posts
+
+
+def execute_all_models(model_name):
     data = {}
     for f in glob.glob("models/" + model_name + "/" + "*.pickle"):
         data[os.path.basename(str(f).replace(".pickle", ""))] = load(
