@@ -102,7 +102,6 @@ services:
       - PORT=50051
     depends_on:
       - postgresql
-    restart: always
     networks:
       - web_api
 
