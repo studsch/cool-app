@@ -169,7 +169,6 @@ SELECT id, user_id, description, location, tag_ids, timestamp FROM tmp_posts LEF
         model_t["last_timestamp"] = str(posts["timestamp"].iloc[-1])
         posts.fillna({"tag_ids": ""}, inplace=True)
         conn.close()
-        print("stepa genii")
         return posts
 
 
