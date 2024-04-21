@@ -114,6 +114,7 @@ def predict_from_psql_month():
             dbname=postgres["DBName"],
             user=postgres["User"],
             password=postgres["Password"],
+            port=postgres["Port"],
         )
         cursor = conn.cursor()
         populars = {

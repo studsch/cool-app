@@ -28,6 +28,7 @@ def execute_data():
             dbname=postgres["DBName"],
             user=postgres["User"],
             password=postgres["Password"],
+            port=postgres["Port"],
         )
         cursor = conn.cursor()
         cursor.execute(
@@ -112,6 +113,7 @@ def execute_user_by_id(user_id):
             dbname=postgres["DBName"],
             user=postgres["User"],
             password=postgres["Password"],
+            port=postgres["Port"],
         )
         cursor = conn.cursor()
         cursor.execute(
@@ -142,6 +144,7 @@ def execute_posts_after(model_t):
             dbname=postgres["DBName"],
             user=postgres["User"],
             password=postgres["Password"],
+            port=postgres["Port"],
         )
         cursor = conn.cursor()
         cursor.execute(
@@ -179,6 +182,7 @@ def execute_ratings_for_user_after(user_id, posts):
             dbname=postgres["DBName"],
             user=postgres["User"],
             password=postgres["Password"],
+            port=postgres["Port"],
         )
         cursor = conn.cursor()
         cursor.execute(
