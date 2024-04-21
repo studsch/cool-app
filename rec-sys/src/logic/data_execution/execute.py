@@ -19,7 +19,7 @@ LIMIT_FETCH = 100000
 
 def execute_data():
     data = None
-    with open("../backend/config/config-docker.yaml") as f:
+    with open("config/config.yaml") as f:
         data = yaml.load(f, Loader=yaml.FullLoader)
     if data and data["postgres"]:
         postgres = data["postgres"]
@@ -103,7 +103,7 @@ SELECT * from ratings;"""
 
 
 def execute_user_by_id(user_id):
-    with open("../backend/config/config-docker.yaml") as f:
+    with open("config/config.yaml") as f:
         data = yaml.load(f, Loader=yaml.FullLoader)
     if data and data["postgres"]:
         postgres = data["postgres"]
@@ -127,7 +127,7 @@ def execute_user_by_id(user_id):
 
 
 def execute_posts_after(model_t):
-    with open("../backend/config/config-docker.yaml") as f:
+    with open("config/config.yaml") as f:
         data = yaml.load(f, Loader=yaml.FullLoader)
     try:
         model_t["last_timestamp"]
@@ -170,7 +170,7 @@ SELECT id, user_id, description, location, tag_ids, timestamp FROM tmp_posts LEF
 
 
 def execute_ratings_for_user_after(user_id, posts):
-    with open("../backend/config/config-docker.yaml") as f:
+    with open("config/config.yaml") as f:
         data = yaml.load(f, Loader=yaml.FullLoader)
     if data and data["postgres"]:
         postgres = data["postgres"]

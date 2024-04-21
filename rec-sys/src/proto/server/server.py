@@ -1,5 +1,6 @@
 import grpc
 import sys
+import yaml
 
 sys.path.insert(1, "src/proto/")
 import dev_pb2_grpc
@@ -35,12 +36,15 @@ class RecSystemServicer(dev_pb2_grpc.RecSystemServicer):
 
 
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    dev_pb2_grpc.add_RecSystemServicer_to_server(RecSystemServicer(), server)
-    server.add_insecure_port("[::]:50051")
-    server.start()
-    print("server start")
-    server.wait_for_termination()
+    with open("config/config.yaml") as f:
+        data = yaml.load(f, Loader=yaml.FullLoader)
+    if data and data["grpc_python_server"]:
+        server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+        dev_pb2_grpc.add_RecSystemServicer_to_server(RecSystemServicer(), server)
+        server.add_insecure_port("[::]:" + str(data["grpc_python_server"]["Port"]))
+        server.start()
+        print("server start")
+        server.wait_for_termination()
 
 
 if __name__ == "__main__":

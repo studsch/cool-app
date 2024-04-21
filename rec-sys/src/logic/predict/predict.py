@@ -1,10 +1,6 @@
 import pandas as pd
-import os
 import sys
-import glob
 from lightfm import LightFM
-from lightfm.data import Dataset
-from lightfm.cross_validation import random_train_test_split
 
 sys.path.insert(1, "src/logic/")
 from utils import save, load
@@ -17,7 +13,6 @@ from features.FeaturesPreprocess import add_user, add_posts
 import psycopg2
 import yaml
 
-import numpy as np
 
 K_RECOMENDED = 100
 K_POPULAR = 100
@@ -110,7 +105,7 @@ def add_item(model_t, posts):
 
 
 def predict_from_psql_month():
-    with open("../backend/config/config-docker.yaml") as f:
+    with open("config/config.yaml") as f:
         data = yaml.load(f, Loader=yaml.FullLoader)
     if data and data["postgres"]:
         postgres = data["postgres"]

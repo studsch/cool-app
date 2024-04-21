@@ -1,0 +1,10 @@
+postgres:
+  Host: postgresql
+  Port: 5432
+  User: postgres
+  Password: postgres
+  DBName: api_db
+  SSLMode: disable
+
+grpc_python_server:
+  Port: 50051
