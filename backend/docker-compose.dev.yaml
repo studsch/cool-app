@@ -91,6 +91,20 @@ services:
     networks:
       - web_api
 
+  rec_sys:
+    container_name: rec_sys
+    build:
+      context: ../rec-sys
+      dockerfile: Dockerfile
+    ports:
+      - "50051:50051"
+    environment:
+      - PORT=50051
+    depends_on:
+      - postgresql
+    restart: always
+    networks:
+      - web_api
 
 networks:
   web_api:
