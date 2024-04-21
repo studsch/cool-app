@@ -24,7 +24,7 @@ def execute_data():
     if data and data["postgres"]:
         postgres = data["postgres"]
         conn = psycopg2.connect(
-            host="localhost",
+            host=postgres["Host"],
             dbname=postgres["DBName"],
             user=postgres["User"],
             password=postgres["Password"],
@@ -108,7 +108,7 @@ def execute_user_by_id(user_id):
     if data and data["postgres"]:
         postgres = data["postgres"]
         conn = psycopg2.connect(
-            host="localhost",
+            host=postgres["Host"],
             dbname=postgres["DBName"],
             user=postgres["User"],
             password=postgres["Password"],
@@ -138,7 +138,7 @@ def execute_posts_after(model_t):
     if data and data["postgres"]:
         postgres = data["postgres"]
         conn = psycopg2.connect(
-            host="localhost",
+            host=postgres["Host"],
             dbname=postgres["DBName"],
             user=postgres["User"],
             password=postgres["Password"],
@@ -175,7 +175,7 @@ def execute_ratings_for_user_after(user_id, posts):
     if data and data["postgres"]:
         postgres = data["postgres"]
         conn = psycopg2.connect(
-            host="localhost",
+            host=postgres["Host"],
             dbname=postgres["DBName"],
             user=postgres["User"],
             password=postgres["Password"],

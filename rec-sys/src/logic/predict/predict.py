@@ -110,7 +110,7 @@ def predict_from_psql_month():
     if data and data["postgres"]:
         postgres = data["postgres"]
         conn = psycopg2.connect(
-            host="localhost",
+            host=postgres["Host"],
             dbname=postgres["DBName"],
             user=postgres["User"],
             password=postgres["Password"],
