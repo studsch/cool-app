@@ -104,6 +104,7 @@ services:
       - postgresql
     networks:
       - web_api
+    restart: always
 
 networks:
   web_api:
