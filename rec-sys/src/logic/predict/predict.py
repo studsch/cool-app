@@ -53,7 +53,7 @@ def predict_for_user(models: LightFM, user_id):
     for a_key in all:
         all[a_key] = list(set(all[a_key]).difference(last_set))
         last_set = set(list(last_set) + all[a_key])
-    print(f"popular {all}")
+    # print(f"popular {all}")
     return all
 
 

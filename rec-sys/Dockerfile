@@ -18,4 +18,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 50051
 
-CMD ["python", "src/logic/data_execution/execute.py", "&&", "ls", "data/raw"]
+CMD ["python", "src/proto/server/server.py"]
