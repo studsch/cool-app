@@ -28,9 +28,7 @@ class RecSystemServicer(dev_pb2_grpc.RecSystemServicer):
         super().__init__()
 
     def PredictPostsForOneUser(self, request, context):
-        all = predict_for_user(
-            self.models, request.user_id
-        )  # нет пользователя 5f0d48eb-d6b9-49a9-b0e7-eba9cd7d5d3a, есть 2c0dcabb-8260-4b7f-81f0-92913727cada
+        all = predict_for_user(self.models, request.user_id)
         response = dev_pb2.PredictPostsForOneUserResponse()
         for a_key in all:
             string_array = dev_pb2.StringArray()
