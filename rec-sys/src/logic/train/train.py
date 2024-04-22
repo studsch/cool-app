@@ -1,4 +1,3 @@
-import click
 import pandas as pd
 import os
 import sys
@@ -22,23 +21,7 @@ ITEM_ALPHA = 1e-6  # Regularization factor for item features
 USER_ALPHA = 1e-6  # Regularization factor for user features
 
 
-@click.command()
-@click.option(
-    "--name",
-    "-n",
-    "name",
-    default="rec-sys v1.0.0",
-    help="name of model",
-    required=True,
-)
-@click.option(
-    "--valid",
-    "-v",
-    is_flag=True,
-    help="Split data to train and test and use for train only train data.",
-)
-@click.option("--type_t", "-t", default=1, help="Type of train.")
-def train(name, valid, type_t):
+def train(name, type_t, valid=False):
     users = pd.read_csv("data/raw/users.csv")
     posts = pd.read_csv("data/raw/posts.csv")
     users = age_to_group(users, "age")
@@ -147,7 +130,3 @@ def train(name, valid, type_t):
     save(sm_item_features, os.path.join("models", name, "item_features"))
     # print(list(user_id_map.values()))
     # print(md.predict(list(user_id_map.values())[0], list(item_id_map.values()), item_features=sm_item_features, user_features=sm_user_features))
-
-
-if __name__ == "__main__":
-    train()

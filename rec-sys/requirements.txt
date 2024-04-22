@@ -5,7 +5,6 @@ PyYAML
 pandas
 numpy
 psycopg2-binary
-click
 scipy
 scikit-learn
 protobuf==3.20.*

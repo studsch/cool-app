@@ -1,4 +1,3 @@
-import click
 import pandas as pd
 import os
 import sys
@@ -16,15 +15,6 @@ import json
 import numpy as np
 
 
-@click.command()
-@click.option(
-    "--name",
-    "-n",
-    "name",
-    default="rec-sys v1.0.0",
-    help="name of model",
-    required=True,
-)
 def train(name):
     md: LightFM = load(os.path.join("models", name, "model"))
     valid = load(os.path.join("models", name, "valid_data"))
@@ -55,7 +45,3 @@ def train(name):
         {"model": name, "metrics": {"AUC": str(auc), "MAP@K": str(mapk)}},
         os.path.join("models", name, "metrics"),
     )
-
-
-if __name__ == "__main__":
-    train()
