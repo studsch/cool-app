@@ -165,8 +165,9 @@ SELECT id, user_id, description, location, tag_ids, timestamp FROM tmp_posts LEF
                 "timestamp",
             ],
         )  # A list() of tables.
-        model_t["last_timestamp"] = str(posts["timestamp"].iloc[-1])
-        posts.fillna({"tag_ids": ""}, inplace=True)
+        if len(posts.values) > 0:
+            model_t["last_timestamp"] = str(posts["timestamp"].iloc[-1])
+            posts.fillna({"tag_ids": ""}, inplace=True)
         conn.close()
         return posts
 

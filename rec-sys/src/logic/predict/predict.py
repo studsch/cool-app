@@ -38,9 +38,10 @@ def predict_for_user(models: LightFM, user_id):
     if models["model_t3"]:
         add_user_if_none(models["model_t3"], user_id)
         posts = execute_posts_after(models["model_t3"])
-        ratings = execute_ratings_for_user_after(user_id, posts)
-        add_item(models["model_t3"], posts)
-        fit_partial_model(models["model_t3"], ratings)
+        if len(posts.values) > 0:
+            ratings = execute_ratings_for_user_after(user_id, posts)
+            add_item(models["model_t3"], posts)
+            fit_partial_model(models["model_t3"], ratings)
         post_ids_t3 = predict_by_model(models["model_t3"], user_id)
     else:
         post_ids_t3 = []
