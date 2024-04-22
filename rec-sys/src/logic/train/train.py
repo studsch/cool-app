@@ -27,6 +27,7 @@ def train(name, type_t, valid=False):
     users = age_to_group(users, "age")
     os.mkdir(os.path.join("models", name))
     ds = Dataset()
+    posts.fillna({"tag_ids": ""}, inplace=True)
     series_tags_of_posts = (
         posts["tag_ids"].str[1:-1].str.split(", ")
     )  # получения серии с тэгами в типе список

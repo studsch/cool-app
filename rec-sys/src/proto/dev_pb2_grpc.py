@@ -2,6 +2,7 @@
 import grpc
 
 import dev_pb2 as dev__pb2
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
 class RecSystemStub(object):
@@ -19,6 +20,36 @@ class RecSystemStub(object):
         request_serializer=dev__pb2.PredictPostsForOneUserRequest.SerializeToString,
         response_deserializer=dev__pb2.PredictPostsForOneUserResponse.FromString,
         )
+    self.ExecuteDataToFiles = channel.unary_unary(
+        '/RecSystem/ExecuteDataToFiles',
+        request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+        response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+        )
+    self.GetAllModelNamesOfFiles = channel.unary_unary(
+        '/RecSystem/GetAllModelNamesOfFiles',
+        request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+        response_deserializer=dev__pb2.GetAllModelNamesOfFilesResponse.FromString,
+        )
+    self.SetModel = channel.unary_unary(
+        '/RecSystem/SetModel',
+        request_serializer=dev__pb2.SetModelRequest.SerializeToString,
+        response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+        )
+    self.DeleteModelFromFiles = channel.unary_unary(
+        '/RecSystem/DeleteModelFromFiles',
+        request_serializer=dev__pb2.DeleteModelFromFilesRequest.SerializeToString,
+        response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+        )
+    self.TrainModel = channel.unary_unary(
+        '/RecSystem/TrainModel',
+        request_serializer=dev__pb2.TrainModelRequest.SerializeToString,
+        response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+        )
+    self.ValidateModel = channel.unary_unary(
+        '/RecSystem/ValidateModel',
+        request_serializer=dev__pb2.ValidateModelRequest.SerializeToString,
+        response_deserializer=dev__pb2.ValidateModelResponse.FromString,
+        )
 
 
 class RecSystemServicer(object):
@@ -32,6 +63,48 @@ class RecSystemServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def ExecuteDataToFiles(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetAllModelNamesOfFiles(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def SetModel(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def DeleteModelFromFiles(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def TrainModel(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def ValidateModel(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_RecSystemServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -39,6 +112,36 @@ def add_RecSystemServicer_to_server(servicer, server):
           servicer.PredictPostsForOneUser,
           request_deserializer=dev__pb2.PredictPostsForOneUserRequest.FromString,
           response_serializer=dev__pb2.PredictPostsForOneUserResponse.SerializeToString,
+      ),
+      'ExecuteDataToFiles': grpc.unary_unary_rpc_method_handler(
+          servicer.ExecuteDataToFiles,
+          request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+          response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+      ),
+      'GetAllModelNamesOfFiles': grpc.unary_unary_rpc_method_handler(
+          servicer.GetAllModelNamesOfFiles,
+          request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+          response_serializer=dev__pb2.GetAllModelNamesOfFilesResponse.SerializeToString,
+      ),
+      'SetModel': grpc.unary_unary_rpc_method_handler(
+          servicer.SetModel,
+          request_deserializer=dev__pb2.SetModelRequest.FromString,
+          response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+      ),
+      'DeleteModelFromFiles': grpc.unary_unary_rpc_method_handler(
+          servicer.DeleteModelFromFiles,
+          request_deserializer=dev__pb2.DeleteModelFromFilesRequest.FromString,
+          response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+      ),
+      'TrainModel': grpc.unary_unary_rpc_method_handler(
+          servicer.TrainModel,
+          request_deserializer=dev__pb2.TrainModelRequest.FromString,
+          response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+      ),
+      'ValidateModel': grpc.unary_unary_rpc_method_handler(
+          servicer.ValidateModel,
+          request_deserializer=dev__pb2.ValidateModelRequest.FromString,
+          response_serializer=dev__pb2.ValidateModelResponse.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

@@ -26,15 +26,24 @@ def predict_for_user(models: LightFM, user_id):
 
     # пока степа не отправляет мне список на котором предсказывать
     # БЛОК ДЛЯ ПРЕДИКТА НЕ НА НОВЫХ ДАННЫХ
-    post_ids_t1 = predict_by_model(models["model_t1"], user_id)
-    add_user_if_none(models["model_t2"], user_id)
-    post_ids_t2 = predict_by_model(models["model_t2"], user_id)
-    add_user_if_none(models["model_t3"], user_id)
-    posts = execute_posts_after(models["model_t3"])
-    ratings = execute_ratings_for_user_after(user_id, posts)
-    add_item(models["model_t3"], posts)
-    fit_partial_model(models["model_t3"], ratings)
-    post_ids_t3 = predict_by_model(models["model_t3"], user_id)
+    if models["model_t1"]:
+        post_ids_t1 = predict_by_model(models["model_t1"], user_id)
+    else:
+        post_ids_t1 = []
+    if models["model_t2"]:
+        add_user_if_none(models["model_t2"], user_id)
+        post_ids_t2 = predict_by_model(models["model_t2"], user_id)
+    else:
+        post_ids_t2 = []
+    if models["model_t3"]:
+        add_user_if_none(models["model_t3"], user_id)
+        posts = execute_posts_after(models["model_t3"])
+        ratings = execute_ratings_for_user_after(user_id, posts)
+        add_item(models["model_t3"], posts)
+        fit_partial_model(models["model_t3"], ratings)
+        post_ids_t3 = predict_by_model(models["model_t3"], user_id)
+    else:
+        post_ids_t3 = []
     popular = predict_from_psql_month()
     all = popular
     all["model_t1"] = post_ids_t1

@@ -53,7 +53,6 @@ SELECT id, user_id, description, location, tag_ids, timestamp FROM posts LEFT JO
                 "timestamp",
             ],
         )  # A list() of tables.
-        posts.fillna({"tag_ids": ""}, inplace=True)
         posts.to_csv(os.path.join("data/raw", "posts.csv"), index=False)
         save_json(
             {"last_timestamp": str(posts["timestamp"].iloc[-1])},

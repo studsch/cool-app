@@ -15,7 +15,7 @@ import json
 import numpy as np
 
 
-def train(name):
+def eval(name):
     md: LightFM = load(os.path.join("models", name, "model"))
     valid = load(os.path.join("models", name, "valid_data"))
     train = load(os.path.join("models", name, "train_data"))
@@ -40,8 +40,10 @@ def train(name):
         ).mean(),
         6,
     )
-    print(f"Results of {name}. AUC: {str(auc)}, MAP@K: {str(mapk)}")
+    res_str = f"Results of {name}. AUC: {str(auc)}, MAP@K: {str(mapk)}"
+    print(res_str)
     save_json(
         {"model": name, "metrics": {"AUC": str(auc), "MAP@K": str(mapk)}},
         os.path.join("models", name, "metrics"),
     )
+    return res_str

@@ -12,6 +12,7 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -19,8 +20,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\tdev.proto\"0\n\x1dPredictPostsForOneUserRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"\x94\x01\n\x1ePredictPostsForOneUserResponse\x12\x37\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32).PredictPostsForOneUserResponse.DataEntry\x1a\x39\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x1b\n\x05value\x18\x02 \x01(\x0b\x32\x0c.StringArray:\x02\x38\x01\"\x1d\n\x0bStringArray\x12\x0e\n\x06values\x18\x01 \x03(\t2f\n\tRecSystem\x12Y\n\x16PredictPostsForOneUser\x12\x1e.PredictPostsForOneUserRequest\x1a\x1f.PredictPostsForOneUserResponseb\x06proto3')
-)
+  serialized_pb=_b('\n\tdev.proto\x1a\x1bgoogle/protobuf/empty.proto\"0\n\x1dPredictPostsForOneUserRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"0\n\x1fGetAllModelNamesOfFilesResponse\x12\r\n\x05names\x18\x01 \x03(\t\"-\n\x0fSetModelRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04type\x18\x02 \x01(\r\"+\n\x1b\x44\x65leteModelFromFilesRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\">\n\x11TrainModelRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04type\x18\x02 \x01(\r\x12\r\n\x05valid\x18\x03 \x01(\x08\"$\n\x14ValidateModelRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\'\n\x15ValidateModelResponse\x12\x0e\n\x06result\x18\x01 \x01(\t\"\x94\x01\n\x1ePredictPostsForOneUserResponse\x12\x37\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32).PredictPostsForOneUserResponse.DataEntry\x1a\x39\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x1b\n\x05value\x18\x02 \x01(\x0b\x32\x0c.StringArray:\x02\x38\x01\"\x1d\n\x0bStringArray\x12\x0e\n\x06values\x18\x01 \x03(\t2\xff\x03\n\tRecSystem\x12Y\n\x16PredictPostsForOneUser\x12\x1e.PredictPostsForOneUserRequest\x1a\x1f.PredictPostsForOneUserResponse\x12\x44\n\x12\x45xecuteDataToFiles\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\x12S\n\x17GetAllModelNamesOfFiles\x12\x16.google.protobuf.Empty\x1a .GetAllModelNamesOfFilesResponse\x12\x34\n\x08SetModel\x12\x10.SetModelRequest\x1a\x16.google.protobuf.Empty\x12L\n\x14\x44\x65leteModelFromFiles\x12\x1c.DeleteModelFromFilesRequest\x1a\x16.google.protobuf.Empty\x12\x38\n\nTrainModel\x12\x12.TrainModelRequest\x1a\x16.google.protobuf.Empty\x12>\n\rValidateModel\x12\x15.ValidateModelRequest\x1a\x16.ValidateModelResponseb\x06proto3')
+  ,
+  dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR,])
 
 
 
@@ -51,8 +53,215 @@ _PREDICTPOSTSFORONEUSERREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13,
-  serialized_end=61,
+  serialized_start=42,
+  serialized_end=90,
+)
+
+
+_GETALLMODELNAMESOFFILESRESPONSE = _descriptor.Descriptor(
+  name='GetAllModelNamesOfFilesResponse',
+  full_name='GetAllModelNamesOfFilesResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='names', full_name='GetAllModelNamesOfFilesResponse.names', index=0,
+      number=1, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=92,
+  serialized_end=140,
+)
+
+
+_SETMODELREQUEST = _descriptor.Descriptor(
+  name='SetModelRequest',
+  full_name='SetModelRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='name', full_name='SetModelRequest.name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='type', full_name='SetModelRequest.type', index=1,
+      number=2, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=142,
+  serialized_end=187,
+)
+
+
+_DELETEMODELFROMFILESREQUEST = _descriptor.Descriptor(
+  name='DeleteModelFromFilesRequest',
+  full_name='DeleteModelFromFilesRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='name', full_name='DeleteModelFromFilesRequest.name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=189,
+  serialized_end=232,
+)
+
+
+_TRAINMODELREQUEST = _descriptor.Descriptor(
+  name='TrainModelRequest',
+  full_name='TrainModelRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='name', full_name='TrainModelRequest.name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='type', full_name='TrainModelRequest.type', index=1,
+      number=2, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='valid', full_name='TrainModelRequest.valid', index=2,
+      number=3, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=234,
+  serialized_end=296,
+)
+
+
+_VALIDATEMODELREQUEST = _descriptor.Descriptor(
+  name='ValidateModelRequest',
+  full_name='ValidateModelRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='name', full_name='ValidateModelRequest.name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=298,
+  serialized_end=334,
+)
+
+
+_VALIDATEMODELRESPONSE = _descriptor.Descriptor(
+  name='ValidateModelResponse',
+  full_name='ValidateModelResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='result', full_name='ValidateModelResponse.result', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=336,
+  serialized_end=375,
 )
 
 
@@ -89,8 +298,8 @@ _PREDICTPOSTSFORONEUSERRESPONSE_DATAENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=155,
-  serialized_end=212,
+  serialized_start=469,
+  serialized_end=526,
 )
 
 _PREDICTPOSTSFORONEUSERRESPONSE = _descriptor.Descriptor(
@@ -119,8 +328,8 @@ _PREDICTPOSTSFORONEUSERRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=64,
-  serialized_end=212,
+  serialized_start=378,
+  serialized_end=526,
 )
 
 
@@ -150,14 +359,20 @@ _STRINGARRAY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=214,
-  serialized_end=243,
+  serialized_start=528,
+  serialized_end=557,
 )
 
 _PREDICTPOSTSFORONEUSERRESPONSE_DATAENTRY.fields_by_name['value'].message_type = _STRINGARRAY
 _PREDICTPOSTSFORONEUSERRESPONSE_DATAENTRY.containing_type = _PREDICTPOSTSFORONEUSERRESPONSE
 _PREDICTPOSTSFORONEUSERRESPONSE.fields_by_name['data'].message_type = _PREDICTPOSTSFORONEUSERRESPONSE_DATAENTRY
 DESCRIPTOR.message_types_by_name['PredictPostsForOneUserRequest'] = _PREDICTPOSTSFORONEUSERREQUEST
+DESCRIPTOR.message_types_by_name['GetAllModelNamesOfFilesResponse'] = _GETALLMODELNAMESOFFILESRESPONSE
+DESCRIPTOR.message_types_by_name['SetModelRequest'] = _SETMODELREQUEST
+DESCRIPTOR.message_types_by_name['DeleteModelFromFilesRequest'] = _DELETEMODELFROMFILESREQUEST
+DESCRIPTOR.message_types_by_name['TrainModelRequest'] = _TRAINMODELREQUEST
+DESCRIPTOR.message_types_by_name['ValidateModelRequest'] = _VALIDATEMODELREQUEST
+DESCRIPTOR.message_types_by_name['ValidateModelResponse'] = _VALIDATEMODELRESPONSE
 DESCRIPTOR.message_types_by_name['PredictPostsForOneUserResponse'] = _PREDICTPOSTSFORONEUSERRESPONSE
 DESCRIPTOR.message_types_by_name['StringArray'] = _STRINGARRAY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -168,6 +383,48 @@ PredictPostsForOneUserRequest = _reflection.GeneratedProtocolMessageType('Predic
   # @@protoc_insertion_point(class_scope:PredictPostsForOneUserRequest)
   ))
 _sym_db.RegisterMessage(PredictPostsForOneUserRequest)
+
+GetAllModelNamesOfFilesResponse = _reflection.GeneratedProtocolMessageType('GetAllModelNamesOfFilesResponse', (_message.Message,), dict(
+  DESCRIPTOR = _GETALLMODELNAMESOFFILESRESPONSE,
+  __module__ = 'dev_pb2'
+  # @@protoc_insertion_point(class_scope:GetAllModelNamesOfFilesResponse)
+  ))
+_sym_db.RegisterMessage(GetAllModelNamesOfFilesResponse)
+
+SetModelRequest = _reflection.GeneratedProtocolMessageType('SetModelRequest', (_message.Message,), dict(
+  DESCRIPTOR = _SETMODELREQUEST,
+  __module__ = 'dev_pb2'
+  # @@protoc_insertion_point(class_scope:SetModelRequest)
+  ))
+_sym_db.RegisterMessage(SetModelRequest)
+
+DeleteModelFromFilesRequest = _reflection.GeneratedProtocolMessageType('DeleteModelFromFilesRequest', (_message.Message,), dict(
+  DESCRIPTOR = _DELETEMODELFROMFILESREQUEST,
+  __module__ = 'dev_pb2'
+  # @@protoc_insertion_point(class_scope:DeleteModelFromFilesRequest)
+  ))
+_sym_db.RegisterMessage(DeleteModelFromFilesRequest)
+
+TrainModelRequest = _reflection.GeneratedProtocolMessageType('TrainModelRequest', (_message.Message,), dict(
+  DESCRIPTOR = _TRAINMODELREQUEST,
+  __module__ = 'dev_pb2'
+  # @@protoc_insertion_point(class_scope:TrainModelRequest)
+  ))
+_sym_db.RegisterMessage(TrainModelRequest)
+
+ValidateModelRequest = _reflection.GeneratedProtocolMessageType('ValidateModelRequest', (_message.Message,), dict(
+  DESCRIPTOR = _VALIDATEMODELREQUEST,
+  __module__ = 'dev_pb2'
+  # @@protoc_insertion_point(class_scope:ValidateModelRequest)
+  ))
+_sym_db.RegisterMessage(ValidateModelRequest)
+
+ValidateModelResponse = _reflection.GeneratedProtocolMessageType('ValidateModelResponse', (_message.Message,), dict(
+  DESCRIPTOR = _VALIDATEMODELRESPONSE,
+  __module__ = 'dev_pb2'
+  # @@protoc_insertion_point(class_scope:ValidateModelResponse)
+  ))
+_sym_db.RegisterMessage(ValidateModelResponse)
 
 PredictPostsForOneUserResponse = _reflection.GeneratedProtocolMessageType('PredictPostsForOneUserResponse', (_message.Message,), dict(
 
@@ -200,8 +457,8 @@ _RECSYSTEM = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=245,
-  serialized_end=347,
+  serialized_start=560,
+  serialized_end=1071,
   methods=[
   _descriptor.MethodDescriptor(
     name='PredictPostsForOneUser',
@@ -210,6 +467,60 @@ _RECSYSTEM = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_PREDICTPOSTSFORONEUSERREQUEST,
     output_type=_PREDICTPOSTSFORONEUSERRESPONSE,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='ExecuteDataToFiles',
+    full_name='RecSystem.ExecuteDataToFiles',
+    index=1,
+    containing_service=None,
+    input_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetAllModelNamesOfFiles',
+    full_name='RecSystem.GetAllModelNamesOfFiles',
+    index=2,
+    containing_service=None,
+    input_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    output_type=_GETALLMODELNAMESOFFILESRESPONSE,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='SetModel',
+    full_name='RecSystem.SetModel',
+    index=3,
+    containing_service=None,
+    input_type=_SETMODELREQUEST,
+    output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='DeleteModelFromFiles',
+    full_name='RecSystem.DeleteModelFromFiles',
+    index=4,
+    containing_service=None,
+    input_type=_DELETEMODELFROMFILESREQUEST,
+    output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='TrainModel',
+    full_name='RecSystem.TrainModel',
+    index=5,
+    containing_service=None,
+    input_type=_TRAINMODELREQUEST,
+    output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='ValidateModel',
+    full_name='RecSystem.ValidateModel',
+    index=6,
+    containing_service=None,
+    input_type=_VALIDATEMODELREQUEST,
+    output_type=_VALIDATEMODELRESPONSE,
     serialized_options=None,
   ),
 ])
