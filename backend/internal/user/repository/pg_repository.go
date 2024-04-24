@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -35,7 +34,6 @@ func (r *userRepo) FollowToUser(
 		&followUser.ID, &followUser.UserID,
 		&followUser.FollowToUserID, &followUser.NotificationOn,
 	); err != nil {
-		fmt.Println(err)
 		return nil, errors.Wrap(err, "userRepo.FollowToUser.Scan")
 	}
 
@@ -388,4 +386,17 @@ func (r *userRepo) GetMiniUsersByID(
 	}
 
 	return miniUser, nil
+}
+
+func (r *userRepo) CheckSubscribeExists(
+	ctx context.Context, userID uuid.UUID, toUserID uuid.UUID,
+) (bool, error) {
+	var out bool
+	if err := r.db.QueryRow(
+		ctx, subscribeExists, &userID, &toUserID,
+	).Scan(&out); err != nil {
+		return false, errors.Wrap(err, "userRepo.CheckSubscribeExists.Scan")
+	}
+
+	return out, nil
 }
