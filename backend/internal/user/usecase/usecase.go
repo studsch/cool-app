@@ -140,15 +140,22 @@ func (u *userUC) GetUserSubscribersCount(
 func (u *userUC) SearchByFilter(
 	ctx context.Context, filter *models.UserFilter, pq *utils.PaginationQuery,
 ) (*models.UserList, error) {
+	userFromCtx, err := utils.GetUserFromCtx(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	usersList, err := u.userRepo.SearchByFilter(ctx, filter, pq)
 	if err != nil {
 		return nil, err
 	}
+
 	for _, curUser := range usersList.Users {
 		subscribersCount, err := u.userRepo.GetUserSubscribersCount(
 			ctx, curUser.ID,
 		)
 		if err != nil {
+			u.log.Error(err)
 			curUser.SubscribersCount = 0
 		}
 
@@ -157,11 +164,21 @@ func (u *userUC) SearchByFilter(
 			curUser.ID,
 		)
 		if err != nil {
+			u.log.Error(err)
 			curUser.SubscriptionsCount = 0
 		}
 
 		curUser.SubscribersCount = subscribersCount
 		curUser.SubscriptionsCount = subscriptionsCount
+
+		subscribeExists, err := u.userRepo.CheckSubscribeExists(
+			ctx, userFromCtx.ID, curUser.ID,
+		)
+		if err != nil {
+			u.log.Error(err)
+			curUser.IsSubscribed = false
+		}
+		curUser.IsSubscribed = subscribeExists
 	}
 
 	return usersList, nil
