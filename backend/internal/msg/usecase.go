@@ -11,4 +11,7 @@ type UseCase interface {
 	CreateChat(
 		ctx context.Context, user1ID uuid.UUID, user2ID uuid.UUID,
 	) (*models.Chat, error)
+	GetChatByIDPairs(
+		ctx context.Context, user1ID uuid.UUID, user2ID uuid.UUID,
+	) (*models.Chat, error)
 }

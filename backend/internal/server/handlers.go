@@ -48,7 +48,7 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	commUC := commUseCase.NewCommentUC(s.cfg, commRepo, s.logger)
 	likeUC := likeUseCase.NewLikeUC(s.cfg, likeRepo, s.logger)
 	userUC := userUseCase.NewUserUC(s.cfg, userRepo, s.logger)
-	msgUC := msgUseCase.NewChatUC(s.cfg, s.logger, msgRepo)
+	msgUC := msgUseCase.NewChatUC(s.cfg, s.logger, msgRepo, userRepo)
 
 	// Init handlers
 	authHandlers := authHttp.NewAuthHandlers(s.cfg, authUC, s.logger)

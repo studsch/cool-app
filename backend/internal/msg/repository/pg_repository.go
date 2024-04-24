@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pkg/errors"
 	"github.com/studsch/cool-app/backend/internal/models"
@@ -34,8 +34,30 @@ INSERT INTO chats(
 	if err := r.db.QueryRow(
 		ctx, query, user1ID, user2ID,
 	).Scan(&chat.ID, &chat.User1ID, &chat.User2ID, &chat.CreatedAt); err != nil {
-		fmt.Println(err)
 		return nil, errors.Wrap(err, "msgRepo.CreateChat.Scan")
+	}
+
+	return &chat, nil
+}
+
+func (r *msgRepo) GetChatByIDPairs(
+	ctx context.Context, user1ID uuid.UUID, user2ID uuid.UUID,
+) (*models.Chat, error) {
+	query := `
+SELECT id, user1_id, user2_id, created_at
+FROM chats
+WHERE user1_id = $1 and user2_id = $2;
+`
+	var chat models.Chat
+
+	if err := r.db.QueryRow(
+		ctx, query, user1ID, user2ID,
+	).Scan(&chat.ID, &chat.User1ID, &chat.User2ID, &chat.CreatedAt); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
+
+		return nil, errors.Wrap(err, "msgRepo.GetChatByIDPairs.Scan")
 	}
 
 	return &chat, nil
