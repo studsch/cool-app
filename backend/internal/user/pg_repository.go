@@ -45,4 +45,7 @@ type Repository interface {
 	GetMiniUsersByID(
 		ctx context.Context, userID uuid.UUID,
 	) (*models.MiniUser, error)
+	CheckSubscribeExists(
+		ctx context.Context, userID uuid.UUID, toUserID uuid.UUID,
+	) (bool, error)
 }

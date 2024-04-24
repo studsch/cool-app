@@ -100,4 +100,12 @@ SELECT id, first_name, last_name, login, avatar
 FROM users
 WHERE id = $1
 `
+
+	subscribeExists = `
+SELECT EXISTS(
+SELECT 1
+FROM follow
+WHERE user_id = $1 AND follow_to_user_id = $2
+)
+`
 )

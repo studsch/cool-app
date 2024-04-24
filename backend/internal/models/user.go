@@ -45,8 +45,9 @@ type User struct {
 	Birthday           *time.Time `json:"birthday,omitempty" validate:"omitempty"`
 	CreatedAt          time.Time  `json:"createdAt,omitempty" validate:"omitempty"`
 	UpdatedAt          time.Time  `json:"updatedAt,omitempty" validate:"omitempty"`
-	SubscriptionsCount uint       `json:"subscriptionsCount,omitempty" validate:"omitempty"`
-	SubscribersCount   uint       `json:"subscribersCount,omitempty" validate:"omitempty"`
+	SubscriptionsCount uint       `json:"subscriptionsCount" validate:"omitempty"`
+	SubscribersCount   uint       `json:"subscribersCount" validate:"omitempty"`
+	IsSubscribed       bool       `json:"isSubscribed" validate:"omitempty"`
 }
 
 type UserFollow struct {

@@ -43,10 +43,8 @@ func (h *userHandlers) Follow() fiber.Handler {
 
 		newFollow, err := h.userUC.FollowToUser(c.UserContext(), follow)
 		if err != nil {
-			fmt.Println(err)
 			utils.LogResponseError(c, h.log, err)
 			status, msg := httpErrors.ErrorResponse(err)
-			fmt.Println(status, msg)
 			return c.Status(status).JSON(msg)
 		}
 
