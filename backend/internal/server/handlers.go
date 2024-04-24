@@ -15,6 +15,9 @@ import (
 	likeRepository "github.com/studsch/cool-app/backend/internal/like/repository"
 	likeUseCase "github.com/studsch/cool-app/backend/internal/like/usecase"
 	apiMiddlewares "github.com/studsch/cool-app/backend/internal/middleware"
+	msgHttp "github.com/studsch/cool-app/backend/internal/msg/delivery/http"
+	msgRepository "github.com/studsch/cool-app/backend/internal/msg/repository"
+	msgUseCase "github.com/studsch/cool-app/backend/internal/msg/usecase"
 	postHttp "github.com/studsch/cool-app/backend/internal/post/delivery/http"
 	postRepository "github.com/studsch/cool-app/backend/internal/post/repository"
 	postUseCase "github.com/studsch/cool-app/backend/internal/post/usecase"
@@ -35,6 +38,7 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	postAWSRepo := postRepository.NewPostAWSRepository(s.awsClient)
 	postRedisRepo := postRepository.NewPostRedisRepo(s.redisClient)
 	authRedisRepo := authRepository.NewAuthRedisRepo(s.redisClient)
+	msgRepo := msgRepository.NewPsqlRepo(s.db)
 
 	// Init useCases
 	authUC := authUseCase.NewAuthUC(
@@ -44,6 +48,7 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	commUC := commUseCase.NewCommentUC(s.cfg, commRepo, s.logger)
 	likeUC := likeUseCase.NewLikeUC(s.cfg, likeRepo, s.logger)
 	userUC := userUseCase.NewUserUC(s.cfg, userRepo, s.logger)
+	msgUC := msgUseCase.NewChatUC(s.cfg, s.logger, msgRepo)
 
 	// Init handlers
 	authHandlers := authHttp.NewAuthHandlers(s.cfg, authUC, s.logger)
@@ -51,6 +56,7 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	commHandlers := commHttp.NewCommentHandlers(s.cfg, commUC, s.logger)
 	likeHandlers := likeHttp.NewLikeHandlers(s.cfg, likeUC, s.logger)
 	userHandlers := userHttp.NewUserHandlers(s.cfg, userUC, s.logger)
+	msgHandlers := msgHttp.NewMsgHandlers(s.cfg, s.logger, msgUC)
 
 	mw := apiMiddlewares.NewMiddlewareManager(authUC, s.cfg, []string{"*"}, s.logger)
 
@@ -78,12 +84,14 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	commGroup := v1.Group("/comment")
 	likeGroup := v1.Group("/like")
 	userGroup := v1.Group("/user")
+	msgGroup := v1.Group("/msg")
 
 	authHttp.MapAuthRoutes(authGroup, authHandlers, mw)
 	postHttp.MapPostRoutes(postGroup, postHandlers, mw)
 	commHttp.MapCommentRoutes(commGroup, commHandlers, mw)
 	likeHttp.MapLikeRoutes(likeGroup, likeHandlers, mw)
 	userHttp.MapUserRoutes(userGroup, userHandlers, mw)
+	msgHttp.MapMsgRoutes(msgGroup, msgHandlers, mw)
 
 	health.Get("", func(c *fiber.Ctx) error {
 		s.logger.Info("Health check")
