@@ -33,7 +33,9 @@ INSERT INTO chats(
 
 	if err := r.db.QueryRow(
 		ctx, query, user1ID, user2ID,
-	).Scan(&chat.ID, &chat.User1ID, &chat.User2ID, &chat.CreatedAt); err != nil {
+	).Scan(
+		&chat.ID, &chat.User1ID, &chat.User2ID, &chat.CreatedAt,
+	); err != nil {
 		return nil, errors.Wrap(err, "msgRepo.CreateChat.Scan")
 	}
 
@@ -52,7 +54,9 @@ WHERE user1_id = $1 and user2_id = $2;
 
 	if err := r.db.QueryRow(
 		ctx, query, user1ID, user2ID,
-	).Scan(&chat.ID, &chat.User1ID, &chat.User2ID, &chat.CreatedAt); err != nil {
+	).Scan(
+		&chat.ID, &chat.User1ID, &chat.User2ID, &chat.CreatedAt,
+	); err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, nil
 		}
