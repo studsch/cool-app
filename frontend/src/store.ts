@@ -69,7 +69,7 @@ interface SearchState {
   updatePage: (page: number) => void;
   updateSize: (size: number) => void;
   updateError: (error: () => void) => void;
-  nextSearch: () => Promise<number>;
+  nextSearch: (token: string) => Promise<number>;
 }
 
 export const useSearch = create<SearchState>()(
@@ -89,7 +89,8 @@ export const useSearch = create<SearchState>()(
     updatePage: (page: number) => set({ page: page }),
     updateSize: (size: number) => set({ size: size }),
     updateError: (error: () => void) => set({ error: error }),
-    nextSearch: async () => {
+    nextSearch: async (token: string) => {
+      console.log(token)
       let type = "";
       let args = "";
       let error = () => {};
@@ -101,7 +102,7 @@ export const useSearch = create<SearchState>()(
       if (type == "users") {
         set({ isLoading: true });
         // await new Promise(r => setTimeout(r, 2000)); для теста кружка
-        const res = await FetchUsers(args);
+        const res = await FetchUsers(args, token);
         if (res.error) {
           error();
           return 1;
@@ -116,7 +117,7 @@ export const useSearch = create<SearchState>()(
       } else {
         // await new Promise(r => setTimeout(r, 2000)); для теста кружка
         set({ isLoading: true });
-        const res = await FetchPosts(args);
+        const res = await FetchPosts(args, token);
         if (res.error) {
           error();
           return 1;

@@ -20,7 +20,7 @@ const Navbar: React.FC<Props | any> = props => {
   const [lastUrl, setLastUrl] = useState("");
   const width = useResize();
   useEffect(() => {
-    if (typeof props.setOpen !== "undefined" && width >= 1281) {
+    if (typeof props.setOpen !== "undefined" && width >= 1280) {
       props.setOpen(false);
     }
   }, [width]);

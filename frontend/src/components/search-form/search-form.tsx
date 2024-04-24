@@ -18,7 +18,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useResize } from "@/hooks/screens";
-
+import { useSession } from "next-auth/react";
 import Button from "../ui/button/Button";
 import {
   Form,
@@ -43,6 +43,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
   const updateArgs = useSearch(state => state.updateArgs);
   const updateType = useSearch(state => state.updateType);
   const nextSearch = useSearch(state => state.nextSearch);
+  const { data: session, status } = useSession();
   const updatePage = useSearch(state => state.updatePage);
   const [cities, setCities] = useState<string[]>([]);
   const width = useResize();
@@ -110,20 +111,22 @@ function SearchForm({ children }: { children: React.ReactNode }) {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    updatePage(1);
-    const params = {
-      q: values.search,
-      gender: values.gender,
-      city: values.city,
-      country: values.country,
-      ageStart: values.startAge,
-      ageEnd: values.endAge,
-    };
-    const u = new URLSearchParams(params).toString();
-    updateType(values.type);
-    updateError(onError);
-    updateArgs(u);
-    nextSearch();
+    if (session?.user?.tokens?.access) {
+      updatePage(1);
+      const params = {
+        q: values.search,
+        gender: values.gender,
+        city: values.city,
+        country: values.country,
+        ageStart: values.startAge,
+        ageEnd: values.endAge,
+      };
+      const u = new URLSearchParams(params).toString();
+      updateType(values.type);
+      updateError(onError);
+      updateArgs(u);
+      nextSearch(session.user.tokens.access);
+    }
   }
 
   function onError() {
@@ -237,24 +240,26 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                       color="primary"
                       {...field}
                       onChange={value => {
-                        value.currentTarget.onchange = field.onChange;
-                        form.setValue("type", value.currentTarget.value);
-                        updateSeachs([]);
-                        updatePage(1);
-                        const values = form.getValues();
-                        const params = {
-                          q: values.search,
-                          gender: values.gender,
-                          city: values.city,
-                          country: values.country,
-                          ageStart: values.startAge,
-                          ageEnd: values.endAge,
-                        };
-                        const u = new URLSearchParams(params).toString();
-                        updateType(values.type);
-                        updateError(onError);
-                        updateArgs(u);
-                        nextSearch();
+                        if (session?.user?.tokens?.access) {
+                          value.currentTarget.onchange = field.onChange;
+                          form.setValue("type", value.currentTarget.value);
+                          updateSeachs([]);
+                          updatePage(1);
+                          const values = form.getValues();
+                          const params = {
+                            q: values.search,
+                            gender: values.gender,
+                            city: values.city,
+                            country: values.country,
+                            ageStart: values.startAge,
+                            ageEnd: values.endAge,
+                          };
+                          const u = new URLSearchParams(params).toString();
+                          updateType(values.type);
+                          updateError(onError);
+                          updateArgs(u);
+                          nextSearch(session.user.tokens.access);
+                        }
                       }}
                     >
                       <Radio

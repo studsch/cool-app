@@ -5,6 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { Spinner } from "@nextui-org/react";
 import Searchs from "./serch-users";
 import { useSearch } from "@/store";
+import { useSession } from "next-auth/react";
 
 export function LoadMore() {
   const nextSearch = useSearch(state => state.nextSearch);
@@ -14,12 +15,13 @@ export function LoadMore() {
   const isLoading = useSearch(state => state.isLoading);
   const type = useSearch(state => state.type);
   const page = useSearch(state => state.page);
+  const { data: session, status } = useSession();
   let error = 0;
   const { ref, inView } = useInView();
   const loadMoreUsers = async () => {
-    if (page < totalPages && !error) {
+    if (page < totalPages && !error && session?.user?.tokens?.access) {
       updatePage(page + 1);
-      error = await nextSearch();
+      error = await nextSearch(session.user.tokens.access);
     }
   };
   useEffect(() => {
