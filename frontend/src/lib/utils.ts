@@ -22,3 +22,19 @@ export function checkElement(selector: string): any {
 export function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export function toNormalDateTime(dateString: string){
+  const date = new Date(dateString);
+  const separator = "/"
+let formattedDate = date.toLocaleDateString('ru-RU', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric'
+}) + ' ' + date.toLocaleTimeString('ru-RU', {
+  hour12: false,
+  hour: '2-digit',
+  minute: '2-digit'
+});
+formattedDate = formattedDate.replace(/\./g, separator);
+return formattedDate;
+}

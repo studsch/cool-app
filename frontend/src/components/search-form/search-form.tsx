@@ -39,6 +39,7 @@ import { json } from "stream/consumers";
 function SearchForm({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
   const updateError = useSearch(state => state.updateError);
+  const updateSeachs = useSearch(state => state.updateSearchs);
   const updateArgs = useSearch(state => state.updateArgs);
   const updateType = useSearch(state => state.updateType);
   const nextSearch = useSearch(state => state.nextSearch);
@@ -238,6 +239,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                       onChange={value => {
                         value.currentTarget.onchange = field.onChange;
                         form.setValue("type", value.currentTarget.value);
+                        updateSeachs([]);
                         updatePage(1);
                         const values = form.getValues();
                         const params = {

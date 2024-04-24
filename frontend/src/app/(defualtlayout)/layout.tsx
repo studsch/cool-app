@@ -14,8 +14,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="flex gap-4 ">
           <div className="p-7 my-5 w-[240px] flex-col rounded-md gap-4 h-fit bg-white xl:flex hidden">
             <Navbar />
-            <hr className="border-t-2 border-r-4 border-dashed w-[140px] mx-auto my-4" />
-            <MyContacts />
+            <MyContacts>
+              <hr className="border-t-2 border-r-4 border-dashed w-[140px] mx-auto my-4" />
+              <h2 className="text-text-primary-color text-base weigh mx-auto w-fit font-semibold pb-4">
+                My Contacts
+              </h2>
+            </MyContacts>
           </div>
           {children}
         </div>

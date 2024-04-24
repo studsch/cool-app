@@ -41,6 +41,7 @@ module.exports = {
         "gradient-gray-end": "#F9F9F9",
         "background-color-reg-light-gray": "#F9F9F9",
         "selected-item": "#F17382",
+        "skeleton-color": "#f5f5f5",
         "historys-background": "rgba(36, 15, 33, 0.85)",
         "outline history": "#3D2C3A",
         "history-background": "#433040",

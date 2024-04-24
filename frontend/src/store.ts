@@ -2,6 +2,7 @@ import { any, boolean, number } from "zod";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { FetchUsers, FetchPosts } from "./fetch/search";
+import { FetchFriends } from "./fetch/friends";
 
 // для подтверждения по телефону через firebase
 
@@ -64,6 +65,7 @@ interface SearchState {
   error: () => void;
   updateType: (type: string) => void;
   updateArgs: (args: string) => void;
+  updateSearchs: (searchs: []) => void;
   updatePage: (page: number) => void;
   updateSize: (size: number) => void;
   updateError: (error: () => void) => void;
@@ -82,6 +84,7 @@ export const useSearch = create<SearchState>()(
     totalPages: 0,
     error: () => {},
     updateType: (type: string) => set({ type: type }),
+    updateSearchs: (searchs: []) => set({searchs: searchs}),
     updateArgs: (args: string) => set({ args: args }),
     updatePage: (page: number) => set({ page: page }),
     updateSize: (size: number) => set({ size: size }),
@@ -131,3 +134,29 @@ export const useSearch = create<SearchState>()(
     },
   })),
 );
+
+interface MyContactsState {
+  contacts: any[] | null | undefined;
+  GetContacts: (token: string) => void;
+  updateContacts: (contacts: any[] | null | undefined) => void;
+  isLoading: boolean;
+  updateLoading: (isLoading: boolean) => void;
+}
+
+export const useMyContacts= create<MyContactsState>()(
+  immer(set => ({
+    contacts: undefined,
+    isLoading: false,
+    GetContacts: async (token: string) => {
+      set({isLoading: true});
+      const res = await FetchFriends(token);
+      console.log(res)
+      let users = null
+      if ((res.error == false) && (res.friendsCount != 0)) {
+        users = res.users.slice(0, 4);
+      }
+      set({contacts: users, isLoading: false})
+    },
+    updateContacts: (contacts: any[] | null | undefined) => set({ contacts: contacts }),
+    updateLoading: (isLoading: boolean) => set({ isLoading: isLoading }),
+  })))
