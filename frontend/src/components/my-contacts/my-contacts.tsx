@@ -45,7 +45,7 @@ const MyContacts: React.FC<Props | any> = ({
           ))
         ) : contacts == null ? (
           <p
-            className={`pl-4 text-sm font-light text-text-secondary-color h-16`}
+            className={`pl-4 text-sm font-light text-text-secondary-color h-14`}
           >
             Make more friends who subscribe to you too
           </p>

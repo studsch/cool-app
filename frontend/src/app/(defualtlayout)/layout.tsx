@@ -1,6 +1,6 @@
 import TopBar from "@/components/topbar/topbar";
 import Navbar from "@/components/nav-bar/nav-bar";
-import Aside from "@/components/a-side/a-side";
+import ServerList from "@/components/nav-bar/server-list";
 import MyContacts from "@/components/my-contacts/my-contacts";
 import { Toaster } from "@/components/ui/toaster";
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -13,7 +13,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main className="md:w-[768px] xl:w-[1280px] mx-auto h-full">
         <div className="flex gap-4 ">
           <div className="p-7 my-5 w-[240px] flex-col rounded-md gap-4 h-fit bg-white xl:flex hidden">
-            <Navbar />
+            <Navbar>
+              <ServerList />
+            </Navbar>
             <MyContacts>
               <hr className="border-t-2 border-r-4 border-dashed w-[140px] mx-auto my-4" />
               <h2 className="text-text-primary-color text-base weigh mx-auto w-fit font-semibold pb-4">
