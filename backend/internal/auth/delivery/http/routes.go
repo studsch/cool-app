@@ -17,10 +17,10 @@ func MapAuthRoutes(
 	authGroup.Post("/register", h.Register())
 	authGroup.Post("/login", h.Login())
 	authGroup.Get("/search/user", h.Search())
+	authGroup.Post("/token/renew", h.RenewTokens())
 	authGroup.Use(mw.AuthJWTMiddleware())
 	authGroup.Post("/logout", h.Logout())
 	authGroup.Post("/avatar", h.UploadAvatar())
-	authGroup.Post("/token/renew", h.RenewTokens())
 	authGroup.Put("/:id", mw.OwnerMiddleware(), h.Update())
 	authGroup.Get("/health", func(c *fiber.Ctx) error {
 		q := c.Locals("user")
