@@ -27,6 +27,7 @@ const Searchs: React.FC<Props | any> = props => {
               (console.log(toNormalDateTime(search.createdAt)),
               (
                 <PostCard
+                  content={[]}
                   photo="https://otvet.imgsmail.ru/download/875a8375f91de049494d6073098e8a2f_a06ff8bf0588f1f51c17b473adc19689.jpg"
                   className=""
                   userName={search.userFirstName}

@@ -2,7 +2,7 @@ import { any, boolean, number } from "zod";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { FetchUsers, FetchPosts } from "./fetch/search";
-import { FetchFriends } from "./fetch/friends";
+import { FetchFriends, FetchWhoToFollow } from "./fetch/friends";
 
 // для подтверждения по телефону через firebase
 
@@ -160,3 +160,30 @@ export const useMyContacts= create<MyContactsState>()(
     updateContacts: (contacts: any[] | null | undefined) => set({ contacts: contacts }),
     updateLoading: (isLoading: boolean) => set({ isLoading: isLoading }),
   })))
+
+  interface WhoToFollowState {
+    contacts: any[] | null | undefined;
+    GetContacts: (token: string) => void;
+    updateContacts: (contacts: any[] | null | undefined) => void;
+    isLoading: boolean;
+    updateLoading: (isLoading: boolean) => void;
+  }
+  
+  export const useWhoToFollow= create<WhoToFollowState>()(
+    immer(set => ({
+      contacts: undefined,
+      isLoading: false,
+      GetContacts: async (token: string) => {
+        set({isLoading: true});
+        const res = await FetchWhoToFollow(token);
+        let users = null
+        if ((res.errors == false) && (res.recs != null)) {
+          users = res.recs.slice(0, 8);
+        }
+        console.log(res)
+        set({contacts: users, isLoading: false})
+      },
+      updateContacts: (contacts: any[] | null | undefined) => set({ contacts: contacts }),
+      updateLoading: (isLoading: boolean) => set({ isLoading: isLoading }),
+    })))
+  

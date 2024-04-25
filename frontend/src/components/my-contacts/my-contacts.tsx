@@ -4,7 +4,7 @@ import AvatarBlock from "../avatarblock/avatarblock";
 import { useMyContacts } from "@/store";
 import { useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
-
+import Link from "next/link";
 type Props = {
   className?: string;
 };
@@ -50,20 +50,16 @@ const MyContacts: React.FC<Props | any> = ({
             Make more friends who subscribe to you too
           </p>
         ) : (
-          contacts.map(
-            (user, index) => (
-              console.log(user),
-              (
-                <AvatarBlock
-                  key={index}
-                  title={user.firstName + " " + user.lastName}
-                  subtitle={"@" + user.login}
-                  classNames={{ img: "h-12 w-12" }}
-                  avatarPosition="other"
-                />
-              )
-            ),
-          )
+          contacts.map((user, index) => (
+            <Link key={index} href={user.login}>
+              <AvatarBlock
+                title={user.firstName + " " + user.lastName}
+                subtitle={"@" + user.login}
+                classNames={{ img: "h-12 w-12" }}
+                avatarPosition="other"
+              />
+            </Link>
+          ))
         )}
       </div>
     </>
