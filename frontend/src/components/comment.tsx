@@ -9,7 +9,7 @@ interface CommentProps {
   addReply: (reply: string) => void; // Функция для добавления ответа на комментарий
 }
 
-const Comment: React.FC<CommentProps> = ({
+const CommentC: React.FC<CommentProps> = ({
   name,
   photo,
   comment,
@@ -62,4 +62,4 @@ const Comment: React.FC<CommentProps> = ({
   );
 };
 
-export default Comment;
+export default CommentC;

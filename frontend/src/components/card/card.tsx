@@ -35,7 +35,7 @@ import { MessageCircle } from "lucide-react";
 import { Share2 } from "lucide-react";
 import { Bookmark } from "lucide-react";
 import { AutoComplete } from "@/components/autocomplete/autocomplete";
-import Comment from "../comment";
+import CommentC from "../comment";
 import CommentInput from "../inputComment";
 
 interface CommentProps {
@@ -53,6 +53,7 @@ interface PostCardProps {
   description: string; // Описание для карточки поста
   className?: string;
   createdAt: string;
+  content: Comment[]; // Пропс для массива комментариев
 }
 
 const PostCard: React.FC<PostCardProps> = ({
@@ -63,6 +64,7 @@ const PostCard: React.FC<PostCardProps> = ({
   description,
   className,
   createdAt,
+  content,
 }) => {
   const [likesCount, setLikesCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
@@ -252,14 +254,17 @@ const PostCard: React.FC<PostCardProps> = ({
               <div className="overflow-hidden w-full ">
                 {showAllComments ? (
                   commentsData.map((comment, index) => (
-                    <Comment
+                    <CommentC
                       key={index}
-                      {...comment}
-                      addReply={handleAddReply}
+                      name={comment.name}
+                      photo={comment.photo}
+                      comment={comment.comment}
+                      dateCom={comment.dateCom}
+                      addReply={handleAddReply} // Если вам нужна функция добавления ответа
                     />
                   ))
                 ) : (
-                  <Comment {...commentsData[0]} addReply={handleAddReply} />
+                  <CommentC {...commentsData[0]} addReply={handleAddReply} />
                 )}
                 {!showAllComments && !hideAllComments && (
                   <button

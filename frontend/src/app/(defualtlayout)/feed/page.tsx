@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import PostCard from "@/components/card/card";
 import Button from "@/components/ui/button/Button";
+import Aside from "@/components/a-side/a-side";
+import { RightSidebar } from "@/components/right-sidebar/right-sidebar";
 
 interface Post {
   id: string;
@@ -14,9 +16,66 @@ interface Post {
   createdAt: string; // Дата публикации
 }
 
+interface FeedComment {
+  name: string;
+  photo: string;
+  comment: string;
+  dateCom: string;
+}
+
 export default function Feed() {
+  const profiles = [
+    {
+      avatarImage: "https://github.com/shadcn.png",
+      avatarFallback: "MP",
+      name: "Morty",
+      link: "@morty",
+    },
+    {
+      avatarImage:
+        "https://i.pinimg.com/736x/6e/51/32/6e5132a90812ad1abf3711135a5cf406.jpg",
+      avatarFallback: "RP",
+      name: "Rick",
+      link: "@rick",
+    },
+    {
+      avatarImage: "https://github.com/shadcn.png",
+      avatarFallback: "MP",
+      name: "Morty",
+      link: "@morty",
+    },
+    {
+      avatarImage:
+        "https://i.pinimg.com/736x/6e/51/32/6e5132a90812ad1abf3711135a5cf406.jpg",
+      avatarFallback: "RP",
+      name: "Rick",
+      link: "@rick",
+    },
+    {
+      avatarImage: "https://github.com/shadcn.png",
+      avatarFallback: "MP",
+      name: "Morty",
+      link: "@morty",
+    },
+    {
+      avatarImage:
+        "https://i.pinimg.com/736x/6e/51/32/6e5132a90812ad1abf3711135a5cf406.jpg",
+      avatarFallback: "RP",
+      name: "Rick",
+      link: "@rick",
+    },
+  ];
+
+  const profileInfo = {
+    avatarImage: "https://github.com/shadcn.png",
+    avatarFallback: "MP",
+    name: "Morty",
+    description: "There are some description",
+  };
+
   const [posts, setPosts] = useState<Post[]>([]);
-  const [pageSize, setPageSize] = useState<number>(33);
+  const [pageSize, setPageSize] = useState<number>(30);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -42,8 +101,30 @@ export default function Feed() {
     };
 
     fetchPosts();
-  }, []);
 
+    const fetchComments = async () => {
+      try {
+        const commentsUrl = `http://localhost:8000/api/v1/comment/post/de7267cb-e285-4b58-99b2-2c1e230437cb?page=1&size=10`;
+        const response = await fetch(commentsUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setComments(data.comments);
+      } catch (error) {
+        console.error("There was a problem with fetching comments:", error);
+      }
+    };
+
+    fetchComments();
+  }, []);
+  console.log(comments);
+  console.log(posts);
   return (
     <>
       <div className="flex flex-col overflow-x-hidden w-[90%] mt-5 md:w-[512px] xl:w-[768px] mx-auto">
@@ -75,11 +156,16 @@ export default function Feed() {
               userName={post.userFirstName}
               userSName={post.userLastName}
               createdAt={post.createdAt}
+              content={comments} // Передаем комментарии в PostCard
             />
           ))}
         </div>
       </div>
       <div className="my-5 w-[240px] md:flex flex-col gap-4 hidden">
+        <RightSidebar
+          items={profiles}
+          className=" bg-white rounded-md w-full  flex p-7 flex-col gap-4"
+        />
         <div className="bg-white rounded-md w-full p-7">
           Будут кастомные виджеты, пока не в приоритете
         </div>
