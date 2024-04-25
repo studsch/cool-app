@@ -7,6 +7,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pkg/errors"
+
 	"github.com/studsch/cool-app/backend/internal/models"
 )
 
@@ -48,7 +49,7 @@ func (r *msgRepo) GetChatByIDPairs(
 	query := `
 SELECT id, user1_id, user2_id, created_at
 FROM chats
-WHERE user1_id = $1 and user2_id = $2;
+WHERE user1_id = $1 AND user2_id = $2;
 `
 	var chat models.Chat
 
@@ -87,4 +88,18 @@ INSERT INTO messages(
 	}
 
 	return &outMessage, nil
+}
+
+// TODO: pagination for messages and chats
+// TODO: need model for list of messages and chats
+// TODO: pagination want be last 30 message after `date`
+func (r *msgRepo) GetMessages(
+	ctx context.Context, chatID uuid.UUID,
+) (interface{}, interface{}) {
+	return nil, nil
+}
+
+func (r *msgRepo) GetChatIDsByUserID(
+	ctx context.Context, userID uuid.UUID,
+) {
 }
