@@ -66,3 +66,25 @@ WHERE user1_id = $1 and user2_id = $2;
 
 	return &chat, nil
 }
+
+func (r *msgRepo) CreateMessage(
+	ctx context.Context, inMessage *models.Message,
+) (*models.Message, error) {
+	query := `
+INSERT INTO messages(
+	id, body, read_status, sender_user_id, recipient_user_id, chat_id, time
+) VALUES (
+	DEFAULT, $1, DEFAULT, $2, $3, $4, DEFAULT
+)
+`
+	var outMessage models.Message
+
+	if err := r.db.QueryRow(
+		ctx, query, &inMessage.Body, &inMessage.SenderUserID,
+		&inMessage.RecipientUserID, &inMessage.ChatID,
+	).Scan(); err != nil {
+		return nil, errors.Wrap(err, "msgRepo.CreateMessage.Scan")
+	}
+
+	return &outMessage, nil
+}

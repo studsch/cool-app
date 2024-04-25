@@ -85,3 +85,9 @@ func (u *msgUC) GetChatByIDPairs(
 	}
 	return out, nil
 }
+
+func (u *msgUC) CreateMessage(
+	ctx context.Context, inMessage *models.Message,
+) (*models.Message, error) {
+	return u.chatRepo.CreateMessage(ctx, inMessage)
+}
