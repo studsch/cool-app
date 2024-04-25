@@ -2,7 +2,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import SubscribeButton from "../subscibe-button/subscribe-button";
 import Link from "next/link";
-import { use } from "react";
 
 type Props = {
   className?: string;
@@ -13,6 +12,7 @@ type Props = {
   login?: string;
   name?: string;
   surname?: string;
+  user_id?: string;
   country?: string;
   city?: string;
   description?: string;
@@ -27,6 +27,7 @@ const SearchUser: React.FC<Props | any> = props => {
   const {
     classNames,
     user,
+    user_id,
     src = "https://cs1.livemaster.ru/storage/8b/8d/f315028d963e6ce95dd0099c46ub--kartiny-i-panno-kartina-kruglaya-abstraktsiya-novaya-luna.jpg",
     fallback = "fb",
     login = "Login",
@@ -69,12 +70,14 @@ const SearchUser: React.FC<Props | any> = props => {
                 </h5>
               </div>
             </div>
-            <SubscribeButton
-              isSubscribed={user.isSubscribed}
-              userId={user.id}
-              subscribers={user.subscribersCount}
-              subscriptions={user.subscriptionsCount}
-            />
+            {user_id != user.id && (
+              <SubscribeButton
+                isSubscribed={user.isSubscribed}
+                userId={user.id}
+                subscribers={user.subscribersCount}
+                subscriptions={user.subscriptionsCount}
+              />
+            )}
           </div>
           <p className="text-text-secondary-color text-sm font-normal line-clamp-2">
             {description}

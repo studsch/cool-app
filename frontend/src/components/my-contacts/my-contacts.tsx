@@ -49,7 +49,22 @@ const MyContacts: React.FC<Props | any> = ({
           >
             Make more friends who subscribe to you too
           </p>
-        ) : null}
+        ) : (
+          contacts.map(
+            (user, index) => (
+              console.log(user),
+              (
+                <AvatarBlock
+                  key={index}
+                  title={user.firstName + " " + user.lastName}
+                  subtitle={"@" + user.login}
+                  classNames={{ img: "h-12 w-12" }}
+                  avatarPosition="other"
+                />
+              )
+            ),
+          )
+        )}
       </div>
     </>
   );

@@ -8,16 +8,21 @@ type Props = {
   classNames?: { wrapper?: string };
   searchs?: any[];
   type: string;
+  user_id?: string;
 };
 const Searchs: React.FC<Props | any> = props => {
-  const { classNames, restProps } = props;
+  const { classNames, user_id, restProps } = props;
   return (
     <div className={`flex flex-col gap-6 mt-6 ${classNames?.wrapper}`}>
       {props.searchs.length != 0 ? (
         props.searchs.map((search: any) => (
           <div className="flex flex-col gap-6" key={search.id}>
             {props.type == "users" ? (
-              <SearchUser user={search} key={search.id}></SearchUser>
+              <SearchUser
+                user={search}
+                key={search.id}
+                user_id={user_id}
+              ></SearchUser>
             ) : (
               (console.log(toNormalDateTime(search.createdAt)),
               (

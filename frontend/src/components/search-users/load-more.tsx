@@ -33,7 +33,11 @@ export function LoadMore() {
   }, [inView]);
   return (
     <>
-      <Searchs searchs={searchs} type={type}></Searchs>
+      <Searchs
+        searchs={searchs}
+        type={type}
+        user_id={session?.user?.id}
+      ></Searchs>
       <div ref={ref}>
         {isLoading && page != 1 && <Spinner className="flex mt-4" />}
       </div>

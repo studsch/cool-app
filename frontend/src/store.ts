@@ -90,7 +90,6 @@ export const useSearch = create<SearchState>()(
     updateSize: (size: number) => set({ size: size }),
     updateError: (error: () => void) => set({ error: error }),
     nextSearch: async (token: string) => {
-      console.log(token)
       let type = "";
       let args = "";
       let error = () => {};
@@ -151,11 +150,11 @@ export const useMyContacts= create<MyContactsState>()(
     GetContacts: async (token: string) => {
       set({isLoading: true});
       const res = await FetchFriends(token);
-      console.log(res)
       let users = null
-      if ((res.error == false) && (res.friendsCount != 0)) {
+      if ((res.errors == false) && (res.friendsCount != 0)) {
         users = res.users.slice(0, 4);
       }
+      console.log(res)
       set({contacts: users, isLoading: false})
     },
     updateContacts: (contacts: any[] | null | undefined) => set({ contacts: contacts }),
