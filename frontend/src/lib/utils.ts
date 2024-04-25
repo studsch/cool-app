@@ -1,4 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
+import exp from "constants";
+import { promises } from "dns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -38,3 +40,12 @@ let formattedDate = date.toLocaleDateString('ru-RU', {
 formattedDate = formattedDate.replace(/\./g, separator);
 return formattedDate;
 }
+
+export async function refreshAndRepeat(fetchFunc: any, fetchArgs:any, refreshFetch: any, refreshArgs: any ) {
+  let res = await fetchFunc(...fetchFunc)
+  if (res == 401 || res?.status == 401) {
+    refreshFetch(...refreshArgs)
+    res = await fetchFunc(...fetchFunc)
+  }
+  return res
+};

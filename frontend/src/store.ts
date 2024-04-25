@@ -137,7 +137,7 @@ export const useSearch = create<SearchState>()(
 
 interface MyContactsState {
   contacts: any[] | null | undefined;
-  GetContacts: (token: string) => void;
+  GetContacts: (token: string, refreshToken: string) => void;
   updateContacts: (contacts: any[] | null | undefined) => void;
   isLoading: boolean;
   updateLoading: (isLoading: boolean) => void;
@@ -147,9 +147,9 @@ export const useMyContacts= create<MyContactsState>()(
   immer(set => ({
     contacts: undefined,
     isLoading: false,
-    GetContacts: async (token: string) => {
+    GetContacts: async (token: string, refreshToken: string) => {
       set({isLoading: true});
-      const res = await FetchFriends(token);
+      const res = await FetchFriends(token, refreshToken);
       let users = null
       if ((res.errors == false) && (res.friendsCount != 0)) {
         users = res.users.slice(0, 4);
