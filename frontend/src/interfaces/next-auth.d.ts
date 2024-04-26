@@ -18,6 +18,8 @@ declare module "next-auth" {
     msg: string | undefined;
     about: string | undefined;
     avatar: string | undefined;
+    city: string | undefined;
+    country: string | undefined;
   }
   interface Session {
     user: User & {
@@ -36,6 +38,8 @@ declare module "next-auth" {
       tokens: { access: string; refresh: string };
       user_role: string;
       deleted: string;
+      city: string | undefined;
+      country: string | undefined;
     };
     token: {
       id: string;
@@ -52,6 +56,8 @@ declare module "next-auth" {
       tokens: { access: string; refresh: string };
       user_role: string;
       deleted: string;
+      city: string | undefined;
+      country: string | undefined;
     };
   }
 }

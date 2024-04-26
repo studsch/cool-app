@@ -92,6 +92,8 @@ export default function Home() {
       name: string;
       surname: string;
       description: string;
+      city: string;
+      country: string;
     };
   }
 
@@ -105,18 +107,20 @@ export default function Home() {
   ];
 
   const { user } = session;
-  const { name, surname } = user;
+  const { name, surname, about, city, country } = user;
   return (
     <>
       <div>
         <div className="mt-5 mb-5">
           <Profile
             info={{
-              avatarImage: `http://localhost:9000/${session.user.avatar}`,
+              avatarImage: `http://localhost:9000/${session?.user.avatar}`,
               avatarFallback: "JD", // Инициалы пользователя, если нет изображения
               name: name,
               surname: surname,
-              description: "В сессии нет about. покрайне мере пока что",
+              description: about,
+              city: city,
+              country: country,
             }}
           />
         </div>
