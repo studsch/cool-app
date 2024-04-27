@@ -48,6 +48,8 @@ export const authConfig: AuthOptions = {
           about: user["about"],
           avatar: user["avatar"],
           tokens: tokens,
+          city: user["none"],
+          country: user["none"],
         } as User;
       },
     }),
@@ -81,6 +83,8 @@ export const authConfig: AuthOptions = {
                 phoneNumber: session.user.phone,
                 gender: session.user.gender,
                 about: session.user.about,
+                city: session.user.city,
+                country: session.user.country,
               }),
             },
           );
@@ -104,6 +108,8 @@ export const authConfig: AuthOptions = {
               about: session.user.about,
               avatar: session.user.avatar,
               tokens: session.user.tokens,
+              city: session.user.city,
+              country: session.user.country,
             };
         }
       }
@@ -124,6 +130,8 @@ export const authConfig: AuthOptions = {
           about: user.about,
           avatar: user.avatar,
           tokens: user.tokens,
+          city: user.city,
+          country: user.country,
         };
       }
       return token;
@@ -147,6 +155,8 @@ export const authConfig: AuthOptions = {
           about: token.about,
           avatar: token.avatar,
           tokens: token.tokens,
+          city: token.city,
+          country: token.country,
         },
       };
     },

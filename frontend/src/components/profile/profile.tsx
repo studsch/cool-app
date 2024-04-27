@@ -24,6 +24,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { MapPin } from "lucide-react";
 
 const FormSchema = z.object({
   name: z.string().min(1, { message: "Name must be at least 1 character." }),
@@ -44,7 +45,9 @@ export interface ProfileProps {
     avatarFallback: string;
     name: string;
     surname: string;
-    description: string;
+    description: string | undefined;
+    city: string | undefined;
+    country: string | undefined;
   };
 }
 
@@ -56,9 +59,12 @@ export function Profile({ info }: ProfileProps) {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
   }
+  const handleEditProfile = () => {
+    window.location.href = "http://localhost:3000/editprofile";
+  };
 
   return (
-    <Card className="w-[600px]">
+    <Card className="w-full">
       {/* TODO: add image */}
       <div className="bg-black w-full h-36 rounded-t-xl"></div>
 
@@ -77,59 +83,18 @@ export function Profile({ info }: ProfileProps) {
             <p className="text-sm font-medium leading-none text-muted-foreground">
               {info.description}
             </p>
+            <div className="flex items-center">
+              <MapPin color="#6A6A6A" size={16} className="mr-1" />
+              <p className="text-sm font-medium leading-none text-muted-foreground">
+                {`${info.country} ${info.city}`}
+              </p>
+            </div>
           </div>
           <div className="grid gap-1 w-[200px]">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button className="text-white">Edit profile</Button>
-              </DialogTrigger>
-              <DialogContent className="">
-                <DialogHeader>
-                  <DialogTitle>Edit your profile</DialogTitle>
-                </DialogHeader>
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Your name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+            <Button onClick={handleEditProfile} className="text-white">
+              Edit profile
+            </Button>
 
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Description</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Tell us a little bit"
-                              className="resize-none"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <DialogFooter>
-                      <Button type="submit" className="text-white">
-                        Submit
-                      </Button>
-                    </DialogFooter>
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
             <Button className="text-white">More action</Button>
           </div>
         </div>

@@ -65,7 +65,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onCreatePost }) => {
   const handleCreatePost = async () => {
     try {
       const formData = new FormData();
-      formData.append("photo", photo as Blob);
+      formData.append("file", photo as Blob);
       formData.append("description", description);
 
       const postResponse = await fetch("http://localhost:8000/api/v1/post", {
