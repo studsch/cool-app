@@ -22,7 +22,11 @@ func MapUserRoutes(
 		h.GetRecommendedUsers(),
 	)
 	userGroup.Get("/friends", mw.AuthJWTMiddleware(), h.GetFriends())
-	userGroup.Get("/:userID", h.GetMiniUserByID())
 	userGroup.Get("/phone/:phone", h.CheckUserWithPhoneExists())
 	userGroup.Get("/login/:login", h.CheckUserWithLoginExists())
+	userGroup.Get("", h.GetUserByLogin())
+	userGroup.Get(
+		"/subscribed", mw.AuthJWTMiddleware(), h.CheckSubscribeExists(),
+	)
+	userGroup.Get("/:userID", h.GetMiniUserByID())
 }

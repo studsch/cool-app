@@ -380,3 +380,56 @@ func (h *userHandlers) CheckUserWithLoginExists() fiber.Handler {
 		)
 	}
 }
+
+func (h *userHandlers) GetUserByLogin() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		login := c.Query("login")
+		if len(login) == 0 {
+			return c.Status(fiber.StatusOK).JSON(
+				fiber.Map{
+					"errors": "no login given",
+				},
+			)
+		}
+
+		userByLogin, err := h.userUC.GetUserByLogin(c.UserContext(), login)
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(
+			fiber.Map{
+				"errors": false,
+				"user":   userByLogin,
+			},
+		)
+	}
+}
+
+func (h *userHandlers) CheckSubscribeExists() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		toUserID, err := uuid.Parse(c.Query("toUserId"))
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		out, err := h.userUC.CheckSubscribeExists(c.UserContext(), toUserID)
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(
+			fiber.Map{
+				"errors":       false,
+				"isSubscribed": out,
+			},
+		)
+
+	}
+}

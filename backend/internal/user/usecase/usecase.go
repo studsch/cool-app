@@ -282,3 +282,50 @@ func (u *userUC) CheckUserWithLoginExists(
 ) (bool, error) {
 	return u.userRepo.CheckUserWithLoginExists(ctx, login)
 }
+
+func (u *userUC) GetUserByLogin(
+	ctx context.Context, login string,
+) (*models.User, error) {
+	userByLogin, err := u.userRepo.GetUserByLogin(ctx, login)
+	if err != nil {
+		return nil, err
+	}
+	userByLogin.SanitizePassword()
+
+	subscribersCount, err := u.userRepo.GetUserSubscribersCount(
+		ctx, userByLogin.ID,
+	)
+	if err != nil {
+		u.log.Error(err)
+		userByLogin.SubscribersCount = 0
+	}
+
+	subscriptionsCount, err := u.userRepo.GetUserSubscriptionsCount(
+		ctx,
+		userByLogin.ID,
+	)
+	if err != nil {
+		u.log.Error(err)
+		userByLogin.SubscriptionsCount = 0
+	}
+
+	userByLogin.SubscribersCount = subscribersCount
+	userByLogin.SubscriptionsCount = subscriptionsCount
+
+	return userByLogin, nil
+}
+
+func (u *userUC) CheckSubscribeExists(
+	ctx context.Context, toUserID uuid.UUID,
+) (bool, error) {
+	userFromCtx, err := utils.GetUserFromCtx(ctx)
+	if err != nil {
+		return false, httpErrors.NewUnauthorizedError(
+			errors.WithMessage(
+				err, "userUC.CheckSubscribeExists.GetUserFromCtx",
+			),
+		)
+	}
+
+	return u.userRepo.CheckSubscribeExists(ctx, userFromCtx.ID, toUserID)
+}

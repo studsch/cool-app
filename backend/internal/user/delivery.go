@@ -15,4 +15,6 @@ type Handlers interface {
 	GetMiniUserByID() fiber.Handler
 	CheckUserWithPhoneExists() fiber.Handler
 	CheckUserWithLoginExists() fiber.Handler
+	GetUserByLogin() fiber.Handler
+	CheckSubscribeExists() fiber.Handler
 }

@@ -436,3 +436,26 @@ WHERE login = $1
 	}
 	return out, nil
 }
+
+func (r *userRepo) GetUserByLogin(
+	ctx context.Context, login string,
+) (*models.User, error) {
+	query := `
+SELECT
+	id, first_name, last_name, login,
+	phone_number, role, avatar, gender, about,
+	city, country, birthday, created_at, updated_at
+FROM users WHERE login = $1
+`
+	foundUser := &models.User{}
+	if err := r.db.QueryRow(ctx, query, login).Scan(
+		&foundUser.ID, &foundUser.FirstName, &foundUser.LastName,
+		&foundUser.Login, &foundUser.PhoneNumber, &foundUser.Role,
+		&foundUser.Avatar, &foundUser.Gender, &foundUser.About,
+		&foundUser.City, &foundUser.Country, &foundUser.Birthday,
+		&foundUser.CreatedAt, &foundUser.UpdatedAt,
+	); err != nil {
+		return nil, errors.Wrap(err, "userRepo.GetUserByLogin.Scan")
+	}
+	return foundUser, nil
+}

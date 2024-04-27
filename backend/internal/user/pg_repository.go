@@ -54,4 +54,5 @@ type Repository interface {
 	CheckUserWithLoginExists(
 		ctx context.Context, login string,
 	) (bool, error)
+	GetUserByLogin(ctx context.Context, login string) (*models.User, error)
 }
