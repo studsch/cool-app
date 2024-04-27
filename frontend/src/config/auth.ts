@@ -1,5 +1,6 @@
 import { getServerSession, type AuthOptions, type User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import  CredentialsProvider  from "next-auth/providers/credentials";
 import { use } from "react";
 import { string } from "zod";
 export const authConfig: AuthOptions = {
@@ -26,6 +27,57 @@ export const authConfig: AuthOptions = {
             },
             body: JSON.stringify({
               login: credentials.login,
+              password: credentials.password,
+            }),
+          },
+        );
+        const responeJson = await response.json();
+        const { user, error, tokens } = responeJson;
+        if (error) return { msg: error, error: error } as User;
+        return {
+          id: user["id"],
+          phone: user["phone"],
+          name: user["firstName"],
+          surname: user["lastName"],
+          date_of_birth: user["birthday"],
+          gender: user["gender"],
+          created_at: user["createdAt"],
+          updated_at: user["updatedAt"],
+          user_role: user["userRole"],
+          deleted: user["deleted"],
+          login: user["login"],
+          about: user["about"],
+          avatar: user["avatar"],
+          tokens: tokens,
+          city: user["none"],
+          country: user["none"],
+        } as User;
+      },
+    }),
+    CredentialsProvider({
+      id: "phone-enter",
+      name: "phone credentials",
+      credentials: {
+        phoneNumber: { label: "phoneNumber", type: "text", required: true },
+        password: { label: "password", type: "password", required: true },
+      },
+      async authorize(credentials: any, req: any) {
+        if (
+          !credentials?.phoneNumber ||
+          !credentials?.password ||
+          process.env.NEXT_PUBLIC_DOMEN_URL === undefined ||
+          process.env.NEXT_PUBLIC_URL === undefined
+        )
+          return null;
+        const response = await fetch(
+          process.env.NEXT_PUBLIC_DOMEN_URL + process.env.NEXT_PUBLIC_URL,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              phoneNumber: credentials.phoneNumber,
               password: credentials.password,
             }),
           },

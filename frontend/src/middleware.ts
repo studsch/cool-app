@@ -11,7 +11,7 @@ export default async function middleware(
     if ((req.nextUrl.pathname.startsWith('/enter') || req.nextUrl.pathname.startsWith('/register')) && isAuthenticated) {
         return NextResponse.redirect(new URL('/profile', req.url))
     }
-    else if (req.nextUrl.pathname.startsWith('/register') && !isAuthenticated) {
+    else if (req.nextUrl.pathname.startsWith('/register') || (req.nextUrl.pathname.startsWith('/enter'))  && !isAuthenticated) {
         return 
     }
 
@@ -28,5 +28,5 @@ export default async function middleware(
 }
 
 export const config = {
-    matcher: ['/profile', '/register/:path*', "/enter"],
+    matcher: ['/profile', '/register/:path*', "/enter/:path*"],
 }
