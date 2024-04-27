@@ -34,14 +34,56 @@ func (u *postUC) SearchByFilter(
 	ctx context.Context, tags []string, filter *models.PostFilter,
 	pq *utils.PaginationQuery,
 ) (*models.PostList, error) {
-	return u.postRepo.SearchByFilter(ctx, tags, filter, pq)
+	user, err := utils.GetUserFromCtx(ctx)
+	if err != nil {
+		return nil, httpErrors.NewUnauthorizedError(
+			errors.WithMessage(
+				err, "postUC.Create.GetUserFromCtx",
+			),
+		)
+	}
+
+	postList, err := u.postRepo.SearchByFilter(ctx, tags, filter, pq)
+	if err != nil {
+		return nil, err
+	}
+	for _, curPost := range postList.Posts {
+		liked, err := u.postRepo.CheckLikeOnPostByID(ctx, user.ID, curPost.ID)
+		if err != nil {
+			return nil, err
+		}
+		curPost.IsLiked = liked
+	}
+
+	return postList, nil
 }
 
 // Search implements post.UseCase.
 func (u *postUC) Search(
 	ctx context.Context, tags []string, q string, pq *utils.PaginationQuery,
 ) (*models.PostList, error) {
-	return u.postRepo.Search(ctx, tags, q, pq)
+	user, err := utils.GetUserFromCtx(ctx)
+	if err != nil {
+		return nil, httpErrors.NewUnauthorizedError(
+			errors.WithMessage(
+				err, "postUC.Create.GetUserFromCtx",
+			),
+		)
+	}
+
+	postList, err := u.postRepo.Search(ctx, tags, q, pq)
+	if err != nil {
+		return nil, err
+	}
+	for _, curPost := range postList.Posts {
+		liked, err := u.postRepo.CheckLikeOnPostByID(ctx, user.ID, curPost.ID)
+		if err != nil {
+			return nil, err
+		}
+		curPost.IsLiked = liked
+	}
+
+	return postList, nil
 }
 
 // GetImagesURLs implements post.UseCase.
@@ -232,7 +274,9 @@ func (u *postUC) Delete(ctx context.Context, postID uuid.UUID) error {
 		return err
 	}
 
-	if err := u.redisRepo.DeletePostByIDCtx(ctx, u.getKeyWithPrefix(postID.String())); err != nil {
+	if err := u.redisRepo.DeletePostByIDCtx(
+		ctx, u.getKeyWithPrefix(postID.String()),
+	); err != nil {
 		u.logger.Errorf("postUC.Delete.DeletePostByIDCtx: %v", err)
 	}
 
@@ -243,6 +287,15 @@ func (u *postUC) Delete(ctx context.Context, postID uuid.UUID) error {
 func (u *postUC) GetPosts(
 	ctx context.Context, pq *utils.PaginationQuery,
 ) (*models.PostList, error) {
+	user, err := utils.GetUserFromCtx(ctx)
+	if err != nil {
+		return nil, httpErrors.NewUnauthorizedError(
+			errors.WithMessage(
+				err, "postUC.Create.GetUserFromCtx",
+			),
+		)
+	}
+
 	pl, err := u.postRepo.GetPosts(ctx, pq)
 	if err != nil {
 		return nil, err
@@ -254,6 +307,11 @@ func (u *postUC) GetPosts(
 			return nil, err
 		}
 		p.Tags = tags
+		liked, err := u.postRepo.CheckLikeOnPostByID(ctx, user.ID, p.ID)
+		if err != nil {
+			return nil, err
+		}
+		p.IsLiked = liked
 	}
 
 	return pl, err
@@ -263,8 +321,19 @@ func (u *postUC) GetPosts(
 func (u *postUC) GetByID(
 	ctx context.Context, postID uuid.UUID,
 ) (*models.PostBase, error) {
+	user, err := utils.GetUserFromCtx(ctx)
+	if err != nil {
+		return nil, httpErrors.NewUnauthorizedError(
+			errors.WithMessage(
+				err, "postUC.Create.GetUserFromCtx",
+			),
+		)
+	}
+
 	// TODO: get from redis and return it
-	postRedis, err := u.redisRepo.GetPostByIDCtx(ctx, u.getKeyWithPrefix(postID.String()))
+	postRedis, err := u.redisRepo.GetPostByIDCtx(
+		ctx, u.getKeyWithPrefix(postID.String()),
+	)
 	if err != nil {
 		u.logger.Errorf("postUC.GetByID.GetPostByIDCtx: %v", err)
 	}
@@ -281,6 +350,7 @@ func (u *postUC) GetByID(
 			Tags:          postRedis.Tags,
 			ID:            postRedis.ID,
 			UserID:        postRedis.UserID,
+			IsLiked:       postRedis.IsLiked,
 		}
 		return p, nil
 	}
@@ -296,6 +366,12 @@ func (u *postUC) GetByID(
 	}
 	p.Tags = tags
 
+	liked, err := u.postRepo.CheckLikeOnPostByID(ctx, user.ID, p.ID)
+	if err != nil {
+		return nil, err
+	}
+	p.IsLiked = liked
+
 	post := &models.Post{
 		CreatedAt:     p.CreatedAt,
 		Description:   p.Description,
@@ -308,6 +384,7 @@ func (u *postUC) GetByID(
 		UserLastName:  p.UserLastName,
 		UserLogin:     p.UserLogin,
 		UserAvatar:    p.UserAvatar,
+		IsLiked:       p.IsLiked,
 	}
 	if err = u.redisRepo.SetPostByIDCtx(
 		ctx, u.getKeyWithPrefix(postID.String()), cacheDuration, post,
@@ -322,6 +399,15 @@ func (u *postUC) GetByID(
 func (u *postUC) GetByUserID(
 	ctx context.Context, userID uuid.UUID, pq *utils.PaginationQuery,
 ) (*models.PostList, error) {
+	user, err := utils.GetUserFromCtx(ctx)
+	if err != nil {
+		return nil, httpErrors.NewUnauthorizedError(
+			errors.WithMessage(
+				err, "postUC.Create.GetUserFromCtx",
+			),
+		)
+	}
+
 	pl, err := u.postRepo.GetByUserID(ctx, userID, pq)
 	if err != nil {
 		return nil, err
@@ -333,6 +419,12 @@ func (u *postUC) GetByUserID(
 			return nil, err
 		}
 		p.Tags = tags
+
+		liked, err := u.postRepo.CheckLikeOnPostByID(ctx, user.ID, p.ID)
+		if err != nil {
+			return nil, err
+		}
+		p.IsLiked = liked
 	}
 
 	return pl, err

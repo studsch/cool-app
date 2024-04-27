@@ -543,3 +543,22 @@ func (r *postRepo) GetLikedPostsByUserID(
 		Posts:      postsList,
 	}, err
 }
+
+func (r *postRepo) CheckLikeOnPostByID(
+	ctx context.Context, userID uuid.UUID, postID uuid.UUID,
+) (bool, error) {
+	query := `
+SELECT EXISTS(
+SELECT 1 FROM like_post
+WHERE user_id = $1 AND post_id = $2
+)
+`
+	var out bool
+	if err := r.db.QueryRow(
+		ctx, query, &userID, &postID,
+	).Scan(&out); err != nil {
+		return false, errors.Wrap(err, "postRepo.CheckLikeOnPostByID.Scan")
+	}
+	return out, nil
+
+}

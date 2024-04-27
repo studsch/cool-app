@@ -38,4 +38,7 @@ type Repository interface {
 	GetLikedPostsByUserID(
 		ctx context.Context, userID uuid.UUID, pq *utils.PaginationQuery,
 	) (*models.PostList, error)
+	CheckLikeOnPostByID(
+		ctx context.Context, userID uuid.UUID, postID uuid.UUID,
+	) (bool, error)
 }

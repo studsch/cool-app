@@ -30,6 +30,7 @@ type Post struct {
 	UserLastName  string    `json:"userLastName,omitempty" validate:"omitempty"`
 	UserLogin     string    `json:"login,omitempty" validate:"omitempty"`
 	UserAvatar    *string   `json:"userAvatar,omitempty" validate:"omitempty"`
+	IsLiked       bool      `json:"isLiked,omitempty" validate:"omitempty"`
 }
 
 // PostBase Post base
@@ -45,6 +46,7 @@ type PostBase struct {
 	Tags          []string  `json:"tags,omitempty" validate:"omitempty"`
 	ID            uuid.UUID `json:"id,omitempty" validate:"omitempty,uuid"`
 	UserID        uuid.UUID `json:"userId,omitempty" validate:"required"`
+	IsLiked       bool      `json:"isLiked,omitempty" validate:"omitempty"`
 }
 
 // PostList All Post response
