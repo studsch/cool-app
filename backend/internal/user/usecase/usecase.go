@@ -270,3 +270,15 @@ func (u *userUC) GetMiniUsersByID(
 	}
 	return userByID, nil
 }
+
+func (u *userUC) CheckUserWithPhoneExists(
+	ctx context.Context, phone string,
+) (bool, error) {
+	return u.userRepo.CheckUserWithPhoneExists(ctx, phone)
+}
+
+func (u *userUC) CheckUserWithLoginExists(
+	ctx context.Context, login string,
+) (bool, error) {
+	return u.userRepo.CheckUserWithLoginExists(ctx, login)
+}

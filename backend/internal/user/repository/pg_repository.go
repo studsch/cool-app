@@ -400,3 +400,39 @@ func (r *userRepo) CheckSubscribeExists(
 
 	return out, nil
 }
+
+func (r *userRepo) CheckUserWithPhoneExists(
+	ctx context.Context, phone string,
+) (bool, error) {
+	query := `
+SELECT EXISTS(
+SELECT 1 FROM users
+WHERE phone_number = $1
+)
+`
+	var out bool
+	if err := r.db.QueryRow(
+		ctx, query, phone,
+	).Scan(&out); err != nil {
+		return false, errors.Wrap(err, "userRepo.CheckUserWithPhoneExists.Scan")
+	}
+	return out, nil
+}
+
+func (r *userRepo) CheckUserWithLoginExists(
+	ctx context.Context, login string,
+) (bool, error) {
+	query := `
+SELECT EXISTS(
+SELECT 1 FROM users
+WHERE login = $1
+)
+`
+	var out bool
+	if err := r.db.QueryRow(
+		ctx, query, login,
+	).Scan(&out); err != nil {
+		return false, errors.Wrap(err, "userRepo.CheckUserWithLoginExists.Scan")
+	}
+	return out, nil
+}
