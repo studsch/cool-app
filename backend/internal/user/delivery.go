@@ -13,4 +13,6 @@ type Handlers interface {
 	GetRecommendedUsers() fiber.Handler
 	GetFriends() fiber.Handler
 	GetMiniUserByID() fiber.Handler
+	CheckUserWithPhoneExists() fiber.Handler
+	CheckUserWithLoginExists() fiber.Handler
 }

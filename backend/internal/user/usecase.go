@@ -35,4 +35,10 @@ type UseCase interface {
 	GetMiniUsersByID(
 		ctx context.Context, userID uuid.UUID,
 	) (*models.MiniUser, error)
+	CheckUserWithPhoneExists(
+		ctx context.Context, phone string,
+	) (bool, error)
+	CheckUserWithLoginExists(
+		ctx context.Context, login string,
+	) (bool, error)
 }

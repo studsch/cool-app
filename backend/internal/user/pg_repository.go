@@ -48,4 +48,10 @@ type Repository interface {
 	CheckSubscribeExists(
 		ctx context.Context, userID uuid.UUID, toUserID uuid.UUID,
 	) (bool, error)
+	CheckUserWithPhoneExists(
+		ctx context.Context, phone string,
+	) (bool, error)
+	CheckUserWithLoginExists(
+		ctx context.Context, login string,
+	) (bool, error)
 }

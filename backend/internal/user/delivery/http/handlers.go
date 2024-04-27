@@ -326,3 +326,57 @@ func (h *userHandlers) GetMiniUserByID() fiber.Handler {
 		)
 	}
 }
+
+func (h *userHandlers) CheckUserWithPhoneExists() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		phone := c.Params("phone")
+		if len(phone) == 0 {
+			return c.Status(fiber.StatusOK).JSON(
+				fiber.Map{
+					"errors": "no phone number given",
+				},
+			)
+		}
+
+		exists, err := h.userUC.CheckUserWithPhoneExists(c.UserContext(), phone)
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(
+			fiber.Map{
+				"errors":     false,
+				"userExists": exists,
+			},
+		)
+	}
+}
+
+func (h *userHandlers) CheckUserWithLoginExists() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		login := c.Params("login")
+		if len(login) == 0 {
+			return c.Status(fiber.StatusOK).JSON(
+				fiber.Map{
+					"errors": "no login given",
+				},
+			)
+		}
+
+		exists, err := h.userUC.CheckUserWithLoginExists(c.UserContext(), login)
+		if err != nil {
+			utils.LogResponseError(c, h.log, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(
+			fiber.Map{
+				"errors":     false,
+				"userExists": exists,
+			},
+		)
+	}
+}
