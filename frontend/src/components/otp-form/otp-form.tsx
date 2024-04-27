@@ -19,7 +19,7 @@ import OtpInput from "react18-input-otp";
 import PhoneNumberInput from "../phone-number/phone-number";
 import { type } from "os";
 import { useRouter } from "next/navigation";
-import { useConfirmCode } from "@/store";
+import { useConfirmCode, useConfirmCodeRecovery } from "@/store";
 import { PhoneAuthProvider } from "firebase/auth";
 import { auth } from "@/config/firebase.config";
 import {
@@ -39,14 +39,33 @@ const formSchema = z.object({
     .optional(),
 });
 
-export default function OtpForm({ children }: { children: React.ReactNode }) {
+export default function OtpForm({
+  children,
+  pushRoute,
+  type,
+}: {
+  children: React.ReactNode;
+  pushRoute: string;
+  type: number;
+}) {
   useEffect(() => {
-    useConfirmCode.persist.rehydrate();
+    if (type == 1) {
+      useConfirmCode.persist.hasHydrated();
+    } else if (type == 2) {
+      useConfirmCodeRecovery.persist.hasHydrated();
+    }
   }, []);
-  const confirm = useConfirmCode(state => state.confirmResult);
+  let confirm: any = undefined;
   const router = useRouter();
   const { toast } = useToast();
-  const number = useConfirmCode(state => state.number);
+  let number = undefined;
+  if (type == 1) {
+    confirm = useConfirmCode(state => state.confirmResult);
+    number = useConfirmCode(state => state.number);
+  } else if (type == 2) {
+    confirm = useConfirmCodeRecovery(state => state.confirmResult);
+    number = useConfirmCodeRecovery(state => state.number);
+  }
   // console.log(confirm);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -64,7 +83,7 @@ export default function OtpForm({ children }: { children: React.ReactNode }) {
     );
     try {
       const res = await signInWithCredential(auth, phoneCredential);
-      router.push("/register/base");
+      router.push(pushRoute);
     } catch (err) {
       toast({
         title: "Code error",

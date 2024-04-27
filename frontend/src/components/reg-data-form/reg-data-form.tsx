@@ -153,136 +153,139 @@ function RegDataForm({
     login &&
     (new Date().getTime() - Number(startTime)) / 1000 <= timeLimit * 5 &&
     number == auth.currentUser.phoneNumber ? (
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem className="space-y-1 my-1">
-                <FormControl>
-                  <Input
-                    className="input input-primary"
-                    type="password"
-                    placeholder="Password"
-                    field={field}
-                    required
-                  ></Input>
-                  {/* <PhoneNumberInput field={field} /> */}
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="rePassword"
-            render={({ field }) => (
-              <FormItem className="space-y-1 my-1">
-                <FormControl>
-                  <Input
-                    className="input input-primary"
-                    type="password"
-                    placeholder="Repeat Password"
-                    field={field}
-                    required
-                  ></Input>
-                  {/* <PhoneNumberInput field={field} /> */}
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem className="space-y-1 my-1">
-                <FormControl>
-                  <Input
-                    className="input input-primary"
-                    type="text"
-                    placeholder="Name"
-                    field={field}
-                    required
-                  ></Input>
-                  {/* <PhoneNumberInput field={field} /> */}
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="surname"
-            render={({ field }) => (
-              <FormItem className="space-y-1 my-1">
-                <FormControl>
-                  <Input
-                    className="input input-primary"
-                    type="text"
-                    placeholder="Surname"
-                    field={field}
-                    required
-                  ></Input>
-                  {/* <PhoneNumberInput field={field} /> */}
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="birthDay"
-            render={({ field }) => (
-              <FormItem className="space-y-1 my-1">
-                <FormControl>
-                  <SelectDatepicker
-                    order="day/month/year"
-                    className={"gap-4"}
-                    selectedDate={field.value}
-                    onDateChange={field.onChange}
-                  />
-                </FormControl>
-                <FormDescription className="pt-3 pb-1">
-                  Date of birth <br />
-                  Example: 24 January 2002
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="gender"
-            render={({ field }) => (
-              <FormItem className="space-y-1 mt-1 mb-4">
-                <FormControl>
-                  <RadioGroup
-                    classNames={{ label: "mb-3", wrapper: "gap-6" }}
-                    label="Select your gender"
-                    orientation="horizontal"
-                    color="primary"
-                    {...field}
-                  >
-                    <Radio value="male" size="sm">
-                      Male
-                    </Radio>
-                    <Radio value="female" size="sm">
-                      Female
-                    </Radio>
-                    <Radio value="any" size="sm">
-                      Any
-                    </Radio>
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {children}
-        </form>
-      </Form>
+      <>
+        {titles}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem className="space-y-1 my-1">
+                  <FormControl>
+                    <Input
+                      className="input input-primary"
+                      type="password"
+                      placeholder="Password"
+                      field={field}
+                      required
+                    ></Input>
+                    {/* <PhoneNumberInput field={field} /> */}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="rePassword"
+              render={({ field }) => (
+                <FormItem className="space-y-1 my-1">
+                  <FormControl>
+                    <Input
+                      className="input input-primary"
+                      type="password"
+                      placeholder="Repeat Password"
+                      field={field}
+                      required
+                    ></Input>
+                    {/* <PhoneNumberInput field={field} /> */}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="space-y-1 my-1">
+                  <FormControl>
+                    <Input
+                      className="input input-primary"
+                      type="text"
+                      placeholder="Name"
+                      field={field}
+                      required
+                    ></Input>
+                    {/* <PhoneNumberInput field={field} /> */}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="surname"
+              render={({ field }) => (
+                <FormItem className="space-y-1 my-1">
+                  <FormControl>
+                    <Input
+                      className="input input-primary"
+                      type="text"
+                      placeholder="Surname"
+                      field={field}
+                      required
+                    ></Input>
+                    {/* <PhoneNumberInput field={field} /> */}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="birthDay"
+              render={({ field }) => (
+                <FormItem className="space-y-1 my-1">
+                  <FormControl>
+                    <SelectDatepicker
+                      order="day/month/year"
+                      className={"gap-4"}
+                      selectedDate={field.value}
+                      onDateChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription className="pt-3 pb-1">
+                    Date of birth <br />
+                    Example: 24 January 2002
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem className="space-y-1 mt-1 mb-4">
+                  <FormControl>
+                    <RadioGroup
+                      classNames={{ label: "mb-3", wrapper: "gap-6" }}
+                      label="Select your gender"
+                      orientation="horizontal"
+                      color="primary"
+                      {...field}
+                    >
+                      <Radio value="male" size="sm">
+                        Male
+                      </Radio>
+                      <Radio value="female" size="sm">
+                        Female
+                      </Radio>
+                      <Radio value="any" size="sm">
+                        Any
+                      </Radio>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {children}
+          </form>
+        </Form>
+      </>
     ) : (
       <RegError></RegError>
     ))

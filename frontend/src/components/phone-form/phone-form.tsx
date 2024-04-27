@@ -38,6 +38,7 @@ import { useState } from "react";
 import { Spinner } from "@nextui-org/react";
 import DialogCaptchaSignup from "../dialog-captcha-signup/dialog-captcha-signup";
 // import { isValidPhoneNumber } from "react-phone-number-input";
+import { useConfirmCodeRecovery } from "@/store";
 
 declare global {
   interface Window {
@@ -50,6 +51,7 @@ declare global {
 function PhoneForm({ children }: { children: React.ReactNode }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
+  const confCode = useConfirmCodeRecovery();
   const [captchaLoading, setCaptchaLoading] = useState(true);
   const formSchema = z.object({
     number: z
@@ -87,13 +89,16 @@ function PhoneForm({ children }: { children: React.ReactNode }) {
     setDefRecaptcha();
     if (window.recaptchaVerifier)
       signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier)
-        .then(confirmationResult => {
+        .then(async confirmationResult => {
           // SMS sent. Prompt user to type the code from the message, then sign the
           // user in with confirmationResult.confirm(code).
           window.confirmationResult = confirmationResult;
           window.recaptchaVerifier?.clear();
           window.recaptchaVerifier = undefined;
-          router.push("/enter/recovery/new_pass");
+          confCode.updateNumber(phoneNumber);
+          confCode.updateConfirmResult(confirmationResult);
+          confCode.updateStartTime(new Date().getTime());
+          router.push("/enter/recovery/number");
           // ...
         })
         .catch(error => {

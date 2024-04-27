@@ -11,11 +11,15 @@ export default async function middleware(
     if ((req.nextUrl.pathname.startsWith('/enter') || req.nextUrl.pathname.startsWith('/register')) && isAuthenticated) {
         return NextResponse.redirect(new URL('/profile', req.url))
     }
+    else if (req.nextUrl.pathname.startsWith('/register') && !isAuthenticated) {
+        return 
+    }
 
 
     const authMiddleware = await withAuth({
         pages: {
             signIn: "/enter",
+            newUser: "/register/:path*"
         },
     })
 

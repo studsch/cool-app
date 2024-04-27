@@ -4,8 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { RadioGroup, Radio } from "@nextui-org/react";
-
+import { Spinner } from "@nextui-org/react";
 import Button from "../ui/button/Button";
+import RegError from "../errors/reg-error";
 import {
   Form,
   FormControl,
@@ -15,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
+import { auth } from "@/config/firebase.config";
 import Input from "../ui/input/Input";
 
 import { useRouter } from "next/navigation";
@@ -24,13 +25,34 @@ import { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { SelectDatepicker } from "react-select-datepicker";
 import { type } from "os";
+import { useConfirmCodeRecovery } from "@/store";
 
-function RecPassForm({ children }: { children?: React.ReactNode }) {
+function RecPassForm({
+  children,
+  titles,
+}: {
+  children?: React.ReactNode;
+  titles?: React.ReactNode;
+}) {
   // для даты
-  const [dateVal, setDateVal] = useState<Date | null>();
+  const [isAuthReady, setIsAuthReady] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const number = useConfirmCodeRecovery(state => state.number);
+  const startTime = useConfirmCodeRecovery(state => state.startTime);
+  const [isError, setIsError] = useState(false);
+  const timeLimit = 60;
+  useEffect(() => {
+    const checkAuthState = async () => {
+      await auth.authStateReady();
+      // Do whatever you want here ...
 
-  const onDateChange = useCallback((date: Date | null) => {
-    setDateVal(date);
+      // E.g. checking whether the user is logged in or not:
+      setIsAuthReady(true);
+      // End of E.g.
+    };
+    setIsLoaded(useConfirmCodeRecovery.persist.hasHydrated());
+
+    checkAuthState();
   }, []);
 
   const router = useRouter();
@@ -61,50 +83,64 @@ function RecPassForm({ children }: { children?: React.ReactNode }) {
     console.log(values.birthDay);
   }
 
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem className="space-y-1 my-1">
-              <FormControl>
-                <Input
-                  className="input input-primary"
-                  type="password"
-                  placeholder="Password"
-                  field={field}
-                  required
-                ></Input>
-                {/* <PhoneNumberInput field={field} /> */}
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="rePassword"
-          render={({ field }) => (
-            <FormItem className="space-y-1 my-1">
-              <FormControl>
-                <Input
-                  className="input input-primary"
-                  type="password"
-                  placeholder="Repeat Password"
-                  field={field}
-                  required
-                ></Input>
-                {/* <PhoneNumberInput field={field} /> */}
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {children}
-      </form>
-    </Form>
+  return isAuthReady && isLoaded ? (
+    (console.log(auth.currentUser),
+    auth.currentUser &&
+    number &&
+    !isError &&
+    (new Date().getTime() - Number(startTime)) / 1000 <= timeLimit * 5 &&
+    number == auth.currentUser.phoneNumber ? (
+      <>
+        {titles}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem className="space-y-1 my-1">
+                  <FormControl>
+                    <Input
+                      className="input input-primary"
+                      type="password"
+                      placeholder="Password"
+                      field={field}
+                      required
+                    ></Input>
+                    {/* <PhoneNumberInput field={field} /> */}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="rePassword"
+              render={({ field }) => (
+                <FormItem className="space-y-1 my-1">
+                  <FormControl>
+                    <Input
+                      className="input input-primary"
+                      type="password"
+                      placeholder="Repeat Password"
+                      field={field}
+                      required
+                    ></Input>
+                    {/* <PhoneNumberInput field={field} /> */}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {children}
+          </form>
+        </Form>
+      </>
+    ) : (
+      <RegError></RegError>
+    ))
+  ) : (
+    <Spinner className="flex mt-4" />
   );
 }
 

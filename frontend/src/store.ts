@@ -45,6 +45,31 @@ export const useConfirmCode = create<ConfirmState>()(
   ),
 );
 
+interface ConfirmStateRecovery {
+  number: string;
+  confirmResult?: ConfirmationResult;
+  startTime: any;
+  updateNumber: (number: string) => void;
+  updateConfirmResult: (confirmResult: any) => void;
+  updateStartTime: (startTime: any) => void;
+}
+
+export const useConfirmCodeRecovery = create<ConfirmStateRecovery>()(
+  persist(
+    devtools(set => ({
+      number: "",
+      confirmResult: undefined,
+      startTime: null,
+      updateNumber: number => set({ number: number }),
+      updateConfirmResult: confirmResult =>
+        set({ confirmResult: confirmResult }),
+      updateStartTime: startTime => set({ startTime: startTime })
+    })),
+    { name: "confirmStoreRecovery", version: 1 },
+  ),
+);
+
+
 interface SearchUser {
   id: string;
   firstName: string;

@@ -56,7 +56,7 @@ export function RightSidebar({ className }: SidebarProps) {
           ))
         ) : contacts == null ? (
           <p
-            className={`pl-4 text-sm font-light text-text-secondary-color h-14`}
+            className={`pl-1 text-sm font-light text-text-secondary-color h-14`}
           >
             Find more subscriptors for this.
           </p>

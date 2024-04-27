@@ -1,9 +1,9 @@
 import OtpFormWrapper from "@/components/otp-form-wrapper/otp-form-wrapper";
 
-export default function Enter() {
+export default function Number() {
   return (
     <>
-      <OtpFormWrapper type={1} pushRoute="/register/base">
+      <OtpFormWrapper type={2} pushRoute="repass">
         <p className="text-text-primary-color h-8 font-light">
           Check your phone for SMS
         </p>
