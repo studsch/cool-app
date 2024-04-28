@@ -161,16 +161,16 @@ export const useSearch = create<SearchState>()(
 );
 
 interface MyContactsState {
-  contacts: any[] | null | undefined;
+  contacts: any[] | null;
   GetContacts: (token: string, refreshToken: string) => void;
-  updateContacts: (contacts: any[] | null | undefined) => void;
+  updateContacts: (contacts: any[] | null) => void;
   isLoading: boolean;
   updateLoading: (isLoading: boolean) => void;
 }
 
 export const useMyContacts= create<MyContactsState>()(
   immer(set => ({
-    contacts: undefined,
+    contacts: null,
     isLoading: false,
     GetContacts: async (token: string, refreshToken: string) => {
       set({isLoading: true});
@@ -182,21 +182,21 @@ export const useMyContacts= create<MyContactsState>()(
       console.log(res)
       set({contacts: users, isLoading: false})
     },
-    updateContacts: (contacts: any[] | null | undefined) => set({ contacts: contacts }),
+    updateContacts: (contacts: any[] | null) => set({ contacts: contacts }),
     updateLoading: (isLoading: boolean) => set({ isLoading: isLoading }),
   })))
 
   interface WhoToFollowState {
-    contacts: any[] | null | undefined;
+    contacts: any[] | null ;
     GetContacts: (token: string) => void;
-    updateContacts: (contacts: any[] | null | undefined) => void;
+    updateContacts: (contacts: any[] | null) => void;
     isLoading: boolean;
     updateLoading: (isLoading: boolean) => void;
   }
   
   export const useWhoToFollow= create<WhoToFollowState>()(
     immer(set => ({
-      contacts: undefined,
+      contacts: null,
       isLoading: false,
       GetContacts: async (token: string) => {
         set({isLoading: true});
@@ -208,7 +208,7 @@ export const useMyContacts= create<MyContactsState>()(
         console.log(res)
         set({contacts: users, isLoading: false})
       },
-      updateContacts: (contacts: any[] | null | undefined) => set({ contacts: contacts }),
+      updateContacts: (contacts: any[] | null) => set({ contacts: contacts }),
       updateLoading: (isLoading: boolean) => set({ isLoading: isLoading }),
     })))
   

@@ -33,18 +33,18 @@ const MyContacts: React.FC<Props | any> = ({
       {children}
       {/* Нужно будет мапу добавить потом */}
       <div className="gap-5 flex flex-col">
-        {status == "authenticated" ? (
-          typeof contacts === "undefined" || isLoading ? (
-            skeleton_ids.map(val => (
-              <div key={val} className="flex items-center ">
-                <Skeleton className="w-12 h-12 rounded-full bg-[#f5f5f5] flex-shrink-0"></Skeleton>
-                <div className="ml-4 mr-4 flex flex-col w-full gap-1">
-                  <Skeleton className=" w-full h-4 bg-[#f5f5f5]"></Skeleton>
-                  <Skeleton className=" w-full h-4 bg-[#f5f5f5]"></Skeleton>
-                </div>
+        {status == "loading" || isLoading ? (
+          skeleton_ids.map(val => (
+            <div key={val} className="flex items-center ">
+              <Skeleton className="w-12 h-12 rounded-full bg-[#f5f5f5] flex-shrink-0"></Skeleton>
+              <div className="ml-4 mr-4 flex flex-col w-full gap-1">
+                <Skeleton className=" w-full h-4 bg-[#f5f5f5]"></Skeleton>
+                <Skeleton className=" w-full h-4 bg-[#f5f5f5]"></Skeleton>
               </div>
-            ))
-          ) : contacts == null ? (
+            </div>
+          ))
+        ) : status == "authenticated" ? (
+          contacts == null ? (
             <p
               className={`pl-4 text-sm font-light text-text-secondary-color h-14`}
             >
@@ -66,7 +66,7 @@ const MyContacts: React.FC<Props | any> = ({
           <p
             className={`pl-4 text-sm font-light text-text-secondary-color h-14`}
           >
-            Need authorize to see this info
+            You need auth to get this info
           </p>
         )}
       </div>
