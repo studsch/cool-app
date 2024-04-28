@@ -48,6 +48,7 @@ type User struct {
 	SubscriptionsCount uint       `json:"subscriptionsCount" validate:"omitempty"`
 	SubscribersCount   uint       `json:"subscribersCount" validate:"omitempty"`
 	IsSubscribed       bool       `json:"isSubscribed" validate:"omitempty"`
+	PublicationCount   uint       `json:"publicationCount" validate:"omitempty"`
 }
 
 type UserFollow struct {

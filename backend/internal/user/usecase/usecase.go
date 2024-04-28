@@ -179,6 +179,13 @@ func (u *userUC) SearchByFilter(
 			curUser.IsSubscribed = false
 		}
 		curUser.IsSubscribed = subscribeExists
+
+		postsCount, err := u.userRepo.GetPostsCountByUserID(ctx, curUser.ID)
+		if err != nil {
+			u.log.Error(err)
+			curUser.PublicationCount = 0
+		}
+		curUser.PublicationCount = postsCount
 	}
 
 	return usersList, nil

@@ -459,3 +459,22 @@ FROM users WHERE login = $1
 	}
 	return foundUser, nil
 }
+
+func (r *userRepo) GetPostsCountByUserID(
+	ctx context.Context, userID uuid.UUID,
+) (uint, error) {
+	query := `
+SELECT COUNT(*) FROM post
+WHERE user_id = $1 AND deleted = FALSE AND archived = FALSE
+`
+	var count uint
+
+	if err := r.db.QueryRow(
+		ctx, query, &userID,
+	).Scan(&count); err != nil {
+		return 0, errors.Wrap(err, "userRepo.GetCountOfPostsByUserID.Scan")
+	}
+
+	return count, nil
+
+}

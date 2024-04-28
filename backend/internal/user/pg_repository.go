@@ -55,4 +55,5 @@ type Repository interface {
 		ctx context.Context, login string,
 	) (bool, error)
 	GetUserByLogin(ctx context.Context, login string) (*models.User, error)
+	GetPostsCountByUserID(ctx context.Context, userID uuid.UUID) (uint, error)
 }
