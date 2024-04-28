@@ -6,6 +6,7 @@ import * as z from "zod";
 import Aside from "../a-side/a-side";
 import { RadioGroup, Radio } from "@nextui-org/react";
 import { useSearch } from "@/store";
+import { toYyyyMmDdDateTime } from "@/lib/utils";
 import SubForm from "./sub-form";
 import {
   Drawer,
@@ -42,6 +43,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
   const updateSeachs = useSearch(state => state.updateSearchs);
   const updateArgs = useSearch(state => state.updateArgs);
   const updateType = useSearch(state => state.updateType);
+  const type = useSearch(state => state.type);
   const nextSearch = useSearch(state => state.nextSearch);
   const { data: session, status } = useSession();
   const updatePage = useSearch(state => state.updatePage);
@@ -97,7 +99,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
     startAge: "20",
     endAge: "100",
     gender: "male",
-    type: "users",
+    type: type,
     country: "",
     city: "",
     startDate: undefined,
@@ -120,6 +122,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
         country: values.country,
         ageStart: values.startAge,
         ageEnd: values.endAge,
+        createdAt: values.startDate ? toYyyyMmDdDateTime(values.startDate) : "",
       };
       const u = new URLSearchParams(params).toString();
       updateType(values.type);
@@ -253,6 +256,9 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                             country: values.country,
                             ageStart: values.startAge,
                             ageEnd: values.endAge,
+                            createdAt: values.startDate
+                              ? toYyyyMmDdDateTime(values.startDate)
+                              : "",
                           };
                           const u = new URLSearchParams(params).toString();
                           updateType(values.type);

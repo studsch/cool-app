@@ -32,7 +32,7 @@ export function RightSidebar({ className }: SidebarProps) {
   const skeleton_ids = [1, 2, 3];
   const [expanded, setExpanded] = useState(false);
   const itemsForDisplay = expanded ? contacts : contacts?.slice(0, 3);
-  return (
+  return status == "authenticated" ? (
     <Card className={`border-none shadow-none ${className}`}>
       <CardHeader className="p-0">
         <CardTitle className="text-text-primary-color text-base">
@@ -91,5 +91,5 @@ export function RightSidebar({ className }: SidebarProps) {
         </CardFooter>
       )}
     </Card>
-  );
+  ) : null;
 }

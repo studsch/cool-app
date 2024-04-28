@@ -41,6 +41,18 @@ formattedDate = formattedDate.replace(/\./g, separator);
 return formattedDate;
 }
 
+export function toYyyyMmDdDateTime(date: Date) {
+  let year = date.getFullYear().toString(); // Get last two digits of the year
+  let month = (date.getMonth() + 1).toString(); // Get month (0-based index, add 1)
+  let day = date.getDate().toString(); // Get day of the month
+
+  // Add leading zeros to month and day if needed
+  month = month.padStart(2, '0');
+  day = day.padStart(2, '0');
+
+  return `${year}-${month}-${day}`; // Format as "yy-mm-dd"
+}
+
 export async function refreshAndRepeat(fetchFunc: any, fetchArgs:any, refreshFetch: any, refreshArgs: any ) {
   let res = await fetchFunc(...fetchFunc)
   if (res == 401 || res?.status == 401) {

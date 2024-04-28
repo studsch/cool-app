@@ -26,7 +26,7 @@ import { authConfig } from "@/config/auth";
 function LogForm({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const callbackUrl = searchParams.get("callbackUrl") || "/feed";
   const { toast } = useToast();
 
   const formSchema = z.object({
