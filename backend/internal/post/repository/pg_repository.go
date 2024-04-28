@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -27,11 +28,17 @@ func NewPostRepository(db *pgxpool.Pool) post.Repository {
 
 func (r *postRepo) queryRowsWithFilter(
 	ctx context.Context, query string, tags []string, filter *models.PostFilter,
+	useP bool,
 ) (pgx.Rows, error) {
 	var filterValues []interface{}
 
 	filterValues = append(filterValues, tags)
 	filterValues = append(filterValues, filter.Q)
+
+	createdAt := "created_at"
+	if useP {
+		createdAt = "p.created_at"
+	}
 
 	query += `WHERE importance > 0.3 AND deleted = FALSE AND archived = FALSE `
 
@@ -41,14 +48,19 @@ func (r *postRepo) queryRowsWithFilter(
 	}
 	if !filter.CreatedAt.IsZero() {
 		filterValues = append(filterValues, filter.CreatedAt)
-		query += `AND created_at >= $` + strconv.Itoa(len(filterValues)) + " "
+		query += fmt.Sprintf(
+			"AND %s >= $%s ", createdAt,
+			strconv.Itoa(len(filterValues)),
+		)
+		// query += `AND p.created_at >= $` + strconv.Itoa(len(filterValues)) + " "
 	}
 
 	switch filter.OrderBy {
 	case "-":
 		query += ``
 	case "date":
-		query += `ORDER BY created_at DESC `
+		query += fmt.Sprintf("ORDER BY %s DESC ", createdAt)
+		// query += `ORDER BY p.created_at DESC `
 	case "rate":
 		// TODO: add this
 		query += `ORDER BY importance DESC `
@@ -84,7 +96,7 @@ func (r *postRepo) SearchByFilter(
 			Location:  filter.Location,
 			Offset:    0,
 			Limit:     0,
-		},
+		}, false,
 	)
 	if err != nil {
 		return nil, err
@@ -116,7 +128,7 @@ func (r *postRepo) SearchByFilter(
 	filter.Limit = uint64(pq.GetSize())
 
 	rows, err := r.queryRowsWithFilter(
-		ctx, searchByFilterPostQuery, tags, filter,
+		ctx, searchByFilterPostQuery, tags, filter, true,
 	)
 	if err != nil {
 		return nil, err
