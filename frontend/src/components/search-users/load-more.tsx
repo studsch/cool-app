@@ -21,7 +21,11 @@ export function LoadMore() {
   const loadMoreUsers = async () => {
     if (page < totalPages && !error && session?.user?.tokens?.access) {
       updatePage(page + 1);
-      error = await nextSearch(session.user.tokens.access);
+      error = await nextSearch(
+        session.user.tokens.access,
+        session.user.tokens.refresh,
+        session.user.id,
+      );
     }
   };
   useEffect(() => {

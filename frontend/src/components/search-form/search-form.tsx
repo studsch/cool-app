@@ -128,7 +128,11 @@ function SearchForm({ children }: { children: React.ReactNode }) {
       updateType(values.type);
       updateError(onError);
       updateArgs(u);
-      nextSearch(session.user.tokens.access);
+      nextSearch(
+        session.user.tokens.access,
+        session.user.tokens.refresh,
+        session.user.id,
+      );
     }
   }
 
@@ -265,7 +269,11 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                             updateType(values.type);
                             updateError(onError);
                             updateArgs(u);
-                            nextSearch(session.user.tokens.access);
+                            nextSearch(
+                              session.user.tokens.access,
+                              session.user.tokens.refresh,
+                              session.user.id,
+                            );
                           }
                         }}
                       >

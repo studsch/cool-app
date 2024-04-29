@@ -23,8 +23,11 @@ const MyContacts: React.FC<Props | any> = ({
   // GetContacts(session?.user?.tokens?.access as string);
   useEffect(() => {
     if (status == "authenticated") {
-      GetContacts(session.user.tokens.access, session.user.tokens.refresh);
-      console.log(contacts);
+      GetContacts(
+        session.user.tokens.access,
+        session.user.tokens.refresh,
+        session.user.id,
+      );
     }
   }, [status]);
   const skeleton_ids = [1, 2, 3, 4];
