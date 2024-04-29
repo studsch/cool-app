@@ -50,9 +50,6 @@ declare global {
 }
 
 function RegForm({ children }: { children: React.ReactNode }) {
-  CheckLogin("dmitrystanko191").then(vale => {
-    console.log(vale);
-  });
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
   const confCode = useConfirmCode();
