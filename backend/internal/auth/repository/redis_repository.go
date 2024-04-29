@@ -6,6 +6,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/redis/go-redis/v9"
+
 	"github.com/studsch/cool-app/backend/internal/auth"
 )
 
@@ -35,7 +36,9 @@ func (a *authRedisRepo) DeleteRefreshToken(
 	ctx context.Context, key string,
 ) error {
 	if err := a.redisClient.Del(ctx, key).Err(); err != nil {
-		return errors.Wrap(err, "authRedisRepo.DeleteRefreshToken.redisClient.Del")
+		return errors.Wrap(
+			err, "authRedisRepo.DeleteRefreshToken.redisClient.Del",
+		)
 	}
 
 	return nil

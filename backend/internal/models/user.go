@@ -115,5 +115,6 @@ func (u *User) PrepareCreate() error {
 }
 
 type RenewTokens struct {
-	RefreshToken string `json:"refreshToken`
+	UserID       uuid.UUID `json:"userId"`
+	RefreshToken string    `json:"refreshToken"`
 }
