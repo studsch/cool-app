@@ -10,6 +10,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+
 	"github.com/studsch/cool-app/backend/config"
 	"github.com/studsch/cool-app/backend/internal/auth"
 	"github.com/studsch/cool-app/backend/internal/models"
@@ -63,8 +64,12 @@ func (h *authHandlers) Search() func(*fiber.Ctx) error {
 				birthYearStart := currentDate - int(ae)
 				brithYearEnd := currentDate - int(as)
 
-				dateStart = time.Date(birthYearStart, time.January, 1, 0, 0, 0, 0, time.UTC)
-				dateEnd = time.Date(brithYearEnd, time.January, 1, 0, 0, 0, 0, time.UTC)
+				dateStart = time.Date(
+					birthYearStart, time.January, 1, 0, 0, 0, 0, time.UTC,
+				)
+				dateEnd = time.Date(
+					brithYearEnd, time.January, 1, 0, 0, 0, 0, time.UTC,
+				)
 			}
 		}
 
@@ -86,7 +91,9 @@ func (h *authHandlers) Search() func(*fiber.Ctx) error {
 		}
 
 		// usersList, err := h.authUC.Search(c.UserContext(), q, pq)
-		usersList, err := h.authUC.SearchByFilter(c.UserContext(), userFilters, pq)
+		usersList, err := h.authUC.SearchByFilter(
+			c.UserContext(), userFilters, pq,
+		)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			status, msg := httpErrors.ErrorResponse(err)
@@ -98,7 +105,9 @@ func (h *authHandlers) Search() func(*fiber.Ctx) error {
 }
 
 // NewAuthHandlers Auth handlers constructor
-func NewAuthHandlers(cfg *config.Config, authUC auth.UseCase, logger logger.Logger) auth.Handlers {
+func NewAuthHandlers(
+	cfg *config.Config, authUC auth.UseCase, logger logger.Logger,
+) auth.Handlers {
 	return &authHandlers{
 		cfg:    cfg,
 		authUC: authUC,
@@ -125,14 +134,16 @@ func (h *authHandlers) Register() fiber.Handler {
 
 		// TODO: session
 
-		return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-			"error": false,
-			"user":  createdUser.User,
-			"tokens": fiber.Map{
-				"access":  createdUser.AccessToken,
-				"refresh": createdUser.RefreshToken,
+		return c.Status(fiber.StatusCreated).JSON(
+			fiber.Map{
+				"error": false,
+				"user":  createdUser.User,
+				"tokens": fiber.Map{
+					"access":  createdUser.AccessToken,
+					"refresh": createdUser.RefreshToken,
+				},
 			},
-		})
+		)
 	}
 }
 
@@ -154,25 +165,29 @@ func (h *authHandlers) Login() fiber.Handler {
 			return c.Status(status).JSON(msg)
 		}
 
-		userWithTokens, err := h.authUC.Login(c.Context(), &models.User{
-			Login:       login.Login,
-			PhoneNumber: login.PhoneNumber,
-			Password:    login.Password,
-		})
+		userWithTokens, err := h.authUC.Login(
+			c.Context(), &models.User{
+				Login:       login.Login,
+				PhoneNumber: login.PhoneNumber,
+				Password:    login.Password,
+			},
+		)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			status, msg := httpErrors.ErrorResponse(err)
 			return c.Status(status).JSON(msg)
 		}
 
-		return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-			"error": false,
-			"user":  userWithTokens.User,
-			"tokens": fiber.Map{
-				"access":  userWithTokens.AccessToken,
-				"refresh": userWithTokens.RefreshToken,
+		return c.Status(fiber.StatusCreated).JSON(
+			fiber.Map{
+				"error": false,
+				"user":  userWithTokens.User,
+				"tokens": fiber.Map{
+					"access":  userWithTokens.AccessToken,
+					"refresh": userWithTokens.RefreshToken,
+				},
 			},
-		})
+		)
 	}
 }
 
@@ -240,13 +255,15 @@ func (h *authHandlers) UploadAvatar() fiber.Handler {
 
 		reader := bytes.NewReader(binaryImage.Bytes())
 
-		updatedUser, err := h.authUC.UploadAvatar(c.UserContext(), uid, models.UploadInput{
-			File:        reader,
-			Name:        image.Filename,
-			ContentType: contentType,
-			BucketName:  bucket,
-			Size:        image.Size,
-		})
+		updatedUser, err := h.authUC.UploadAvatar(
+			c.UserContext(), uid, models.UploadInput{
+				File:        reader,
+				Name:        image.Filename,
+				ContentType: contentType,
+				BucketName:  bucket,
+				Size:        image.Size,
+			},
+		)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			status, msg := httpErrors.ErrorResponse(err)
@@ -289,27 +306,33 @@ func (h *authHandlers) Update() fiber.Handler {
 func (h *authHandlers) RenewTokens() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		renew := &models.RenewTokens{}
-		if err := c.BodyParser(renew); err != nil {
+		if err := utils.ReadRequest(c, renew); err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			status, msg := httpErrors.ErrorResponse(err)
 			return c.Status(status).JSON(msg)
 		}
 
-		userWithTokens, err := h.authUC.RenewTokens(c.UserContext(), renew.RefreshToken)
+		userWithTokens, err := h.authUC.RenewTokens(
+			c.UserContext(), renew.UserID, renew.RefreshToken,
+		)
 		if err != nil {
 			if err.Error() == "not valid refresh token" {
-				return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
-					"status": fiber.StatusUnprocessableEntity,
-					"error":  err.Error(),
-				},
+				utils.LogResponseError(c, h.logger, err)
+				return c.Status(fiber.StatusUnprocessableEntity).JSON(
+					fiber.Map{
+						"status": fiber.StatusUnprocessableEntity,
+						"error":  err.Error(),
+					},
 				)
 			}
 
-			if err.Error() == "refresh token is expire" {
-				return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
-					"status": fiber.StatusUnprocessableEntity,
-					"error":  err.Error(),
-				},
+			if err.Error() == "refresh token is expired" {
+				utils.LogResponseError(c, h.logger, err)
+				return c.Status(fiber.StatusUnprocessableEntity).JSON(
+					fiber.Map{
+						"status": fiber.StatusUnprocessableEntity,
+						"error":  err.Error(),
+					},
 				)
 			}
 
@@ -318,13 +341,15 @@ func (h *authHandlers) RenewTokens() fiber.Handler {
 			return c.Status(status).JSON(msg)
 		}
 
-		return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-			"error": false,
-			"user":  userWithTokens.User,
-			"tokens": fiber.Map{
-				"access":  userWithTokens.AccessToken,
-				"refresh": userWithTokens.RefreshToken,
+		return c.Status(fiber.StatusCreated).JSON(
+			fiber.Map{
+				"error": false,
+				"user":  userWithTokens.User,
+				"tokens": fiber.Map{
+					"access":  userWithTokens.AccessToken,
+					"refresh": userWithTokens.RefreshToken,
+				},
 			},
-		})
+		)
 	}
 }
