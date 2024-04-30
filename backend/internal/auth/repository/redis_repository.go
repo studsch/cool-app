@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/pkg/errors"
@@ -49,9 +50,11 @@ func (a *authRedisRepo) GetRefreshTokenByID(
 ) (*string, error) {
 	tokenBytes, err := a.redisClient.Get(ctx, key).Bytes()
 	if err != nil {
+		fmt.Println("can't get refresh token from REDIS")
 		return nil, errors.Wrap(err, "postRedisRepo.GetPostByIDCtx.Get")
 	}
 	refreshToken := string(tokenBytes)
+	fmt.Println("refreshToken from REDIS", refreshToken)
 
 	return &refreshToken, nil
 }
