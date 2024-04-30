@@ -286,3 +286,17 @@ func (u *authUC) RenewTokens(
 		RefreshToken: tokens.Refresh,
 	}, nil
 }
+
+func (u *authUC) UpdatePasswordByPhone(
+	ctx context.Context, recPas *models.RecoveryPassword,
+) error {
+	userWithPhone := &models.User{
+		PhoneNumber: &recPas.PhoneNumber,
+	}
+	if err := userWithPhone.PrepareCreate(); err != nil {
+		return err
+	}
+	recPas.Password = userWithPhone.Password
+
+	return u.authRepo.UpdatePasswordByPhone(ctx, recPas)
+}

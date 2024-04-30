@@ -19,6 +19,7 @@ func MapAuthRoutes(
 	authGroup.Post("/login", h.Login())
 	authGroup.Get("/search/user", h.Search())
 	authGroup.Post("/token/renew", h.RenewTokens())
+	authGroup.Put("/recovery/password", h.RecoveryPassword())
 	authGroup.Use(mw.AuthJWTMiddleware())
 	authGroup.Post("/logout", h.Logout())
 	authGroup.Post("/avatar", h.UploadAvatar())
