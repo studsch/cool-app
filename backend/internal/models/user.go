@@ -79,6 +79,11 @@ type UserWithTokens struct {
 	RefreshToken string `json:"refresh"`
 }
 
+type RecoveryPassword struct {
+	PhoneNumber string `json:"phoneNumber" validate:"required"`
+	Password    string `json:"password" validate:"required,gte=8,lte=250"`
+}
+
 // HashPassword Hash user password with bcrypt
 func (u *User) HashPassword() error {
 	hashedPassword, err := bcrypt.GenerateFromPassword(

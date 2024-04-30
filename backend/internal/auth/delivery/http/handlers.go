@@ -353,3 +353,25 @@ func (h *authHandlers) RenewTokens() fiber.Handler {
 		)
 	}
 }
+
+func (h *authHandlers) RecoveryPassword() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		// TODO: сделать проверку
+		recPas := &models.RecoveryPassword{}
+		if err := utils.ReadRequest(c, recPas); err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		if err := h.authUC.UpdatePasswordByPhone(
+			c.Context(), recPas,
+		); err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.SendStatus(fiber.StatusNoContent)
+	}
+}

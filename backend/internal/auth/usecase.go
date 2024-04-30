@@ -33,4 +33,7 @@ type UseCase interface {
 	RenewTokens(
 		ctx context.Context, userID uuid.UUID, inRefreshToken string,
 	) (*models.UserWithTokens, error)
+	UpdatePasswordByPhone(
+		ctx context.Context, recPas *models.RecoveryPassword,
+	) error
 }

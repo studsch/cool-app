@@ -245,6 +245,10 @@ func (u *authUC) RenewTokens(
 ) (*models.UserWithTokens, error) {
 	userByID, err := u.GetByID(ctx, userID)
 	if err != nil {
+		fmt.Printf(
+			"Can find user with given ID!!!! Given ID: %s\n",
+			userID,
+		)
 		return nil, err
 	}
 
@@ -252,21 +256,27 @@ func (u *authUC) RenewTokens(
 		ctx, userByID.ID.String(),
 	)
 	if err != nil || inRefreshToken != *refreshToken {
+		fmt.Println("refresh token from REDIS:", *refreshToken)
+		fmt.Println("given refresh token:", inRefreshToken)
 		return nil, fmt.Errorf("not valid refresh token")
 	}
 
 	expiresRefreshToken, err := utils.ParseRefreshToken(inRefreshToken)
 	if err != nil {
+		fmt.Println("can't parse expires time for refresh token:")
 		return nil, err
 	}
 
 	now := time.Now().Unix()
 	if now >= expiresRefreshToken {
+		fmt.Println("given refresh token expired!!!!!!!!!")
+
 		return nil, fmt.Errorf("refresh token is expired")
 	}
 
 	tokens, err := utils.GenerateJWTTokens(userByID, u.cfg)
 	if err != nil {
+		fmt.Println("can't generate JWTTokens:", err)
 		return nil, httpErrors.NewInternalServerError(
 			errors.Wrap(
 				err, "authUC.Register.GenerateJWTToken",
@@ -277,6 +287,7 @@ func (u *authUC) RenewTokens(
 	if err = u.redisRepo.SetRefreshToken(
 		ctx, userByID.ID.String(), tokens.Refresh, cacheDuration,
 	); err != nil {
+		fmt.Println("can't set refresh token:", err)
 		u.logger.Errorf("authUC.Register.SetRefreshToken: %v", err)
 	}
 
@@ -285,4 +296,18 @@ func (u *authUC) RenewTokens(
 		AccessToken:  tokens.Access,
 		RefreshToken: tokens.Refresh,
 	}, nil
+}
+
+func (u *authUC) UpdatePasswordByPhone(
+	ctx context.Context, recPas *models.RecoveryPassword,
+) error {
+	userWithPhone := &models.User{
+		PhoneNumber: &recPas.PhoneNumber,
+	}
+	if err := userWithPhone.PrepareCreate(); err != nil {
+		return err
+	}
+	recPas.Password = userWithPhone.Password
+
+	return u.authRepo.UpdatePasswordByPhone(ctx, recPas)
 }
