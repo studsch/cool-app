@@ -11,4 +11,5 @@ type Handlers interface {
 	Search() fiber.Handler
 	Update() fiber.Handler
 	RenewTokens() fiber.Handler
+	RecoveryPassword() fiber.Handler
 }
