@@ -214,8 +214,8 @@ SELECT
 FROM post p LEFT JOIN users u ON u.id = p.user_id
 WHERE p.id = ANY (
 	SELECT post_id FROM like_post
-	WHERE user_id = $1 AND deleted=FALSE AND archived=FALSE
-	ORDER BY created_at OFFSET $2 LIMIT $3
+	WHERE user_id = $1 AND p.deleted=FALSE AND p.archived=FALSE
+	ORDER BY p.created_at OFFSET $2 LIMIT $3
 )
 `
 )

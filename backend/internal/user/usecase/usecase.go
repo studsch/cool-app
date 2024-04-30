@@ -207,9 +207,22 @@ func (u *userUC) GetRecommendedUsers(ctx context.Context) (
 		return nil, err
 	}
 
+	userFriends, err := u.userRepo.GetFriendsIDs(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	skipIDs := make(map[uuid.UUID]bool)
+	for _, v := range *userFriends {
+		skipIDs[*v] = true
+	}
+
 	m := make(map[uuid.UUID][]uuid.UUID)
 	for _, uf := range *userFollow {
 		if uf.FollowToUserID == userID {
+			continue
+		}
+		if skipIDs[uf.FollowToUserID] {
 			continue
 		}
 		m[uf.FollowToUserID] = append(m[uf.FollowToUserID], uf.UserID)
