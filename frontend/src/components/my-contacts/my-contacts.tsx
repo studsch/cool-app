@@ -19,7 +19,7 @@ const MyContacts: React.FC<Props | any> = ({
   const GetContacts = useMyContacts(state => state.GetContacts);
   const contacts = useMyContacts(state => state.contacts);
   const isLoading = useMyContacts(state => state.isLoading);
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   // GetContacts(session?.user?.tokens?.access as string);
   useEffect(() => {
     if (status == "authenticated") {
@@ -27,6 +27,8 @@ const MyContacts: React.FC<Props | any> = ({
         session.user.tokens.access,
         session.user.tokens.refresh,
         session.user.id,
+        session,
+        update,
       );
     }
   }, [status]);

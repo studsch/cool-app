@@ -12,15 +12,12 @@ import Navbar from "@/components/nav-bar/nav-bar";
 import ToggleNavBar from "@/components/toggle-nav-menu/toggle-nav-menu";
 import PostCard from "@/components/card/card";
 import MyContacts from "@/components/my-contacts/my-contacts";
-import AvatarBlock from "@/components/avatarblock/avatarblock";
-import { Card } from "@/components/ui/card";
 
 export default function DragAndDrop() {
   return (
     <>
       <div className="h-fit min-h-[100vh] bg-white">
-        <TopBar />
-        <PostCard />
+        <MyContacts />
       </div>
     </>
   );

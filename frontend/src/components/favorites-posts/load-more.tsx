@@ -13,7 +13,18 @@ export function LoadMore() {
   const updatePage = useFavorites(state => state.updatePage);
   const isLoading = useFavorites(state => state.isLoading);
   const page = useFavorites(state => state.page);
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
+  useEffect(() => {
+    if (session) {
+      nextPosts(
+        session.user.tokens.access,
+        session.user.tokens.refresh,
+        session.user.id,
+        session,
+        update,
+      );
+    }
+  }, [status]);
   console.log(posts);
   let error = 0;
   const { ref, inView } = useInView();
@@ -24,6 +35,8 @@ export function LoadMore() {
         session.user.tokens.access,
         session.user.tokens.refresh,
         session.user.id,
+        session,
+        update,
       );
     }
   };

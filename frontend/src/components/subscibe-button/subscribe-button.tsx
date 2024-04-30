@@ -15,7 +15,7 @@ type Props = {
 };
 const SubscribeButton: React.FC<Props | any> = props => {
   const [isSubscribed, setIsSubscribed] = useState(props.isSubscribed);
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const { classNames, restProps, userId } = props;
   const onClick = async () => {
     if (session?.user?.tokens?.access) {
@@ -25,6 +25,8 @@ const SubscribeButton: React.FC<Props | any> = props => {
           [session.user.tokens.access, userId],
           RenewToken,
           [session.user.id, session.user.tokens.refresh],
+          session,
+          update,
         );
         if (res == 201) {
           setIsSubscribed(true);
@@ -35,6 +37,8 @@ const SubscribeButton: React.FC<Props | any> = props => {
           [session.user.tokens.access, userId],
           RenewToken,
           [session.user.id, session.user.tokens.refresh],
+          session,
+          update,
         );
         if (res == 200) {
           setIsSubscribed(false);

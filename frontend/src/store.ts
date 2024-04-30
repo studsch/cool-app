@@ -96,7 +96,7 @@ interface SearchState {
   updatePage: (page: number) => void;
   updateSize: (size: number) => void;
   updateError: (error: () => void) => void;
-  nextSearch: (token: string, refreshToken: string, userId:string) => Promise<number>;
+  nextSearch: (token: string, refreshToken: string, userId:string, session: any, update: Function) => Promise<number>;
 }
 
 export const useSearch = create<SearchState>()(
@@ -116,7 +116,7 @@ export const useSearch = create<SearchState>()(
     updatePage: (page: number) => set({ page: page }),
     updateSize: (size: number) => set({ size: size }),
     updateError: (error: () => void) => set({ error: error }),
-    nextSearch: async (token: string, refreshToken: string, userId:string) => {
+    nextSearch: async (token: string, refreshToken: string, userId:string, session: any, update: Function) => {
       let type = "";
       let args = "";
       let error = () => {};
@@ -128,7 +128,7 @@ export const useSearch = create<SearchState>()(
       if (type == "users") {
         set({ isLoading: true });
         // await new Promise(r => setTimeout(r, 2000)); для теста кружка
-        const res = await RenewWrapper(FetchUsers, [args, token], RenewToken, [userId, refreshToken])
+        const res = await RenewWrapper(FetchUsers, [args, token], RenewToken, [userId, refreshToken], session, update)
         if (res.error) {
           error();
           return 1;
@@ -143,7 +143,7 @@ export const useSearch = create<SearchState>()(
       } else {
         // await new Promise(r => setTimeout(r, 2000)); для теста кружка
         set({ isLoading: true });
-        const res = await RenewWrapper(FetchPosts, [args, token], RenewToken, [userId, refreshToken])
+        const res = await RenewWrapper(FetchPosts, [args, token], RenewToken, [userId, refreshToken], session, update)
         if (res.error) {
           error();
           return 1;
@@ -164,7 +164,7 @@ export const useSearch = create<SearchState>()(
 
 interface MyContactsState {
   contacts: any[] | null;
-  GetContacts: (token: string, refreshToken: string, userId:string) => void;
+  GetContacts: (token: string, refreshToken: string, userId:string, session: any, update: Function) => void;
   updateContacts: (contacts: any[] | null) => void;
   isLoading: boolean;
   updateLoading: (isLoading: boolean) => void;
@@ -174,9 +174,9 @@ export const useMyContacts= create<MyContactsState>()(
   immer(set => ({
     contacts: null,
     isLoading: false,
-    GetContacts: async (token: string, refreshToken: string, userId:string) => {
+    GetContacts: async (token: string, refreshToken: string, userId:string, session: any, update: Function) => {
       set({isLoading: true});
-      const res = await RenewWrapper(FetchFriends, [token], RenewToken, [userId, refreshToken])
+      const res = await RenewWrapper(FetchFriends, [token], RenewToken, [userId, refreshToken], session, update)
       let users = null
       if ((res.errors == false) && (res.friendsCount != 0)) {
         users = res.users.slice(0, 4);
@@ -190,7 +190,7 @@ export const useMyContacts= create<MyContactsState>()(
 
   interface WhoToFollowState {
     contacts: any[] | null ;
-    GetContacts: (token: string, refreshToken: string, userId:string) => void;
+    GetContacts: (token: string, refreshToken: string, userId:string, session: any, update: Function) => void;
     updateContacts: (contacts: any[] | null) => void;
     isLoading: boolean;
     updateLoading: (isLoading: boolean) => void;
@@ -200,9 +200,9 @@ export const useMyContacts= create<MyContactsState>()(
     immer(set => ({
       contacts: null,
       isLoading: false,
-      GetContacts: async (token: string, refreshToken: string, userId:string) => {
+      GetContacts: async (token: string, refreshToken: string, userId:string, session: any, update: Function) => {
         set({isLoading: true});
-        const res = await RenewWrapper(FetchWhoToFollow, [token], RenewToken, [userId, refreshToken])
+        const res = await RenewWrapper(FetchWhoToFollow, [token], RenewToken, [userId, refreshToken], session, update)
         let users = null
         if ((res.errors == false) && (res.recs != null)) {
           users = res.recs.slice(0, 8);
@@ -228,7 +228,7 @@ export const useMyContacts= create<MyContactsState>()(
       updatePage: (page: number) => void;
       updateSize: (size: number) => void;
       updateError: (error: () => void) => void;
-      nextPosts: (token: string, refreshToken: string, userId:string) => Promise<number>;
+      nextPosts: (token: string, refreshToken: string, userId:string, session: any, update: Function) => Promise<number>;
     }
     
     export const useFavorites = create<FavoritesState>()(
@@ -245,14 +245,15 @@ export const useMyContacts= create<MyContactsState>()(
         updatePage: (page: number) => set({ page: page }),
         updateSize: (size: number) => set({ size: size }),
         updateError: (error: () => void) => set({ error: error }),
-        nextPosts: async (token: string, refreshToken: string, userId:string) => {
+        nextPosts: async (token: string, refreshToken: string, userId:string, session: any, update: Function) => {
           let args = "";
           let error = () => {};
           set(state => {
             args = `page=${state.page}&size=${state.size}`;
           });
             set({ isLoading: true });
-            const res = await RenewWrapper(FetchFavorites, [args, token], RenewToken, [userId, refreshToken])
+            const res = await RenewWrapper(FetchFavorites, [args, token], RenewToken, [userId, refreshToken], session, update)
+            console.log(res)
             if (res.error) {
               error();
               return 1;

@@ -15,7 +15,7 @@ export function LoadMore() {
   const isLoading = useSearch(state => state.isLoading);
   const type = useSearch(state => state.type);
   const page = useSearch(state => state.page);
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   let error = 0;
   const { ref, inView } = useInView();
   const loadMoreUsers = async () => {
@@ -25,6 +25,8 @@ export function LoadMore() {
         session.user.tokens.access,
         session.user.tokens.refresh,
         session.user.id,
+        session,
+        update,
       );
     }
   };

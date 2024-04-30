@@ -1,6 +1,6 @@
 import { getServerSession, type AuthOptions, type User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import  CredentialsProvider  from "next-auth/providers/credentials";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { use } from "react";
 import { string } from "zod";
 export const authConfig: AuthOptions = {
@@ -116,6 +116,11 @@ export const authConfig: AuthOptions = {
         process.env.NEXT_PUBLIC_DOMEN_URL &&
         process.env.NEXT_PUBLIC_URL_UPDATE
       ) {
+        console.log("JESTKII TRIGGER");
+        if (session.needUpdateTokens) {
+          console.log(session.tokens);
+          return { ...token, tokens: session.tokens };
+        }
         if (session.user) {
           const response = await fetch(
             process.env.NEXT_PUBLIC_DOMEN_URL +
@@ -163,6 +168,8 @@ export const authConfig: AuthOptions = {
               city: session.user.city,
               country: session.user.country,
             };
+          // console.log("dasdasdas")
+          // return {...token, tokens: session.user.tokens}
         }
       }
       if (user) {
