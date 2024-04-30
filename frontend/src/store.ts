@@ -3,7 +3,11 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { FetchUsers, FetchPosts } from "./fetch/search";
 import { FetchFriends, FetchWhoToFollow } from "./fetch/friends";
-import { RenewWrapper, RenewToken } from "./fetch/token";
+import {
+  RenewWrapper,
+  RenewToken,
+  tokenUpdateStateGlobal,
+} from "./fetch/token";
 import { FetchFavorites } from "./fetch/favorites";
 
 // для подтверждения по телефону через firebase
@@ -65,12 +69,11 @@ export const useConfirmCodeRecovery = create<ConfirmStateRecovery>()(
       updateNumber: number => set({ number: number }),
       updateConfirmResult: confirmResult =>
         set({ confirmResult: confirmResult }),
-      updateStartTime: startTime => set({ startTime: startTime })
+      updateStartTime: startTime => set({ startTime: startTime }),
     })),
     { name: "confirmStoreRecovery", version: 1 },
   ),
 );
-
 
 interface SearchUser {
   id: string;
@@ -96,7 +99,12 @@ interface SearchState {
   updatePage: (page: number) => void;
   updateSize: (size: number) => void;
   updateError: (error: () => void) => void;
-  nextSearch: (token: string, refreshToken: string, userId:string, session: any, update: Function) => Promise<number>;
+  nextSearch: (
+    token: string,
+    refreshToken: string,
+    userId: string,
+    update: Function,
+  ) => Promise<number>;
 }
 
 export const useSearch = create<SearchState>()(
@@ -111,12 +119,17 @@ export const useSearch = create<SearchState>()(
     totalPages: 0,
     error: () => {},
     updateType: (type: string) => set({ type: type }),
-    updateSearchs: (searchs: []) => set({searchs: searchs}),
+    updateSearchs: (searchs: []) => set({ searchs: searchs }),
     updateArgs: (args: string) => set({ args: args }),
     updatePage: (page: number) => set({ page: page }),
     updateSize: (size: number) => set({ size: size }),
     updateError: (error: () => void) => set({ error: error }),
-    nextSearch: async (token: string, refreshToken: string, userId:string, session: any, update: Function) => {
+    nextSearch: async (
+      token: string,
+      refreshToken: string,
+      userId: string,
+      update: Function,
+    ) => {
       let type = "";
       let args = "";
       let error = () => {};
@@ -128,7 +141,14 @@ export const useSearch = create<SearchState>()(
       if (type == "users") {
         set({ isLoading: true });
         // await new Promise(r => setTimeout(r, 2000)); для теста кружка
-        const res = await RenewWrapper(FetchUsers, [args, token], RenewToken, [userId, refreshToken], session, update)
+        const res = await RenewWrapper(
+          FetchUsers,
+          [args, token],
+          RenewToken,
+          [userId, refreshToken],
+          update,
+          tokenUpdateStateGlobal,
+        );
         if (res.error) {
           error();
           return 1;
@@ -143,7 +163,14 @@ export const useSearch = create<SearchState>()(
       } else {
         // await new Promise(r => setTimeout(r, 2000)); для теста кружка
         set({ isLoading: true });
-        const res = await RenewWrapper(FetchPosts, [args, token], RenewToken, [userId, refreshToken], session, update)
+        const res = await RenewWrapper(
+          FetchPosts,
+          [args, token],
+          RenewToken,
+          [userId, refreshToken],
+          update,
+          tokenUpdateStateGlobal,
+        );
         if (res.error) {
           error();
           return 1;
@@ -164,110 +191,160 @@ export const useSearch = create<SearchState>()(
 
 interface MyContactsState {
   contacts: any[] | null;
-  GetContacts: (token: string, refreshToken: string, userId:string, session: any, update: Function) => void;
+  GetContacts: (
+    token: string,
+    refreshToken: string,
+    userId: string,
+    update: Function,
+  ) => void;
   updateContacts: (contacts: any[] | null) => void;
   isLoading: boolean;
   updateLoading: (isLoading: boolean) => void;
 }
 
-export const useMyContacts= create<MyContactsState>()(
+export const useMyContacts = create<MyContactsState>()(
   immer(set => ({
     contacts: null,
     isLoading: false,
-    GetContacts: async (token: string, refreshToken: string, userId:string, session: any, update: Function) => {
-      set({isLoading: true});
-      const res = await RenewWrapper(FetchFriends, [token], RenewToken, [userId, refreshToken], session, update)
-      let users = null
-      if ((res.errors == false) && (res.friendsCount != 0)) {
+    GetContacts: async (
+      token: string,
+      refreshToken: string,
+      userId: string,
+      update: Function,
+    ) => {
+      set({ isLoading: true });
+      const res = await RenewWrapper(
+        FetchFriends,
+        [token],
+        RenewToken,
+        [userId, refreshToken],
+        update,
+        tokenUpdateStateGlobal,
+      );
+      let users = null;
+      if (res.errors == false && res.friendsCount != 0) {
         users = res.users.slice(0, 4);
       }
-      console.log(res)
-      set({contacts: users, isLoading: false})
+      set({ contacts: users, isLoading: false });
     },
     updateContacts: (contacts: any[] | null) => set({ contacts: contacts }),
     updateLoading: (isLoading: boolean) => set({ isLoading: isLoading }),
-  })))
+  })),
+);
 
-  interface WhoToFollowState {
-    contacts: any[] | null ;
-    GetContacts: (token: string, refreshToken: string, userId:string, session: any, update: Function) => void;
-    updateContacts: (contacts: any[] | null) => void;
-    isLoading: boolean;
-    updateLoading: (isLoading: boolean) => void;
-  }
-  
-  export const useWhoToFollow= create<WhoToFollowState>()(
-    immer(set => ({
-      contacts: null,
-      isLoading: false,
-      GetContacts: async (token: string, refreshToken: string, userId:string, session: any, update: Function) => {
-        set({isLoading: true});
-        const res = await RenewWrapper(FetchWhoToFollow, [token], RenewToken, [userId, refreshToken], session, update)
-        let users = null
-        if ((res.errors == false) && (res.recs != null)) {
-          users = res.recs.slice(0, 8);
-        }
-        console.log(res)
-        set({contacts: users, isLoading: false})
-      },
-      updateContacts: (contacts: any[] | null) => set({ contacts: contacts }),
-      updateLoading: (isLoading: boolean) => set({ isLoading: isLoading }),
-    })))
-  
+interface WhoToFollowState {
+  contacts: any[] | null;
+  GetContacts: (
+    token: string,
+    refreshToken: string,
+    userId: string,
+    update: Function,
+  ) => void;
+  updateContacts: (contacts: any[] | null) => void;
+  isLoading: boolean;
+  updateLoading: (isLoading: boolean) => void;
+}
 
-    interface FavoritesState {
-      posts: any[];
-      page: number;
-      size: number;
-      args: string;
-      isLoading: boolean;
-      hasMore: boolean;
-      totalPages: number;
-      error: () => void;
-      updatePosts: (posts: []) => void;
-      updatePage: (page: number) => void;
-      updateSize: (size: number) => void;
-      updateError: (error: () => void) => void;
-      nextPosts: (token: string, refreshToken: string, userId:string, session: any, update: Function) => Promise<number>;
-    }
-    
-    export const useFavorites = create<FavoritesState>()(
-      immer(set => ({
-        posts: [],
-        page: 1,
-        size: 10,
-        hasMore: false,
-        args: "",
-        isLoading: false,
-        totalPages: 0,
-        error: () => {},
-        updatePosts: (posts: []) => set({posts: posts}),
-        updatePage: (page: number) => set({ page: page }),
-        updateSize: (size: number) => set({ size: size }),
-        updateError: (error: () => void) => set({ error: error }),
-        nextPosts: async (token: string, refreshToken: string, userId:string, session: any, update: Function) => {
-          let args = "";
-          let error = () => {};
-          set(state => {
-            args = `page=${state.page}&size=${state.size}`;
-          });
-            set({ isLoading: true });
-            const res = await RenewWrapper(FetchFavorites, [args, token], RenewToken, [userId, refreshToken], session, update)
-            console.log(res)
-            if (res.error) {
-              error();
-              return 1;
-            } else {
-              set(state => {
-                state.page == 1
-                  ? (state.posts = res.posts)
-                  : state.posts.push(...res.posts);
-                state.totalPages = res.totalPages;
-              });
-            }
-          set({ isLoading: false });
-          return 0;
-        },
-      })),
-    );
-    
+export const useWhoToFollow = create<WhoToFollowState>()(
+  immer(set => ({
+    contacts: null,
+    isLoading: false,
+    GetContacts: async (
+      token: string,
+      refreshToken: string,
+      userId: string,
+      update: Function,
+    ) => {
+      set({ isLoading: true });
+      const res = await RenewWrapper(
+        FetchWhoToFollow,
+        [token],
+        RenewToken,
+        [userId, refreshToken],
+        update,
+        tokenUpdateStateGlobal,
+      );
+      let users = null;
+      if (res.errors == false && res.recs != null) {
+        users = res.recs.slice(0, 8);
+      }
+
+      set({ contacts: users, isLoading: false });
+    },
+    updateContacts: (contacts: any[] | null) => set({ contacts: contacts }),
+    updateLoading: (isLoading: boolean) => set({ isLoading: isLoading }),
+  })),
+);
+
+interface FavoritesState {
+  posts: any[];
+  page: number;
+  size: number;
+  args: string;
+  isLoading: boolean;
+  hasMore: boolean;
+  totalPages: number;
+  error: () => void;
+  updatePosts: (posts: []) => void;
+  updatePage: (page: number) => void;
+  updateSize: (size: number) => void;
+  updateError: (error: () => void) => void;
+  nextPosts: (
+    token: string,
+    refreshToken: string,
+    userId: string,
+    update: Function,
+  ) => Promise<number>;
+}
+
+export const useFavorites = create<FavoritesState>()(
+  immer(set => ({
+    posts: [],
+    page: 1,
+    size: 10,
+    hasMore: false,
+    args: "",
+    isLoading: false,
+    totalPages: 0,
+    error: () => {},
+    updatePosts: (posts: []) => set({ posts: posts }),
+    updatePage: (page: number) => set({ page: page }),
+    updateSize: (size: number) => set({ size: size }),
+    updateError: (error: () => void) => set({ error: error }),
+    nextPosts: async (
+      token: string,
+      refreshToken: string,
+      userId: string,
+      update: Function,
+    ) => {
+      let args = "";
+      let error = () => {};
+      set(state => {
+        args = `page=${state.page}&size=${state.size}`;
+      });
+      set({ isLoading: true });
+      const res = await RenewWrapper(
+        FetchFavorites,
+        [args, token],
+        RenewToken,
+        [userId, refreshToken],
+        update,
+        tokenUpdateStateGlobal,
+      );
+
+      if (res.error) {
+        error();
+        return 1;
+      } else {
+        set(state => {
+          state.page == 1
+            ? (state.posts = res.posts)
+            : state.posts.push(...res.posts);
+          state.totalPages = res.totalPages;
+        });
+      }
+      set({ isLoading: false });
+      return 0;
+    },
+  })),
+);

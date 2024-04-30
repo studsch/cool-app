@@ -25,7 +25,6 @@ export function LoadMore() {
         session.user.tokens.access,
         session.user.tokens.refresh,
         session.user.id,
-        session,
         update,
       );
     }

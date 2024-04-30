@@ -5,7 +5,11 @@ import Button from "../ui/button/Button";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { FollowTo, UnFollowFrom } from "@/fetch/user";
-import { RenewToken, RenewWrapper } from "@/fetch/token";
+import {
+  RenewToken,
+  RenewWrapper,
+  tokenUpdateStateGlobal,
+} from "@/fetch/token";
 type Props = {
   className?: string;
   classNames?: {};
@@ -25,8 +29,8 @@ const SubscribeButton: React.FC<Props | any> = props => {
           [session.user.tokens.access, userId],
           RenewToken,
           [session.user.id, session.user.tokens.refresh],
-          session,
           update,
+          tokenUpdateStateGlobal,
         );
         if (res == 201) {
           setIsSubscribed(true);
@@ -37,8 +41,8 @@ const SubscribeButton: React.FC<Props | any> = props => {
           [session.user.tokens.access, userId],
           RenewToken,
           [session.user.id, session.user.tokens.refresh],
-          session,
           update,
+          tokenUpdateStateGlobal,
         );
         if (res == 200) {
           setIsSubscribed(false);

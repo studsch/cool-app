@@ -27,7 +27,6 @@ const MyContacts: React.FC<Props | any> = ({
         session.user.tokens.access,
         session.user.tokens.refresh,
         session.user.id,
-        session,
         update,
       );
     }
