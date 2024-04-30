@@ -41,6 +41,13 @@ formattedDate = formattedDate.replace(/\./g, separator);
 return formattedDate;
 }
 
+export function getMeta(url: any, cb: any) {
+  const img = new Image();
+  img.onload = () => cb(null, img);
+  img.onerror = (err) => cb(err);
+  img.src = url;
+};
+
 export function toYyyyMmDdDateTime(date: Date) {
   let year = date.getFullYear().toString(); // Get last two digits of the year
   let month = (date.getMonth() + 1).toString(); // Get month (0-based index, add 1)

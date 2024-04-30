@@ -162,10 +162,7 @@ export default function Feed() {
         </div>
       </div>
       <div className="my-5 w-[240px] md:flex flex-col gap-4 hidden">
-        <RightSidebar
-          items={profiles}
-          className=" bg-white rounded-md w-full  flex p-7 flex-col gap-4"
-        />
+        <RightSidebar className=" bg-white rounded-md w-full  flex p-7 flex-col gap-4" />
         <div className="bg-white rounded-md w-full p-7">
           Будут кастомные виджеты, пока не в приоритете
         </div>

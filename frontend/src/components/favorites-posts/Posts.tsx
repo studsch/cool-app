@@ -1,36 +1,27 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import SearchUser from "./search-user";
 import PostCard from "../card/card";
 import { toNormalDateTime } from "@/lib/utils";
 type Props = {
   className?: string;
   classNames?: { wrapper?: string };
-  searchs?: any[];
-  type: string;
-  user_id?: string;
+  posts?: any[];
+  //   user_id?: string;
 };
 const Searchs: React.FC<Props | any> = props => {
   const { classNames, user_id, restProps } = props;
   return (
-    <div className={`flex flex-col mt-3 ${classNames?.wrapper}`}>
+    <>
       {props.searchs.length != 0 ? (
         props.searchs.map((search: any) => (
           <div className="flex flex-col" key={search.id}>
-            <div className="px-7">
-              <SearchUser
-                user={search}
-                key={search.id}
-                user_id={user_id}
-              ></SearchUser>
-              <hr className="rounded-md border-[#F2F2F2] w-full border-t-2 my-6" />
-            </div>
+            <div className="px-7"></div>
           </div>
         ))
       ) : (
         <p className="h-14 px-7 py-2">No data available</p>
       )}
-    </div>
+    </>
   );
 };
 

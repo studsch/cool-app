@@ -4,6 +4,7 @@ import { immer } from "zustand/middleware/immer";
 import { FetchUsers, FetchPosts } from "./fetch/search";
 import { FetchFriends, FetchWhoToFollow } from "./fetch/friends";
 import { RenewWrapper, RenewToken } from "./fetch/token";
+import { FetchFavorites } from "./fetch/favorites";
 
 // для подтверждения по телефону через firebase
 
@@ -213,3 +214,59 @@ export const useMyContacts= create<MyContactsState>()(
       updateLoading: (isLoading: boolean) => set({ isLoading: isLoading }),
     })))
   
+
+    interface FavoritesState {
+      posts: any[];
+      page: number;
+      size: number;
+      args: string;
+      isLoading: boolean;
+      hasMore: boolean;
+      totalPages: number;
+      error: () => void;
+      updatePosts: (posts: []) => void;
+      updatePage: (page: number) => void;
+      updateSize: (size: number) => void;
+      updateError: (error: () => void) => void;
+      nextPosts: (token: string, refreshToken: string, userId:string) => Promise<number>;
+    }
+    
+    export const useFavorites = create<FavoritesState>()(
+      immer(set => ({
+        posts: [],
+        page: 1,
+        size: 10,
+        hasMore: false,
+        args: "",
+        isLoading: false,
+        totalPages: 0,
+        error: () => {},
+        updatePosts: (posts: []) => set({posts: posts}),
+        updatePage: (page: number) => set({ page: page }),
+        updateSize: (size: number) => set({ size: size }),
+        updateError: (error: () => void) => set({ error: error }),
+        nextPosts: async (token: string, refreshToken: string, userId:string) => {
+          let args = "";
+          let error = () => {};
+          set(state => {
+            args = `page=${state.page}&size=${state.size}`;
+          });
+            set({ isLoading: true });
+            const res = await RenewWrapper(FetchFavorites, [args, token], RenewToken, [userId, refreshToken])
+            if (res.error) {
+              error();
+              return 1;
+            } else {
+              set(state => {
+                state.page == 1
+                  ? (state.posts = res.posts)
+                  : state.posts.push(...res.posts);
+                state.totalPages = res.totalPages;
+              });
+            }
+          set({ isLoading: false });
+          return 0;
+        },
+      })),
+    );
+    

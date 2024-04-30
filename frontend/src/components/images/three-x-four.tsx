@@ -1,4 +1,3 @@
-"use client";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import Image from "next/image";
 import { getMeta } from "@/lib/utils";
@@ -16,7 +15,7 @@ export function PostImage() {
   });
   return (
     <>
-      <div className="aspect-[3/4] md:max-h-[70vh] sm:max-h-[440px] max-h-[400px] min-h-[300px] relative overflow-hidden rounded-lg">
+      <div className="aspect-[3/4] relative overflow-hidden rounded-lg">
         <Image
           src="http://localhost:3000/kitten.jpg"
           alt="kitten"
