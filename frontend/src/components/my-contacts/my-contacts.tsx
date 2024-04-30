@@ -33,7 +33,7 @@ const MyContacts: React.FC<Props | any> = ({
       {children}
       {/* Нужно будет мапу добавить потом */}
       <div className="gap-5 flex flex-col">
-        {typeof contacts === "undefined" || isLoading ? (
+        {status == "loading" || isLoading ? (
           skeleton_ids.map(val => (
             <div key={val} className="flex items-center ">
               <Skeleton className="w-12 h-12 rounded-full bg-[#f5f5f5] flex-shrink-0"></Skeleton>
@@ -43,23 +43,31 @@ const MyContacts: React.FC<Props | any> = ({
               </div>
             </div>
           ))
-        ) : contacts == null ? (
+        ) : status == "authenticated" ? (
+          contacts == null ? (
+            <p
+              className={`pl-4 text-sm font-light text-text-secondary-color h-14`}
+            >
+              Make more friends who subscribe to you too
+            </p>
+          ) : (
+            contacts.map((user, index) => (
+              <Link key={index} href={user.login}>
+                <AvatarBlock
+                  title={user.firstName + " " + user.lastName}
+                  subtitle={"@" + user.login}
+                  classNames={{ img: "h-12 w-12" }}
+                  avatarPosition="other"
+                />
+              </Link>
+            ))
+          )
+        ) : (
           <p
             className={`pl-4 text-sm font-light text-text-secondary-color h-14`}
           >
-            Make more friends who subscribe to you too
+            You need auth to get this info
           </p>
-        ) : (
-          contacts.map((user, index) => (
-            <Link key={index} href={user.login}>
-              <AvatarBlock
-                title={user.firstName + " " + user.lastName}
-                subtitle={"@" + user.login}
-                classNames={{ img: "h-12 w-12" }}
-                avatarPosition="other"
-              />
-            </Link>
-          ))
         )}
       </div>
     </>

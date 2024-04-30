@@ -39,6 +39,7 @@ import { Spinner } from "@nextui-org/react";
 import DialogCaptchaSignup from "../dialog-captcha-signup/dialog-captcha-signup";
 // import { isValidPhoneNumber } from "react-phone-number-input";
 import { useConfirmCode } from "@/store";
+import { CheckLogin, CheckPhone } from "@/fetch/auth";
 
 declare global {
   interface Window {
@@ -57,12 +58,18 @@ function RegForm({ children }: { children: React.ReactNode }) {
     login: z
       .string()
       .min(6, { message: "Логин должен быть длинее 6 символов" })
-      .max(31, { message: "Макимум кол-во символов не более 31" }),
+      .max(31, { message: "Макимум кол-во символов не более 31" })
+      .refine(async val => !(await CheckLogin(val)), {
+        message: "Пользователь с таким логином уже существует",
+      }),
     number: z
       .string()
       // .optional()
       .refine(val => typeof val != "undefined" && isValidPhoneNumber(val), {
         message: "Введен некорректный номер, попробуйте исправить",
+      })
+      .refine(async val => !(await CheckPhone(val)), {
+        message: "Пользователь с таким номером уже существует",
       }),
   });
   const setDefRecaptcha = () => {

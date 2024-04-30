@@ -14,6 +14,9 @@ const localConfig = {
         domains: ['localhost'],
     },
     reactStrictMode: false,
+    env: {
+        MINIO_PUBLIC_DOMEN_URL: process.env.MINIO_PUBLIC_DOMEN_URL,
+    }
     
 };
 

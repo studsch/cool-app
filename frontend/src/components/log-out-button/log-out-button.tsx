@@ -10,7 +10,7 @@ export default function LogOutButton(props: ButtonProps) {
       type={props.type}
       text="Sign out"
       onClick={() => {
-        signOut({ callbackUrl: "/" });
+        signOut({ callbackUrl: "/feed" });
         console.log("logout");
       }}
     />
