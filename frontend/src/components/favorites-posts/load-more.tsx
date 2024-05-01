@@ -5,6 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { Spinner } from "@nextui-org/react";
 import { useFavorites } from "@/store";
 import { useSession } from "next-auth/react";
+import Post from "./Posts";
 
 export function LoadMore() {
   const nextPosts = useFavorites(state => state.nextPosts);
@@ -47,7 +48,7 @@ export function LoadMore() {
   }, [inView]);
   return (
     <>
-      <p>test</p>
+      <Post posts={posts}></Post>
       <div ref={ref}>
         {isLoading && page != 1 && <Spinner className="flex mt-4" />}
       </div>

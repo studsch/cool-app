@@ -26,12 +26,10 @@ import { ShareButton } from "./share-button";
 import { ScrollArea } from "../ui/scroll-area";
 import { CommentButton } from "./comment-button";
 
-export function DialogPostPrewie() {
+export function DialogPostPrewie({ trigger }: { trigger: React.ReactNode }) {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Share</Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogPortal>
         <DialogOverlay className="bg-[rgba(36,15,33,0.7)] backdrop-blur-[1px]" />
 

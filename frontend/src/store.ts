@@ -301,7 +301,7 @@ export const useFavorites = create<FavoritesState>()(
   immer(set => ({
     posts: [],
     page: 1,
-    size: 10,
+    size: 18,
     hasMore: false,
     args: "",
     isLoading: false,

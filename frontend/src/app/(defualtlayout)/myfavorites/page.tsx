@@ -5,7 +5,7 @@ export default function MyFavorites() {
   return (
     <>
       <div className="flex flex-col overflow-x-hidden w-[90%] mt-5 md:w-[512px] xl:w-[768px] mx-auto">
-        <div className="bg-white rounded-md p-7 mb-5 w-full grid grid-cols-3 gap-2">
+        <div className="bg-white rounded-md p-7 mb-5 w-full grid sm:grid-cols-3 xl:grid-cols-3 md:grid-cols-2 grid-cols-2 gap-2">
           <LoadMore></LoadMore>
         </div>
       </div>
