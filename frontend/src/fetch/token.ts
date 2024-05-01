@@ -80,8 +80,8 @@ export async function RenewWrapper(
             });
             return renewalResult;
           }
-          throw new Error("Failed to renew tokens");
-          // signOut();
+          // throw new Error("Failed to renew tokens");
+          signOut();
         })
         .catch(err => {
           throw err;

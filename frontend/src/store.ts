@@ -348,3 +348,20 @@ export const useFavorites = create<FavoritesState>()(
     },
   })),
 );
+
+// interface DialogFavoritesState {
+//   currentPostIndex: number | undefined;
+//   isOpen: boolean;
+//   updateCurrentPostIndex: (currentPostIndex: number) => void;
+//   updateIsOpen: (isOpen: boolean) => void;
+// }
+
+// export const useDialogFavorites = create<DialogFavoritesState>()(
+//   immer(set => ({
+//     currentPostIndex: undefined,
+//     isOpen: false,
+//     updateCurrentPostIndex: (currentPostIndex: number) =>
+//       set({ currentPostIndex: currentPostIndex }),
+//     updateIsOpen: (isOpen: boolean) => set({ isOpen: isOpen }),
+//   })),
+// );

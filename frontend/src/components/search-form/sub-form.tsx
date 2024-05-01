@@ -78,7 +78,7 @@ import DatePickerField from "../form-fields/datepicker-field";
 export default function SubForm(props: Props) {
   const [openCountries, setOpenCountries] = useState<boolean>(false);
   const [openCities, setOpenCities] = useState<boolean>(false);
-  const width = useResize();
+  const [width, height] = useResize();
   return (
     <div className={props.className}>
       <div className=" bg-white rounded-md w-full p-7 ">

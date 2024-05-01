@@ -45,10 +45,10 @@ function SearchForm({ children }: { children: React.ReactNode }) {
   const updateType = useSearch(state => state.updateType);
   const type = useSearch(state => state.type);
   const nextSearch = useSearch(state => state.nextSearch);
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const updatePage = useSearch(state => state.updatePage);
   const [cities, setCities] = useState<string[]>([]);
-  const width = useResize();
+  const [width, height] = useResize();
   const formSchema = z
     .object({
       search: z.string(),
@@ -132,6 +132,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
         session.user.tokens.access,
         session.user.tokens.refresh,
         session.user.id,
+        update,
       );
     }
   }
@@ -273,6 +274,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                               session.user.tokens.access,
                               session.user.tokens.refresh,
                               session.user.id,
+                              update,
                             );
                           }
                         }}

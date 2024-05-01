@@ -8,7 +8,7 @@ type Props = {
   minWidth: number;
 };
 const Aside: React.FC<Props | any> = props => {
-  const width = useResize();
+  const [width, height] = useResize();
   return (
     <>
       {width >= props.minWidth ? (

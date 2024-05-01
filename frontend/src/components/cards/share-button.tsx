@@ -18,7 +18,7 @@ export function ShareButton({ shareCount }: { shareCount: string }) {
         }}
       >
         <div className="flex gap-2 justify-center items-center">
-          {isShared ? (
+          {!isShared ? (
             <svg
               width={23}
               height={23}

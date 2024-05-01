@@ -13,7 +13,7 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 export function PostMore() {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild className="outline-none">
         <button type="button">
           <FontAwesomeIcon
             icon={faEllipsis}

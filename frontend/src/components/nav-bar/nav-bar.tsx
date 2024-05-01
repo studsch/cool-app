@@ -18,7 +18,7 @@ type Props = {
 const Navbar: React.FC<Props | any> = props => {
   const path = usePathname();
   const [lastUrl, setLastUrl] = useState("");
-  const width = useResize();
+  const [width, height] = useResize();
   useEffect(() => {
     if (typeof props.setOpen !== "undefined" && width >= 1280) {
       props.setOpen(false);
