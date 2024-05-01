@@ -5,7 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { Spinner } from "@nextui-org/react";
 import { useFavorites } from "@/store";
 import { useSession } from "next-auth/react";
-import Post from "./Posts";
+import { DialogPostPrewie } from "../cards/dialog-post-prewie";
 
 export function LoadMore() {
   const nextPosts = useFavorites(state => state.nextPosts);
@@ -48,7 +48,7 @@ export function LoadMore() {
   }, [inView]);
   return (
     <>
-      <Post posts={posts}></Post>
+      <DialogPostPrewie posts={posts}></DialogPostPrewie>
       <div ref={ref}>
         {isLoading && page != 1 && <Spinner className="flex mt-4" />}
       </div>

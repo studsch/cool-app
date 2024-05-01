@@ -25,11 +25,32 @@ import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { ShareButton } from "./share-button";
 import { ScrollArea } from "../ui/scroll-area";
 import { CommentButton } from "./comment-button";
+import Prewie from "../favorites-posts/Prewie";
 
-export function DialogPostPrewie({ trigger }: { trigger: React.ReactNode }) {
+export function DialogPostPrewie({ posts }: { posts: any }) {
   return (
     <Dialog>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger className="w-full grid sm:grid-cols-3 xl:grid-cols-3 md:grid-cols-2 grid-cols-2">
+        {posts && posts.length != 0
+          ? posts.map((post: any, index: number) =>
+              post.imageURLs ? (
+                // превью для
+
+                <Prewie key={index} post={post} className="m-1"></Prewie>
+              ) : (
+                <div
+                  key={index}
+                  className="aspect-[3/4] relative overflow-hidden rounded-lg cursor-pointer m-1"
+                >
+                  <div className="absolute z-0 w-full h-full bg-background-color-reg-light-gray"></div>
+                  <p className="text-text-primary-color font-medium flex relative z-10 justify-center items-center h-full">
+                    {post.description}
+                  </p>
+                </div>
+              ),
+            )
+          : null}
+      </DialogTrigger>
       <DialogPortal>
         <DialogOverlay className="bg-[rgba(36,15,33,0.7)] backdrop-blur-[1px]" />
 
