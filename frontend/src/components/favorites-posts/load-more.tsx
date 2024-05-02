@@ -29,7 +29,7 @@ export function LoadMore() {
   console.log(posts);
   let error = 0;
   const { ref, inView } = useInView();
-  const loadMoreUsers = async () => {
+  const loadMorePosts = async () => {
     if (page < totalPages && !error && session?.user?.tokens?.access) {
       updatePage(page + 1);
       error = await nextPosts(
@@ -39,17 +39,21 @@ export function LoadMore() {
         update,
       );
     }
+    return error;
   };
   useEffect(() => {
     console.log(isLoading);
     if (inView) {
       console.log("scrolled to the end");
-      loadMoreUsers();
+      loadMorePosts();
     }
   }, [inView]);
   return (
     <>
-      <DialogPostPrewie posts={posts}></DialogPostPrewie>
+      <DialogPostPrewie
+        posts={posts}
+        loadMore={loadMorePosts}
+      ></DialogPostPrewie>
       <div ref={ref}>
         {isLoading && page != 1 && <Spinner className="flex mt-4 " />}
       </div>

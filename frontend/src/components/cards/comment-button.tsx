@@ -12,7 +12,7 @@ export function CommentButton({ commentCount }: { commentCount: string }) {
             className="text-text-primary-color"
           ></FontAwesomeIcon>
           <p className="text-sm font-medium text-text-primary-color">
-            {commentCount} Likes
+            {commentCount} Comments
           </p>
         </div>
       </button>

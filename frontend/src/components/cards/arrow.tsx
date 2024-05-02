@@ -8,13 +8,20 @@ export default function Arrow({
   side,
   classNames,
   size,
+  onClick,
 }: {
   side: "left" | "right";
   size?: SizeProp;
   classNames?: { base?: string; icon?: string };
+  onClick?: Function;
 }) {
   return (
-    <div className={cn("", classNames?.base)}>
+    <div
+      className={cn("", classNames?.base)}
+      onClick={() => {
+        onClick && onClick();
+      }}
+    >
       <FontAwesomeIcon
         icon={faAngleLeft}
         size={size ? size : "lg"}
