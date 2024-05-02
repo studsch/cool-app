@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -353,6 +354,7 @@ func (r *userRepo) GetFriendsIDs(
 
 	rows, err := r.db.Query(ctx, getFriendsIDs, &userID)
 	if err != nil {
+		fmt.Print(err.Error())
 		return nil, errors.Wrap(
 			err, "userRepo.GetFriendsIDs.Query",
 		)
@@ -362,6 +364,8 @@ func (r *userRepo) GetFriendsIDs(
 	for rows.Next() {
 		var uID uuid.UUID
 		if err := rows.Scan(&uID); err != nil {
+			fmt.Print(err.Error())
+
 			return nil, errors.Wrap(
 				err, "userRepo.GetFriendsIDs.Scan",
 			)
