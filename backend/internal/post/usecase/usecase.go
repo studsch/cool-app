@@ -53,38 +53,44 @@ func (u *postUC) SearchByFilter(
 			return nil, err
 		}
 		curPost.IsLiked = liked
-	}
 
-	return postList, nil
-}
-
-// Search implements post.UseCase.
-func (u *postUC) Search(
-	ctx context.Context, tags []string, q string, pq *utils.PaginationQuery,
-) (*models.PostList, error) {
-	user, err := utils.GetUserFromCtx(ctx)
-	if err != nil {
-		return nil, httpErrors.NewUnauthorizedError(
-			errors.WithMessage(
-				err, "postUC.Create.GetUserFromCtx",
-			),
-		)
-	}
-
-	postList, err := u.postRepo.Search(ctx, tags, q, pq)
-	if err != nil {
-		return nil, err
-	}
-	for _, curPost := range postList.Posts {
-		liked, err := u.postRepo.CheckLikeOnPostByID(ctx, user.ID, curPost.ID)
-		if err != nil {
-			return nil, err
+		if err := u.postRepo.SavePostViewed(
+			ctx, user.ID, curPost.ID,
+		); err != nil {
+			u.logger.Debugf("Error saving post viewed post: %v", err)
 		}
-		curPost.IsLiked = liked
 	}
 
 	return postList, nil
 }
+
+// // Search implements post.UseCase.
+// func (u *postUC) Search(
+// 	ctx context.Context, tags []string, q string, pq *utils.PaginationQuery,
+// ) (*models.PostList, error) {
+// 	user, err := utils.GetUserFromCtx(ctx)
+// 	if err != nil {
+// 		return nil, httpErrors.NewUnauthorizedError(
+// 			errors.WithMessage(
+// 				err, "postUC.Create.GetUserFromCtx",
+// 			),
+// 		)
+// 	}
+//
+// 	postList, err := u.postRepo.Search(ctx, tags, q, pq)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	for _, curPost := range postList.Posts {
+// 		liked, err := u.postRepo.CheckLikeOnPostByID(ctx, user.ID, curPost.ID)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		curPost.IsLiked = liked
+// 	}
+//
+// 	return postList, nil
+// }
 
 // GetImagesURLs implements post.UseCase.
 func (u *postUC) GetImageURL(ctx context.Context, bucket, key string) (
@@ -307,11 +313,18 @@ func (u *postUC) GetPosts(
 			return nil, err
 		}
 		p.Tags = tags
+
 		liked, err := u.postRepo.CheckLikeOnPostByID(ctx, user.ID, p.ID)
 		if err != nil {
 			return nil, err
 		}
 		p.IsLiked = liked
+
+		if err := u.postRepo.SavePostViewed(
+			ctx, user.ID, p.ID,
+		); err != nil {
+			u.logger.Debugf("Error saving post viewed post: %v", err)
+		}
 	}
 
 	return pl, err
@@ -330,7 +343,6 @@ func (u *postUC) GetByID(
 		)
 	}
 
-	// TODO: get from redis and return it
 	postRedis, err := u.redisRepo.GetPostByIDCtx(
 		ctx, u.getKeyWithPrefix(postID.String()),
 	)
@@ -351,6 +363,11 @@ func (u *postUC) GetByID(
 			ID:            postRedis.ID,
 			UserID:        postRedis.UserID,
 			IsLiked:       postRedis.IsLiked,
+		}
+		if err := u.postRepo.SavePostViewed(
+			ctx, user.ID, p.ID,
+		); err != nil {
+			u.logger.Debugf("Error saving post viewed post: %v", err)
 		}
 		return p, nil
 	}
@@ -391,6 +408,11 @@ func (u *postUC) GetByID(
 	); err != nil {
 		u.logger.Errorf("postUC.GetByID.SetPostByIDCtx: %v", err)
 	}
+	if err := u.postRepo.SavePostViewed(
+		ctx, user.ID, p.ID,
+	); err != nil {
+		u.logger.Debugf("Error saving post viewed post: %v", err)
+	}
 
 	return p, nil
 }
@@ -425,6 +447,12 @@ func (u *postUC) GetByUserID(
 			return nil, err
 		}
 		p.IsLiked = liked
+
+		if err := u.postRepo.SavePostViewed(
+			ctx, user.ID, p.ID,
+		); err != nil {
+			u.logger.Debugf("Error saving post viewed post: %v", err)
+		}
 	}
 
 	return pl, err
@@ -485,6 +513,18 @@ func (u *postUC) GetLikedPostsByUserID(
 			return nil, err
 		}
 		p.Tags = tags
+
+		liked, err := u.postRepo.CheckLikeOnPostByID(ctx, user.ID, p.ID)
+		if err != nil {
+			return nil, err
+		}
+		p.IsLiked = liked
+
+		if err := u.postRepo.SavePostViewed(
+			ctx, user.ID, p.ID,
+		); err != nil {
+			u.logger.Debugf("Error saving post viewed post: %v", err)
+		}
 	}
 
 	return pl, err
