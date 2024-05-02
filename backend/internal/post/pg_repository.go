@@ -41,4 +41,7 @@ type Repository interface {
 	CheckLikeOnPostByID(
 		ctx context.Context, userID uuid.UUID, postID uuid.UUID,
 	) (bool, error)
+	SavePostViewed(
+		ctx context.Context, userID uuid.UUID, postID uuid.UUID,
+	) error
 }

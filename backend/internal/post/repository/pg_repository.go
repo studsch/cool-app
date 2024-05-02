@@ -428,7 +428,7 @@ func (r *postRepo) GetTagByTitle(
 	if err := r.db.QueryRow(ctx, getTagByTitle, title).Scan(
 		&t.ID, &t.Title,
 	); err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
 		}
 		return nil, errors.Wrap(err, "postRepo.GetTagByTitle.Scan")
@@ -573,4 +573,23 @@ WHERE user_id = $1 AND post_id = $2
 	}
 	return out, nil
 
+}
+
+func (r *postRepo) SavePostViewed(
+	ctx context.Context, userID uuid.UUID, postID uuid.UUID,
+) error {
+	query := `
+INSERT INTO viewed_posts (
+    id, user_id, post_id, view_count
+) VALUES (
+    DEFAULT, $1, $2, DEFAULT
+) RETURNING id
+`
+	var viewID uuid.UUID
+	if err := r.db.QueryRow(
+		ctx, query, &userID, &postID,
+	).Scan(&viewID); err != nil {
+		return errors.Wrap(err, "postRepo.SavePostViewed.Scan")
+	}
+	return nil
 }
