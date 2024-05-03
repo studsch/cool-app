@@ -23,7 +23,8 @@ export function LoadMore() {
   }, []);
   useEffect(() => {
     if (session) {
-      updatePage(1);
+      console.log(page);
+      updatePage(0);
       updatePosts([]);
       nextPosts(
         session.user.tokens.access,

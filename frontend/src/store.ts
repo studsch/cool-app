@@ -268,7 +268,6 @@ export const useWhoToFollow = create<WhoToFollowState>()(
       if (res.errors == false && res.recs != null) {
         users = res.recs.slice(0, 8);
       }
-
       set({ contacts: users, isLoading: false });
     },
     updateContacts: (contacts: any[] | null) => set({ contacts: contacts }),
