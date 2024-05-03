@@ -1,13 +1,12 @@
 FROM python:3.9-slim
 
-
 RUN apt-get update && \
-    apt-get install -y wget bzip2 gcc && \
-    rm -rf /var/lib/apt/lists/*
+  apt-get install -y wget bzip2 gcc && \
+  rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir --upgrade pip
 
-workdir /app
+WORKDIR /app
 RUN mkdir -p /app/models /app/data/raw /app/data/ratings
 RUN mkdir src
 RUN mkdir config
@@ -18,4 +17,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 50051
 
-CMD ["python", "src/proto/server/server.py"]
+CMD ["python", "-u", "src/proto/server/server.py"]
