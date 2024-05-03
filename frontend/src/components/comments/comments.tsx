@@ -11,14 +11,15 @@ export default function Comments({ post }: { post: any }) {
   const size = 3;
   const [comments, setComments] = useState([]);
   const [idxToDel, setIdxToDel] = useState(undefined);
-  console.log(comments);
   useEffect(() => {
-    FetchComments(`?page=${page}&size=${size}`, post.id)
+    setPage(1);
+    FetchComments(`?page=${1}&size=${size}`, post.id)
       .then(val => {
         setComments(val.comments);
         setTotalPages(val.totalPages);
       })
       .catch(msg => console.log(msg));
+    console.log(comments);
   }, [post]);
   return (
     <div>

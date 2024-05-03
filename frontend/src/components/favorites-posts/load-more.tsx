@@ -23,8 +23,7 @@ export function LoadMore() {
   }, []);
   useEffect(() => {
     if (session) {
-      console.log(page);
-      updatePage(0);
+      updatePage(1);
       updatePosts([]);
       nextPosts(
         session.user.tokens.access,
@@ -32,6 +31,7 @@ export function LoadMore() {
         session.user.id,
         update,
       );
+      updatePage(2);
     }
     setReloadPage(false);
   }, [status, reloadPage]);
@@ -39,21 +39,27 @@ export function LoadMore() {
   let error = 0;
   const { ref, inView } = useInView();
   const loadMorePosts = async () => {
-    if (page < totalPages && !error && session?.user?.tokens?.access) {
-      updatePage(page + 1);
+    if (
+      !isLoading &&
+      page > 1 &&
+      page < totalPages + 1 &&
+      !error &&
+      session?.user?.tokens?.access
+    ) {
       error = await nextPosts(
         session.user.tokens.access,
         session.user.tokens.refresh,
         session.user.id,
         update,
       );
+      updatePage(page + 1);
     }
     return error;
   };
   useEffect(() => {
-    console.log(isLoading);
     if (inView) {
       console.log("scrolled to the end");
+      console.log(page, totalPages, isLoading);
       loadMorePosts();
     }
   }, [inView]);
