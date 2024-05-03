@@ -26,7 +26,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { getMeta } from "@/lib/utils";
 import { useResize } from "@/hooks/screens";
 import Image from "next/image";
-
+import Geolocation from "./geolocation";
+import Comment from "../comments/comment";
+import Tags from "./tags";
+import Comments from "../comments/comments";
 const MIN_WIDTH = 300;
 const MIN_HEIGHT = 300;
 const INCREASE_KOEF = 1.2;
@@ -94,7 +97,7 @@ export function DialogPostPrewie({
       </DialogTrigger>
       {/* Добавляю стрелки для перелистывания постов */}
       <DialogPortal>
-        <DialogOverlay className="bg-[rgba(36,15,33,0.7)] backdrop-blur-[1px] z-50 overflow-auto">
+        <DialogOverlay className="bg-[rgba(20,20,20,0.7)] backdrop-blur-[1px] z-50 overflow-auto">
           <div className="flex min-h-screen h-fit">
             <Arrow
               side="left"
@@ -123,15 +126,15 @@ export function DialogPostPrewie({
                 }}
                 // ref={ref}
                 className={cn(
-                  "border-none min-w-[420px] px-8 z-50 relative gap-4 h-fit w-fit bg-background shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg rounded-md",
+                  "border-none focus:border-none focus:outline-none min-w-[420px] px-8 z-50 relative gap-4 h-fit w-fit bg-background shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg rounded-md",
                   // className,
                 )}
                 // {...props}
               >
                 {typeof isOpenedIndex != "undefined" && (
                   <>
-                    <div className="flex flex-col gap-4 py-6">
-                      <div className="flex justify-between">
+                    <div className="flex flex-col py-6">
+                      <div className="flex justify-between mb-1">
                         <AvatarBlock
                           src={
                             process.env.MINIO_PUBLIC_DOMEN_URL
@@ -153,20 +156,28 @@ export function DialogPostPrewie({
                         <PostMore></PostMore>
                       </div>
                       {/* <PostImage></PostImage> */}
-                      <Swiper
-                        style={{
-                          "--swiper-navigation-color": "#fff",
-                          "--swiper-pagination-color": "#fff",
-                        }}
-                        pagination={{
-                          clickable: true,
-                        }}
-                        navigation={true}
-                        modules={[Pagination, Navigation]}
-                        className="w-fit h-fit"
-                      >
-                        {posts[isOpenedIndex].imageURLs
-                          ? posts[isOpenedIndex].imageURLs.map(
+                      {posts[isOpenedIndex].location && (
+                        <Geolocation
+                          className="px-1 mt-2"
+                          location={posts[isOpenedIndex].location}
+                        />
+                      )}
+                      {posts[isOpenedIndex].imageURLs ? (
+                        <>
+                          <Swiper
+                            style={{
+                              // @ts-ignore
+                              "--swiper-navigation-color": "#fff",
+                              "--swiper-pagination-color": "#fff",
+                            }}
+                            pagination={{
+                              clickable: true,
+                            }}
+                            navigation={true}
+                            modules={[Pagination, Navigation]}
+                            className="w-fit h-fit my-3"
+                          >
+                            {posts[isOpenedIndex].imageURLs.map(
                               (val: any, index: any) => {
                                 if (process.env.MINIO_PUBLIC_DOMEN_URL) {
                                   getMeta(
@@ -246,19 +257,43 @@ export function DialogPostPrewie({
                                   </SwiperSlide>
                                 );
                               },
-                            )
-                          : null}
-                      </Swiper>
-
-                      <div className=" flex justify-between sm:flex-row flex-col">
+                            )}
+                          </Swiper>
+                        </>
+                      ) : null}
+                      <div className=" flex flex-col">
+                        <p className="text-text-primary-color font-medium px-1 pt-2 pb-3">
+                          {posts[isOpenedIndex].description}
+                        </p>
+                        {/* tags */}
+                        {posts[isOpenedIndex].tags && (
+                          <Tags
+                            tags={posts[isOpenedIndex].tags}
+                            className="pl-1 mb-2"
+                          ></Tags>
+                        )}
                         <div className="flex gap-1 md:ml-[1%]">
-                          <LikeButton likesCount="0" />
+                          <LikeButton
+                            likesCount="0"
+                            isLikedPost={true}
+                            postId={posts[isOpenedIndex].id}
+                          />
                           <ShareButton shareCount="0" />
                           <CommentButton commentCount="0" />
                         </div>
                       </div>
                       <div>
-                        <hr className="border-t-1 border-r-4  w-full" />
+                        <hr className="border-t-1 border-r-4 mb-3 mt-1 w-full" />
+                        <Comments post={posts[isOpenedIndex]}></Comments>
+                        {/* <Comment
+                          classNames={{ img: "w-12 h-12" }}
+                          createdAt={toNormalDateTime(
+                            posts[isOpenedIndex].createdAt,
+                          )}
+                          userTitle="Stanko Dmitry"
+                          comment="Зачем ты блять его открыл"
+                          src="https://avatars.dzeninfra.ru/get-zen_doc/271828/pub_653a0b1342273a61903c0e84_653a0b7a4f7dd7742366325a/scale_1200"
+                        ></Comment> */}
                       </div>
                     </div>
                     <DialogPrimitive.Close

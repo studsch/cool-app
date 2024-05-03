@@ -14,10 +14,17 @@ export function LoadMore() {
   const posts = useFavorites(state => state.posts);
   const updatePage = useFavorites(state => state.updatePage);
   const isLoading = useFavorites(state => state.isLoading);
+  const updatePosts = useFavorites(state => state.updatePosts);
+  const [reloadPage, setReloadPage] = useState(false);
   const page = useFavorites(state => state.page);
   const { data: session, status, update } = useSession();
   useEffect(() => {
+    setReloadPage(true);
+  }, []);
+  useEffect(() => {
     if (session) {
+      updatePage(1);
+      updatePosts([]);
       nextPosts(
         session.user.tokens.access,
         session.user.tokens.refresh,
@@ -25,7 +32,8 @@ export function LoadMore() {
         update,
       );
     }
-  }, [status]);
+    setReloadPage(false);
+  }, [status, reloadPage]);
   console.log(posts);
   let error = 0;
   const { ref, inView } = useInView();

@@ -97,7 +97,7 @@ body {
   }
 
   .link {
-    @apply text-button-primary-color hover:underline font-normal
+    @apply text-button-primary-color hover:underline font-normal cursor-pointer
   }
 
   /* КНОПКИ */
@@ -157,7 +157,7 @@ body {
   }
 
   .input-primary:focus {
-    outline: none;
+    outline: none; 
     border-color: var(--btn-primary-background-color);
     color: var(--btn-primary-background-color);
   }
