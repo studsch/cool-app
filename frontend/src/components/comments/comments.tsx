@@ -19,7 +19,7 @@ export default function Comments({ post }: { post: any }) {
         setTotalPages(val.totalPages);
       })
       .catch(msg => console.log(msg));
-  }, []);
+  }, [post]);
   return (
     <div>
       {comments ? (
