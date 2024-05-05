@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/studsch/cool-app/backend/internal/genproto/rec";
+
+message PredictPostsForOneUserRequest {
+  string user_id = 1;
+}
+
+
+message GetAllModelNamesOfFilesResponse {
+  repeated string names = 1;
+}
+
+
+message SetModelRequest {
+  string name = 1;
+  uint32 type = 2;
+}
+
+message DeleteModelFromFilesRequest {
+  string name = 1;
+}
+
+message TrainModelRequest {
+  string name = 1;
+  uint32 type = 2;
+  bool valid = 3;
+}
+
+message ValidateModelRequest{
+  string name = 1;
+}
+
+message ValidateModelResponse {
+  string result = 1;
+}
+
+message PredictPostsForOneUserResponse {
+  map<string, StringArray> data = 1;
+}
+
+message StringArray {
+  repeated string values = 1;
+}
+
+service RecSystem {
+  rpc PredictPostsForOneUser (PredictPostsForOneUserRequest) returns (PredictPostsForOneUserResponse);
+  rpc ExecuteDataToFiles (google.protobuf.Empty) returns (google.protobuf.Empty);
+  rpc GetAllModelNamesOfFiles (google.protobuf.Empty) returns (GetAllModelNamesOfFilesResponse);
+  rpc SetModel (SetModelRequest) returns (google.protobuf.Empty);
+  rpc DeleteModelFromFiles (DeleteModelFromFilesRequest) returns (google.protobuf.Empty);
+  rpc TrainModel (TrainModelRequest) returns (google.protobuf.Empty);
+  rpc ValidateModel (ValidateModelRequest) returns (ValidateModelResponse);
+}

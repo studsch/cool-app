@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/studsch/cool-app/backend/config"
@@ -10,7 +12,6 @@ import (
 	"github.com/studsch/cool-app/backend/pkg/httpErrors"
 	"github.com/studsch/cool-app/backend/pkg/logger"
 	"github.com/studsch/cool-app/backend/pkg/utils"
-	"net/http"
 )
 
 // commentUC Comment useCase
@@ -62,4 +63,16 @@ func (u *commentUC) GetAllByPostID(ctx context.Context, postID uuid.UUID, pq *ut
 
 func (u *commentUC) GetReplyByCommentID(ctx context.Context, commentID uuid.UUID, pq *utils.PaginationQuery) (*models.CommentList, error) {
 	return u.commentRepo.GetReplyByCommentID(ctx, commentID, pq)
+}
+
+func (u *commentUC) GetCommentCountByPostID(
+	ctx context.Context, postID uuid.UUID,
+) (int, error) {
+	return u.commentRepo.GetCommentCountByPostID(ctx, postID)
+}
+
+func (u *commentUC) GetReplyCountByCommentID(
+	ctx context.Context, postID uuid.UUID,
+) (int, error) {
+	return u.commentRepo.GetReplyCountByCommentID(ctx, postID)
 }
