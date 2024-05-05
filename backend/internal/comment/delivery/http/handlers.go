@@ -149,3 +149,51 @@ func (h *commentHandlers) GetReplyByCommentID() fiber.Handler {
 		return c.Status(fiber.StatusOK).JSON(commByPostID)
 	}
 }
+
+func (h *commentHandlers) GetCommentCountByPostID() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		postID, err := uuid.Parse(c.Params("id"))
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		count, err := h.commentUC.GetCommentCountByPostID(
+			c.UserContext(), postID,
+		)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"postId":       postID,
+			"commentCount": count,
+		})
+	}
+}
+
+func (h *commentHandlers) GetReplyCountByCommentID() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		commentID, err := uuid.Parse(c.Params("id"))
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		count, err := h.commentUC.GetReplyCountByCommentID(
+			c.UserContext(), commentID,
+		)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"commentId":  commentID,
+			"replyCount": count,
+		})
+	}
+}
