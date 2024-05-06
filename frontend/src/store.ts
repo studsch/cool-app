@@ -9,6 +9,7 @@ import {
   tokenUpdateStateGlobal,
 } from "./fetch/token";
 import { FetchFavorites } from "./fetch/favorites";
+import { FetchReplyComments } from "./fetch/comment";
 
 // для подтверждения по телефону через firebase
 
@@ -364,3 +365,35 @@ export const useFavorites = create<FavoritesState>()(
 //     updateIsOpen: (isOpen: boolean) => set({ isOpen: isOpen }),
 //   })),
 // );
+
+interface SubCommentsState {
+  subComms: any[];
+  page: number;
+  size: number;
+  args: string;
+  isLoading: boolean;
+  getAllReplysFromComments: (id: string) => void;
+  updateSubComments: (subComms: any[]) => void;
+}
+
+export const useSubComments = create<SubCommentsState>()(
+  immer(set => ({
+    subComms: [],
+    page: 1,
+    size: 100000,
+    isLoading: false,
+    args: "",
+    updateSubComments: (subComms: any[]) => set({ subComms: subComms }),
+    getAllReplysFromComments: async (id: string) => {
+      let args = "";
+      set(state => {
+        args = `page=${state.page}&size=${state.size}`;
+      });
+      console.log(id, args);
+      set({ isLoading: true });
+      const res = await FetchReplyComments(args, id);
+      console.log(res);
+      set({ isLoading: false });
+    },
+  })),
+);

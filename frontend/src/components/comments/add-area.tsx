@@ -12,28 +12,34 @@ export default function AddArea({
   src,
   userTitle,
   post,
+  reply,
   comments,
   setComments,
   idxToDel,
   setIdxToDel,
+  defualtContent,
+  setReplyId,
 }: {
-  classNames?: { img?: string };
+  classNames?: { img?: string; textarea?: string };
   src: string;
   userTitle: string;
   post: any;
   comments: any[];
   setComments: Function;
+  reply?: string;
   idxToDel?: number;
   setIdxToDel: Function;
+  defualtContent: string;
+  setReplyId?: Function;
 }) {
   const { data: session, status, update } = useSession();
   const maxSymbols = 256;
   const { toast } = useToast();
-  const [commentText, setCommentText] = useState("");
+  const [commentText, setCommentText] = useState(defualtContent);
   const [countOfSymbols, setCountOfSymbols] = useState(0);
   const [isDisable, setIsDisable] = useState(true);
   return (
-    <div>
+    <div className="my-2">
       <div
         className={cn(
           "flex gap-3 items-center",
@@ -61,7 +67,10 @@ export default function AddArea({
               setCountOfSymbols(val.target.value.length);
             }}
             placeholder="Write your comment"
-            className="resize-none input input-primary h-max-fit h-[44px] overflow-hidden pr-[20%]"
+            className={cn(
+              "resize-none input input-primary h-max-fit h-[44px] overflow-hidden pr-[100px]",
+              classNames?.textarea,
+            )}
           />
           {countOfSymbols > 0.8 * maxSymbols && (
             <p className="text-text-secondary-color text-sm absolute pt-1">
@@ -78,6 +87,7 @@ export default function AddArea({
                 session.user.tokens.access,
                 post.id,
                 commentText,
+                reply,
               );
               val["author"] = session.user.name + " " + session.user.surname;
               val["avatarURL"] = session.user.avatar;
@@ -91,6 +101,7 @@ export default function AddArea({
                 setIdxToDel(comments.length);
                 setComments([...comments, val]);
                 setCommentText("");
+                if (typeof setReplyId != "undefined") setReplyId(undefined);
               }
             }
           }}

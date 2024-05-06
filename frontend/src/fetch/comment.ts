@@ -23,13 +23,13 @@ export async function FetchComments(args: string, postId: string) {
 export async function FetchReplyComments(args: string, id: string) {
   if (
     process.env.NEXT_PUBLIC_DOMEN_URL &&
-    process.env.NEXT_PUBLIC_URL_GET_ALL_COMMENTS
+    process.env.NEXT_PUBLIC_URL_GET_ALL_REPLYS
   ) {
     const result = await fetch(
       process.env.NEXT_PUBLIC_DOMEN_URL +
-        process.env.NEXT_PUBLIC_URL_GET_ALL_COMMENTS +
+        process.env.NEXT_PUBLIC_URL_GET_ALL_REPLYS +
         id +
-        "/reply" +
+        "/reply?" +
         args,
       {
         method: "GET",

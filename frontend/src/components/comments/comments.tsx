@@ -11,6 +11,7 @@ export default function Comments({ post }: { post: any }) {
   const size = 3;
   const [comments, setComments] = useState([]);
   const [idxToDel, setIdxToDel] = useState(undefined);
+  const [replyingId, setReplyingId] = useState("");
   useEffect(() => {
     setPage(1);
     FetchComments(`?page=${1}&size=${size}`, post.id)
@@ -19,28 +20,31 @@ export default function Comments({ post }: { post: any }) {
         setTotalPages(val.totalPages);
       })
       .catch(msg => console.log(msg));
-    console.log(comments);
   }, [post]);
   return (
-    <div>
+    <>
       {comments ? (
         <div>
           {comments.map((item: any, index: number) => {
-            return (
-              <Comment
-                key={index}
-                src={
-                  process.env.MINIO_PUBLIC_DOMEN_URL
-                    ? process.env.MINIO_PUBLIC_DOMEN_URL + item.avatarURL
-                    : ""
-                }
-                userTitle={item.author}
-                comment={item.content}
-                createdAt={item.createdAt}
-              ></Comment>
-            );
+            if (item.replyTo == "00000000-0000-0000-0000-000000000000")
+              return (
+                <Comment
+                  replyingId={replyingId}
+                  setReplyingId={setReplyingId}
+                  key={index}
+                  post={post}
+                  src={
+                    process.env.MINIO_PUBLIC_DOMEN_URL
+                      ? process.env.MINIO_PUBLIC_DOMEN_URL + item.avatarURL
+                      : ""
+                  }
+                  userTitle={item.author}
+                  comment={item}
+                  createdAt={item.createdAt}
+                ></Comment>
+              );
           })}
-          {totalPages && totalPages != page && (
+          {totalPages > 0 && totalPages != page && (
             <p
               className="text-text-secondary-color link text-sm px-1"
               onClick={() => {
@@ -64,6 +68,7 @@ export default function Comments({ post }: { post: any }) {
         </div>
       ) : null}
       <AddArea
+        defualtContent=""
         idxToDel={idxToDel}
         setIdxToDel={setIdxToDel}
         comments={comments}
@@ -76,6 +81,6 @@ export default function Comments({ post }: { post: any }) {
         }
         userTitle={post.userFirstName + " " + post.userLastName}
       ></AddArea>
-    </div>
+    </>
   );
 }
