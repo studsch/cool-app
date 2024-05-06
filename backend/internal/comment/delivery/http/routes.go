@@ -12,7 +12,9 @@ func MapCommentRoutes(
 ) {
 	commGroup.Post("/", mw.AuthJWTMiddleware(), h.Create())
 	commGroup.Delete("/:id", mw.AuthJWTMiddleware(), h.Delete())
-	commGroup.Get("/:id", h.GetByID())
+	commGroup.Get("/count/post/:id", h.GetCommentCountByPostID())
+	commGroup.Get("/count/comment/:id", h.GetReplyCountByCommentID())
 	commGroup.Get("/post/:id", h.GetAllByPostID())
+	commGroup.Get("/:id", h.GetByID())
 	commGroup.Get("/:id/reply", h.GetReplyByCommentID())
 }
