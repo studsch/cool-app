@@ -1,10 +1,6 @@
 "use client";
 import PhotoGrid from "@/components/mediaProfile";
 import { Profile } from "@/components/profile/profile";
-import {
-  ProfileInfo,
-  RightSidebar,
-} from "@/components/right-sidebar/right-sidebar";
 import { Button } from "@/components/ui/button";
 import { Grid3X3 } from "lucide-react";
 import { Film } from "lucide-react";
@@ -24,50 +20,6 @@ export default function Home() {
   if (!session) {
     return <div>Loading...</div>;
   }
-
-  const profiles: ProfileInfo[] = [
-    {
-      avatarImage: "https://github.com/shadcn.png",
-      avatarFallback: "MP",
-      name: "Morty",
-      link: "@morty",
-    },
-    {
-      avatarImage:
-        "https://i.pinimg.com/736x/6e/51/32/6e5132a90812ad1abf3711135a5cf406.jpg",
-      avatarFallback: "RP",
-      name: "Rick",
-      link: "@rick",
-    },
-
-    {
-      avatarImage: "https://github.com/shadcn.png",
-      avatarFallback: "MP",
-      name: "Morty",
-      link: "@morty",
-    },
-    {
-      avatarImage:
-        "https://i.pinimg.com/736x/6e/51/32/6e5132a90812ad1abf3711135a5cf406.jpg",
-      avatarFallback: "RP",
-      name: "Rick",
-      link: "@rick",
-    },
-
-    {
-      avatarImage: "https://github.com/shadcn.png",
-      avatarFallback: "MP",
-      name: "Morty",
-      link: "@morty",
-    },
-    {
-      avatarImage:
-        "https://i.pinimg.com/736x/6e/51/32/6e5132a90812ad1abf3711135a5cf406.jpg",
-      avatarFallback: "RP",
-      name: "Rick",
-      link: "@rick",
-    },
-  ];
 
   const profileInfo = {
     avatarImage: "https://github.com/shadcn.png",
@@ -148,7 +100,7 @@ export default function Home() {
           </div>
           <hr className="ml-[2%] mr-[2%]"></hr>
           <div className="ml-2 mr-2 mt-4 w-[600px]  flex flex-wrap ">
-            <PhotoGrid photos={photos} />
+            <PhotoGrid />
           </div>
         </div>
       </div>

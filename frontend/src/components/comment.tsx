@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import CommentInput from "./inputComment";
 
 interface CommentProps {
-  name: string;
+  name?: string;
   photo: string;
   comment: string;
   dateCom: string;
-  addReply: (reply: string) => void; // Функция для добавления ответа на комментарий
+  addReply: (reply: string, name?: string, avatar?: string) => void; // Функция для добавления ответа на комментарий
 }
 
 const CommentC: React.FC<CommentProps> = ({
@@ -17,33 +17,34 @@ const CommentC: React.FC<CommentProps> = ({
   addReply,
 }) => {
   const [showReplyInput, setShowReplyInput] = useState(false);
-
-  const defaultName = "Default Name";
-  const defaultPhoto = "https://example.com/default.jpg";
-  const defaultComment = "Default comment";
-  const defaultDateCom = "два часа назад";
-
   const handleReplyClick = () => {
     setShowReplyInput(!showReplyInput);
   };
 
-  const handleAddReply = (reply: string) => {
+  const handleAddReply = (reply: string, name?: string, avatar?: string) => {
     setShowReplyInput(false); // Скрыть поле ввода в ответ на комментарий
-    addReply(reply); // Добавить ответ на комментарий
+    addReply(reply, name, avatar); // Добавить ответ на комментарий
   };
 
+  const dateObject = new Date(dateCom);
+
+  const day = dateObject.getDate();
+  const month = dateObject.getMonth() + 1;
+  const year = dateObject.getFullYear();
+  const formattedDate = `${day}.${month}.${year}`;
+
   return (
-    <div className="flex mt-4 relative">
+    <div className="flex mt-4 relative mb-4">
       <img
-        src={photo || defaultPhoto}
-        alt={name || defaultName}
-        className="h-[45px] w-[45px] rounded-full"
+        src={`http://localhost:9000/${photo}`}
+        alt={name}
+        className="h-[45px] w-[45px] rounded-full object-cover"
       />
       <div className="ml-4 w-full">
-        <h3 className="font-medium">{name || defaultName}</h3>
-        <h3 className="">{comment || defaultComment}</h3>
+        <h3 className="font-medium">{name}</h3>
+        <h3 className="">{comment}</h3>
         <div className="flex items-center">
-          <p className="text-sm">{dateCom || defaultDateCom}</p>
+          <p className="text-text-secondary-color">{formattedDate}</p>
           <button
             onClick={handleReplyClick}
             className="ml-2 text-sm text-[#FF75AF]"
@@ -52,10 +53,7 @@ const CommentC: React.FC<CommentProps> = ({
           </button>
         </div>
         {showReplyInput && (
-          <CommentInput
-            photo={photo || defaultPhoto}
-            addComment={handleAddReply}
-          />
+          <CommentInput photo={photo} addComment={handleAddReply} />
         )}
       </div>
     </div>

@@ -104,7 +104,7 @@ export default function EditProfile() {
         name: firstName,
         surname: lastName,
         about: about,
-        image: typeof avatar === "string" ? avatar : session?.user?.avatar,
+        image: avatar,
         city: city,
         country: country,
       },

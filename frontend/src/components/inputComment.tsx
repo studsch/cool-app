@@ -3,21 +3,27 @@ import Input from "./ui/input/Input";
 import { Smile } from "lucide-react";
 import { Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
 
 type Props = {
   photo: string;
-  addComment: (comment: string) => void; // Функция для добавления комментария в список
+  id: string;
+  addComment: (comment: string, name?: string, avatar?: string) => void; // Функция для добавления комментария в список
+  userName: string; // Добавлено новое поле для имени пользователя
 };
 
-const CommentInput: React.FC<Props> = ({ photo, addComment }) => {
+const CommentInput: React.FC<Props> = ({ photo, id, addComment }) => {
+  const { data: session } = useSession();
   const [inputValue, setInputValue] = useState("");
   const [showSmileMenu, setShowSmileMenu] = useState(false);
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = async (
+    event: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
     if (event.key === "Enter" && event.shiftKey) {
       event.preventDefault(); // Предотвращаем перенос строки
-      console.log("Text entered:", inputValue);
-      addComment(inputValue); // Добавляем комментарий в список
+      addComment(inputValue, session?.user.name, session?.user.avatar); // Добавляем комментарий в список
+      await sendComment(inputValue); // Отправляем комментарий
       setInputValue("");
     } else if (event.key === "Enter" && !event.shiftKey) {
       setInputValue(prevValue => prevValue + "\n"); // Добавляем перенос строки
@@ -37,6 +43,28 @@ const CommentInput: React.FC<Props> = ({ photo, addComment }) => {
     setShowSmileMenu(false);
   };
 
+  const sendComment = async (comment: string) => {
+    try {
+      // Отправляем комментарий на сервер
+      const response = await fetch("http://localhost:8000/api/v1/comment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.user.tokens.access}`,
+        },
+        body: JSON.stringify({
+          content: comment,
+          postId: id,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to send comment");
+      }
+    } catch (error) {
+      console.error("Error sending comment:", error);
+    }
+  };
+
   const smileys = ["😊", "😄", "😁", "😆", "😅", "😂", "🤣", "😉", "😍", "🥰"];
 
   return (
@@ -44,7 +72,7 @@ const CommentInput: React.FC<Props> = ({ photo, addComment }) => {
       <img
         src={photo}
         alt="User photo"
-        className="w-[45px] h-[45px] rounded-full"
+        className="w-[45px] h-[45px] rounded-full object-cover"
       />
       <CustomInput
         type="text"

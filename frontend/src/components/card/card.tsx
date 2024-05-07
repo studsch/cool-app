@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   Card,
@@ -39,24 +39,25 @@ import CommentC from "../comment";
 import CommentInput from "../inputComment";
 
 interface CommentProps {
-  name: string;
-  photo: string;
-  comment: string;
-  dateCom: string;
+  author: string;
+  avatarURL: string;
+  content: string;
+  createdAt: string;
 }
 
 interface PostCardProps {
+  id: string;
   userPhoto: string; // Фотография пользователя
   userName: string; // Имя пользователя
   userSName: string; // Фамилия пользователя
-  photo: string; // Фотография для карточки поста
+  photo?: string; // Фотография для карточки поста
   description: string; // Описание для карточки поста
   className?: string;
   createdAt: string;
-  content: Comment[]; // Пропс для массива комментариев
 }
 
 const PostCard: React.FC<PostCardProps> = ({
+  id,
   userPhoto,
   userName,
   userSName,
@@ -64,7 +65,6 @@ const PostCard: React.FC<PostCardProps> = ({
   description,
   className,
   createdAt,
-  content,
 }) => {
   const [likesCount, setLikesCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
@@ -77,63 +77,53 @@ const PostCard: React.FC<PostCardProps> = ({
     setIsSaved(!isSaved);
   };
 
-  const [commentsData, setCommentsData] = useState<CommentProps[]>([
-    {
-      name: "User1",
-      photo:
-        "https://i.pinimg.com/originals/d9/8b/54/d98b54932c071ceb6f95fbd5439e7da7.jpg",
-      comment: "Comment 1",
-      dateCom: "Today",
-    },
-    // Другие комментарии
-  ]);
-
-  const addComment = (comment: string) => {
-    setCommentsData(prevComments => [
-      ...prevComments,
-      {
-        name: "New User",
-        photo: "https://example.com/newuser.jpg",
-        comment: comment,
-        dateCom: "Now",
-      },
-    ]);
-  };
-
-  const [showAllComments, setShowAllComments] = useState(false);
-  const [hideAllComments, setHideAllComments] = useState(false);
-
-  const handleShowAllClick = () => {
-    setShowAllComments(true);
-    setHideAllComments(false);
-  };
-
-  const handleHideAllClick = () => {
-    setShowAllComments(false);
-    setHideAllComments(true);
+  const handleAddComment = (comment: string) => {
+    const newComment: CommentProps = {
+      author: "New User",
+      avatarURL: userPhoto,
+      content: comment,
+      createdAt: "Now",
+    };
+    setComments(prevComments => [...prevComments, newComment]);
   };
 
   const handleAddReply = (reply: string) => {
     // Добавить ответ на комментарий в список
     // В данном случае можно просто добавить ответ в список комментариев
-    setCommentsData(prevComments => [
-      ...prevComments,
-      {
-        name: "New User", // Имя пользователя, отвечающего на комментарий
-        photo: "https://example.com/newuser.jpg", // Фото пользователя
-        comment: reply, // Текст ответа
-        dateCom: "Now", // Дата ответа
-      },
-    ]);
   };
 
   const dateObject = new Date(createdAt);
 
-  const day = dateObject.getDate(); // День
-  const month = dateObject.getMonth() + 1; // Месяц (начиная с 0, поэтому добавляем 1)
-  const year = dateObject.getFullYear(); // Год
-  const formattedDate = `${day}/${month}/${year}`;
+  const day = dateObject.getDate();
+  const month = dateObject.getMonth() + 1;
+  const year = dateObject.getFullYear();
+  const formattedDate = `${day}.${month}.${year}`;
 
+  const [comments, setComments] = useState<CommentProps[]>([]);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const commentsUrl = `http://localhost:8000/api/v1/comment/post/${id}?page=1&size=10`;
+        const response = await fetch(commentsUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setComments(data.comments);
+      } catch (error) {
+        console.error("There was a problem with fetching comments:", error);
+      }
+    };
+
+    fetchComments();
+  }, []);
+  console.log(comments);
   return (
     <div className={cn("grid place-content-center mt-4 mb-4", className)}>
       <span className="align-middle">
@@ -252,50 +242,23 @@ const PostCard: React.FC<PostCardProps> = ({
               </div>
               <hr></hr>
               <div className="overflow-hidden w-full ">
-                {showAllComments ? (
-                  commentsData.map((comment, index) => (
-                    <CommentC
-                      key={index}
-                      name={comment.name}
-                      photo={comment.photo}
-                      comment={comment.comment}
-                      dateCom={comment.dateCom}
-                      addReply={handleAddReply} // Если вам нужна функция добавления ответа
-                    />
-                  ))
-                ) : (
-                  <CommentC {...commentsData[0]} addReply={handleAddReply} />
-                )}
-                {!showAllComments && !hideAllComments && (
-                  <button
-                    onClick={handleShowAllClick}
-                    className="text-[#FF75AF] mt-4"
-                  >
-                    Show All
-                  </button>
-                )}
-                {showAllComments && (
-                  <button
-                    onClick={handleHideAllClick}
-                    className="text-[#FF75AF] mt-4"
-                  >
-                    Hide All
-                  </button>
-                )}
-                {!showAllComments && hideAllComments && (
-                  <button
-                    onClick={handleShowAllClick}
-                    className="text-[#FF75AF] mt-4"
-                  >
-                    Show All
-                  </button>
-                )}
+                {comments.map((comment, index) => (
+                  <CommentC
+                    key={index}
+                    name={comment.author}
+                    photo={comment.avatarURL}
+                    comment={comment.content}
+                    dateCom={comment.createdAt}
+                    addReply={handleAddReply}
+                  />
+                ))}
               </div>
               <hr></hr>
               <div>
                 <CommentInput
-                  photo="https://i.pinimg.com/originals/d9/8b/54/d98b54932c071ceb6f95fbd5439e7da7.jpg"
-                  addComment={addComment}
+                  photo={userPhoto}
+                  addComment={handleAddComment}
+                  id={id}
                 />
               </div>
             </div>
