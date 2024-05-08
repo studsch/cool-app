@@ -17,4 +17,5 @@ func MapCommentRoutes(
 	commGroup.Get("/post/:id", h.GetAllByPostID())
 	commGroup.Get("/:id", h.GetByID())
 	commGroup.Get("/:id/reply", h.GetReplyByCommentID())
+	commGroup.Get("/:id/allReplys", h.GetAllReplysByMainCommentID())
 }

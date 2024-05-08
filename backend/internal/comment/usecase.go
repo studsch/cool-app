@@ -25,4 +25,7 @@ type UseCase interface {
 	GetReplyCountByCommentID(
 		ctx context.Context, commentID uuid.UUID,
 	) (int, error)
+	GetAllReplysByMainCommentID(
+		context.Context, uuid.UUID, *utils.PaginationQuery,
+	) (*models.CommentList, error)
 }

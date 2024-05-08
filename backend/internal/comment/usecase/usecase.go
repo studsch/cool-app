@@ -76,3 +76,9 @@ func (u *commentUC) GetReplyCountByCommentID(
 ) (int, error) {
 	return u.commentRepo.GetReplyCountByCommentID(ctx, postID)
 }
+
+func (u *commentUC) GetAllReplysByMainCommentID(
+	ctx context.Context, mainCommentID uuid.UUID, pq *utils.PaginationQuery,
+) (*models.CommentList, error) {
+	return u.commentRepo.GetAllReplysByMainCommentID(ctx, mainCommentID, pq)
+}
