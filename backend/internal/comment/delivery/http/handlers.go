@@ -197,3 +197,32 @@ func (h *commentHandlers) GetReplyCountByCommentID() fiber.Handler {
 		})
 	}
 }
+
+func (h *commentHandlers) GetAllReplysByMainCommentID() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		commID, err := uuid.Parse(c.Params("id"))
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		pq, err := utils.GetPaginationFromCtx(c)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		commByPostID, err := h.commentUC.GetAllReplysByMainCommentID(
+			c.UserContext(), commID, pq,
+		)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(commByPostID)
+	}
+}

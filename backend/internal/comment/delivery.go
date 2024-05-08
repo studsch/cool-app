@@ -13,4 +13,5 @@ type Handlers interface {
 	GetReplyByCommentID() fiber.Handler
 	GetCommentCountByPostID() fiber.Handler
 	GetReplyCountByCommentID() fiber.Handler
+	GetAllReplysByMainCommentID() fiber.Handler
 }
