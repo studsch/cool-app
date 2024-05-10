@@ -8,7 +8,8 @@ INSERT INTO comment(
 ) VALUES (
 	$1, $2,
     NULLIF($3, '00000000-0000-0000-0000-000000000000')::UUID,
-    $4, FALSE, NOW(), $5
+    $4, FALSE, NOW(),
+	NULLIF($5, '00000000-0000-0000-0000-000000000000')::UUID
 ) RETURNING
 	id, user_id, post_id, reply_to_comment_id, content,
 	created_at, main_comment_id
