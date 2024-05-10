@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package widgets;
+
+message MiniUserInfo {
+    string id = 1;
+    string firstName = 2;
+    string lastName = 3;
+    string login = 4;
+    string avatar = 5;
+}
+
+message GetMostLikedUserInfoByUserIdRequest {
+    string currentUserId = 1;
+}
+
+message GetMostLikedUserInfoByUserIdResponse {
+    MiniUserInfo userInfo = 1;
+}
+
+service WidgetsService {
+    rpc GetMostLikedUserInfoByUserId(GetMostLikedUserInfoByUserIdRequest) returns (GetMostLikedUserInfoByUserIdResponse);
+}
