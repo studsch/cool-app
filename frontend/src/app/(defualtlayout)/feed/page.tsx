@@ -127,20 +127,23 @@ export default function Feed() {
           />
         </div>
         <div className="md:w-[512px] xl:w-[768px] overflow-hidden">
-          {posts.slice(0, pageSize).map(post => (
-            <PostCard
-              key={post.id}
-              photo={`http://localhost:9000/${
-                post.imageURLs ? post.imageURLs[0] : ""
-              }`}
-              id={post.id}
-              description={post.description}
-              userPhoto={`http://localhost:9000/${post.userAvatar}`}
-              userName={post.userFirstName}
-              userSName={post.userLastName}
-              createdAt={post.createdAt}
-            />
-          ))}
+          {posts
+            .slice(0, pageSize)
+            .reverse()
+            .map(post => (
+              <PostCard
+                key={post.id}
+                photo={`http://localhost:9000/${
+                  post.imageURLs ? post.imageURLs[0] : ""
+                }`}
+                id={post.id}
+                description={post.description}
+                userPhoto={`http://localhost:9000/${post.userAvatar}`}
+                userName={post.userFirstName}
+                userSName={post.userLastName}
+                createdAt={post.createdAt}
+              />
+            ))}
         </div>
       </div>
       <div className="my-5 w-[240px] md:flex flex-col gap-4 hidden">

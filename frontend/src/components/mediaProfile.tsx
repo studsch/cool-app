@@ -1,7 +1,7 @@
-"use client";
 import React, { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import PostCard from "./card/card";
+import { Button } from "@/components/ui/button";
 
 interface PhotoGridProps {
   id: string;
@@ -56,7 +56,25 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ id }) => {
 
   const openPopup = (post: PhotoGridProps) => {
     setSelectedPost(post);
+    setSelectedPhoto(post.imageURLs ? post.imageURLs[0] : null); // Устанавливаем selectedPhoto
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popUpRef.current &&
+        !popUpRef.current.contains(event.target as Node)
+      ) {
+        setSelectedPost(null); // Закрытие popup при клике вне области PostCard
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="flex flex-wrap">
@@ -81,12 +99,20 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ id }) => {
       {selectedPost && (
         <div className="fixed overflow-auto top-0 left-0 z-50 w-full h-full bg-[#9A9A9A] bg-opacity-50">
           <div ref={popUpRef}>
+            <Button
+              className="absolute top-2 right-2 colore-white"
+              onClick={() => setSelectedPost(null)} // Закрытие popup при клике на кнопку
+            >
+              Скрыть
+            </Button>
             <PostCard
               id={selectedPost.id}
-              userPhoto={selectedPost.userAvatar}
+              userPhoto={`http://localhost:9000/${selectedPost.userAvatar}`}
               userName={selectedPost.userFirstName}
               userSName={selectedPost.userLastName}
-              photo={selectedPhoto || ""}
+              photo={
+                selectedPhoto ? `http://localhost:9000/${selectedPhoto}` : ""
+              }
               description={selectedPost.description}
               createdAt={selectedPost.createdAt}
             />
