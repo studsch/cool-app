@@ -32,7 +32,16 @@ message GetMostLikedTagByUserIdResponse {
     TagInfo tagInfo = 1;
 }
 
+message GetMostViewedUserInfoByUserIdRequest {
+    string currentUserId = 1;
+}
+
+message GetMostViewedUserInfoByUserIdResponse {
+    MiniUserInfo userInfo = 1;
+}
+
 service WidgetsService {
     rpc GetMostLikedUserInfoByUserId(GetMostLikedUserInfoByUserIdRequest) returns (GetMostLikedUserInfoByUserIdResponse);
     rpc GetMostLikedTagByUserId(GetMostLikedTagByUserIdRequest) returns (GetMostLikedTagByUserIdResponse);
+    rpc GetMostViewedUserInfoByUserId(GetMostViewedUserInfoByUserIdRequest) returns (GetMostViewedUserInfoByUserIdResponse);
 }

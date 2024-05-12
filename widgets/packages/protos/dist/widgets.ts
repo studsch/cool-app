@@ -51,6 +51,14 @@ export interface GetMostLikedTagByUserIdResponse {
   tagInfo: TagInfo | undefined;
 }
 
+export interface GetMostViewedUserInfoByUserIdRequest {
+  currentUserId: string;
+}
+
+export interface GetMostViewedUserInfoByUserIdResponse {
+  userInfo: MiniUserInfo | undefined;
+}
+
 function createBaseMiniUserInfo(): MiniUserInfo {
   return { id: "", firstName: "", lastName: "", login: "", avatar: "" };
 }
@@ -503,6 +511,130 @@ export const GetMostLikedTagByUserIdResponse = {
   },
 };
 
+function createBaseGetMostViewedUserInfoByUserIdRequest(): GetMostViewedUserInfoByUserIdRequest {
+  return { currentUserId: "" };
+}
+
+export const GetMostViewedUserInfoByUserIdRequest = {
+  encode(message: GetMostViewedUserInfoByUserIdRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.currentUserId !== "") {
+      writer.uint32(10).string(message.currentUserId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetMostViewedUserInfoByUserIdRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetMostViewedUserInfoByUserIdRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.currentUserId = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetMostViewedUserInfoByUserIdRequest {
+    return { currentUserId: isSet(object.currentUserId) ? globalThis.String(object.currentUserId) : "" };
+  },
+
+  toJSON(message: GetMostViewedUserInfoByUserIdRequest): unknown {
+    const obj: any = {};
+    if (message.currentUserId !== "") {
+      obj.currentUserId = message.currentUserId;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GetMostViewedUserInfoByUserIdRequest>, I>>(
+    base?: I,
+  ): GetMostViewedUserInfoByUserIdRequest {
+    return GetMostViewedUserInfoByUserIdRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<GetMostViewedUserInfoByUserIdRequest>, I>>(
+    object: I,
+  ): GetMostViewedUserInfoByUserIdRequest {
+    const message = createBaseGetMostViewedUserInfoByUserIdRequest();
+    message.currentUserId = object.currentUserId ?? "";
+    return message;
+  },
+};
+
+function createBaseGetMostViewedUserInfoByUserIdResponse(): GetMostViewedUserInfoByUserIdResponse {
+  return { userInfo: undefined };
+}
+
+export const GetMostViewedUserInfoByUserIdResponse = {
+  encode(message: GetMostViewedUserInfoByUserIdResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userInfo !== undefined) {
+      MiniUserInfo.encode(message.userInfo, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetMostViewedUserInfoByUserIdResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetMostViewedUserInfoByUserIdResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userInfo = MiniUserInfo.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetMostViewedUserInfoByUserIdResponse {
+    return { userInfo: isSet(object.userInfo) ? MiniUserInfo.fromJSON(object.userInfo) : undefined };
+  },
+
+  toJSON(message: GetMostViewedUserInfoByUserIdResponse): unknown {
+    const obj: any = {};
+    if (message.userInfo !== undefined) {
+      obj.userInfo = MiniUserInfo.toJSON(message.userInfo);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GetMostViewedUserInfoByUserIdResponse>, I>>(
+    base?: I,
+  ): GetMostViewedUserInfoByUserIdResponse {
+    return GetMostViewedUserInfoByUserIdResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<GetMostViewedUserInfoByUserIdResponse>, I>>(
+    object: I,
+  ): GetMostViewedUserInfoByUserIdResponse {
+    const message = createBaseGetMostViewedUserInfoByUserIdResponse();
+    message.userInfo = (object.userInfo !== undefined && object.userInfo !== null)
+      ? MiniUserInfo.fromPartial(object.userInfo)
+      : undefined;
+    return message;
+  },
+};
+
 export type WidgetsServiceService = typeof WidgetsServiceService;
 export const WidgetsServiceService = {
   getMostLikedUserInfoByUserId: {
@@ -527,6 +659,17 @@ export const WidgetsServiceService = {
       Buffer.from(GetMostLikedTagByUserIdResponse.encode(value).finish()),
     responseDeserialize: (value: Buffer) => GetMostLikedTagByUserIdResponse.decode(value),
   },
+  getMostViewedUserInfoByUserId: {
+    path: "/widgets.WidgetsService/GetMostViewedUserInfoByUserId",
+    requestStream: false,
+    responseStream: false,
+    requestSerialize: (value: GetMostViewedUserInfoByUserIdRequest) =>
+      Buffer.from(GetMostViewedUserInfoByUserIdRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer) => GetMostViewedUserInfoByUserIdRequest.decode(value),
+    responseSerialize: (value: GetMostViewedUserInfoByUserIdResponse) =>
+      Buffer.from(GetMostViewedUserInfoByUserIdResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer) => GetMostViewedUserInfoByUserIdResponse.decode(value),
+  },
 } as const;
 
 export interface WidgetsServiceServer extends UntypedServiceImplementation {
@@ -535,6 +678,10 @@ export interface WidgetsServiceServer extends UntypedServiceImplementation {
     GetMostLikedUserInfoByUserIdResponse
   >;
   getMostLikedTagByUserId: handleUnaryCall<GetMostLikedTagByUserIdRequest, GetMostLikedTagByUserIdResponse>;
+  getMostViewedUserInfoByUserId: handleUnaryCall<
+    GetMostViewedUserInfoByUserIdRequest,
+    GetMostViewedUserInfoByUserIdResponse
+  >;
 }
 
 export interface WidgetsServiceClient extends Client {
@@ -567,6 +714,21 @@ export interface WidgetsServiceClient extends Client {
     metadata: Metadata,
     options: Partial<CallOptions>,
     callback: (error: ServiceError | null, response: GetMostLikedTagByUserIdResponse) => void,
+  ): ClientUnaryCall;
+  getMostViewedUserInfoByUserId(
+    request: GetMostViewedUserInfoByUserIdRequest,
+    callback: (error: ServiceError | null, response: GetMostViewedUserInfoByUserIdResponse) => void,
+  ): ClientUnaryCall;
+  getMostViewedUserInfoByUserId(
+    request: GetMostViewedUserInfoByUserIdRequest,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: GetMostViewedUserInfoByUserIdResponse) => void,
+  ): ClientUnaryCall;
+  getMostViewedUserInfoByUserId(
+    request: GetMostViewedUserInfoByUserIdRequest,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: GetMostViewedUserInfoByUserIdResponse) => void,
   ): ClientUnaryCall;
 }
 

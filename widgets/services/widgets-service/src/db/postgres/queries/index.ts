@@ -29,3 +29,19 @@ ORDER BY count DESC
 LIMIT 1
 `;
 }
+
+export async function getMostViewedUserByUserId(id: string) {
+  return db`
+WITH views AS (
+  SELECT p.user_id, COUNT(p.user_id) AS count
+  FROM viewed_posts AS vp
+  LEFT JOIN post p ON vp.post_id = p.id
+  WHERE vp.user_id = ${id}::uuid
+  GROUP BY p.user_id
+  ORDER BY count DESC
+  LIMIT 1
+) SELECT u.id, u.first_name, u.last_name, u.login, u.avatar, v.count
+FROM views AS v
+LEFT JOIN users AS u ON v.user_id = u.id
+`;
+}
