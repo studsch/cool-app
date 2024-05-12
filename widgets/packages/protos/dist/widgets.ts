@@ -37,6 +37,20 @@ export interface GetMostLikedUserInfoByUserIdResponse {
   userInfo: MiniUserInfo | undefined;
 }
 
+export interface TagInfo {
+  id: string;
+  title: string;
+  count: number;
+}
+
+export interface GetMostLikedTagByUserIdRequest {
+  currentUserId: string;
+}
+
+export interface GetMostLikedTagByUserIdResponse {
+  tagInfo: TagInfo | undefined;
+}
+
 function createBaseMiniUserInfo(): MiniUserInfo {
   return { id: "", firstName: "", lastName: "", login: "", avatar: "" };
 }
@@ -280,6 +294,215 @@ export const GetMostLikedUserInfoByUserIdResponse = {
   },
 };
 
+function createBaseTagInfo(): TagInfo {
+  return { id: "", title: "", count: 0 };
+}
+
+export const TagInfo = {
+  encode(message: TagInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.title !== "") {
+      writer.uint32(18).string(message.title);
+    }
+    if (message.count !== 0) {
+      writer.uint32(24).int32(message.count);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TagInfo {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTagInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.count = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TagInfo {
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      title: isSet(object.title) ? globalThis.String(object.title) : "",
+      count: isSet(object.count) ? globalThis.Number(object.count) : 0,
+    };
+  },
+
+  toJSON(message: TagInfo): unknown {
+    const obj: any = {};
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.title !== "") {
+      obj.title = message.title;
+    }
+    if (message.count !== 0) {
+      obj.count = Math.round(message.count);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<TagInfo>, I>>(base?: I): TagInfo {
+    return TagInfo.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<TagInfo>, I>>(object: I): TagInfo {
+    const message = createBaseTagInfo();
+    message.id = object.id ?? "";
+    message.title = object.title ?? "";
+    message.count = object.count ?? 0;
+    return message;
+  },
+};
+
+function createBaseGetMostLikedTagByUserIdRequest(): GetMostLikedTagByUserIdRequest {
+  return { currentUserId: "" };
+}
+
+export const GetMostLikedTagByUserIdRequest = {
+  encode(message: GetMostLikedTagByUserIdRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.currentUserId !== "") {
+      writer.uint32(10).string(message.currentUserId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetMostLikedTagByUserIdRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetMostLikedTagByUserIdRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.currentUserId = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetMostLikedTagByUserIdRequest {
+    return { currentUserId: isSet(object.currentUserId) ? globalThis.String(object.currentUserId) : "" };
+  },
+
+  toJSON(message: GetMostLikedTagByUserIdRequest): unknown {
+    const obj: any = {};
+    if (message.currentUserId !== "") {
+      obj.currentUserId = message.currentUserId;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GetMostLikedTagByUserIdRequest>, I>>(base?: I): GetMostLikedTagByUserIdRequest {
+    return GetMostLikedTagByUserIdRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<GetMostLikedTagByUserIdRequest>, I>>(
+    object: I,
+  ): GetMostLikedTagByUserIdRequest {
+    const message = createBaseGetMostLikedTagByUserIdRequest();
+    message.currentUserId = object.currentUserId ?? "";
+    return message;
+  },
+};
+
+function createBaseGetMostLikedTagByUserIdResponse(): GetMostLikedTagByUserIdResponse {
+  return { tagInfo: undefined };
+}
+
+export const GetMostLikedTagByUserIdResponse = {
+  encode(message: GetMostLikedTagByUserIdResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.tagInfo !== undefined) {
+      TagInfo.encode(message.tagInfo, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetMostLikedTagByUserIdResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetMostLikedTagByUserIdResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.tagInfo = TagInfo.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetMostLikedTagByUserIdResponse {
+    return { tagInfo: isSet(object.tagInfo) ? TagInfo.fromJSON(object.tagInfo) : undefined };
+  },
+
+  toJSON(message: GetMostLikedTagByUserIdResponse): unknown {
+    const obj: any = {};
+    if (message.tagInfo !== undefined) {
+      obj.tagInfo = TagInfo.toJSON(message.tagInfo);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GetMostLikedTagByUserIdResponse>, I>>(base?: I): GetMostLikedTagByUserIdResponse {
+    return GetMostLikedTagByUserIdResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<GetMostLikedTagByUserIdResponse>, I>>(
+    object: I,
+  ): GetMostLikedTagByUserIdResponse {
+    const message = createBaseGetMostLikedTagByUserIdResponse();
+    message.tagInfo = (object.tagInfo !== undefined && object.tagInfo !== null)
+      ? TagInfo.fromPartial(object.tagInfo)
+      : undefined;
+    return message;
+  },
+};
+
 export type WidgetsServiceService = typeof WidgetsServiceService;
 export const WidgetsServiceService = {
   getMostLikedUserInfoByUserId: {
@@ -293,6 +516,17 @@ export const WidgetsServiceService = {
       Buffer.from(GetMostLikedUserInfoByUserIdResponse.encode(value).finish()),
     responseDeserialize: (value: Buffer) => GetMostLikedUserInfoByUserIdResponse.decode(value),
   },
+  getMostLikedTagByUserId: {
+    path: "/widgets.WidgetsService/GetMostLikedTagByUserId",
+    requestStream: false,
+    responseStream: false,
+    requestSerialize: (value: GetMostLikedTagByUserIdRequest) =>
+      Buffer.from(GetMostLikedTagByUserIdRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer) => GetMostLikedTagByUserIdRequest.decode(value),
+    responseSerialize: (value: GetMostLikedTagByUserIdResponse) =>
+      Buffer.from(GetMostLikedTagByUserIdResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer) => GetMostLikedTagByUserIdResponse.decode(value),
+  },
 } as const;
 
 export interface WidgetsServiceServer extends UntypedServiceImplementation {
@@ -300,6 +534,7 @@ export interface WidgetsServiceServer extends UntypedServiceImplementation {
     GetMostLikedUserInfoByUserIdRequest,
     GetMostLikedUserInfoByUserIdResponse
   >;
+  getMostLikedTagByUserId: handleUnaryCall<GetMostLikedTagByUserIdRequest, GetMostLikedTagByUserIdResponse>;
 }
 
 export interface WidgetsServiceClient extends Client {
@@ -317,6 +552,21 @@ export interface WidgetsServiceClient extends Client {
     metadata: Metadata,
     options: Partial<CallOptions>,
     callback: (error: ServiceError | null, response: GetMostLikedUserInfoByUserIdResponse) => void,
+  ): ClientUnaryCall;
+  getMostLikedTagByUserId(
+    request: GetMostLikedTagByUserIdRequest,
+    callback: (error: ServiceError | null, response: GetMostLikedTagByUserIdResponse) => void,
+  ): ClientUnaryCall;
+  getMostLikedTagByUserId(
+    request: GetMostLikedTagByUserIdRequest,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: GetMostLikedTagByUserIdResponse) => void,
+  ): ClientUnaryCall;
+  getMostLikedTagByUserId(
+    request: GetMostLikedTagByUserIdRequest,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: GetMostLikedTagByUserIdResponse) => void,
   ): ClientUnaryCall;
 }
 
