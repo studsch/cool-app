@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/studsch/cool-app/backend/internal/genproto/rec";
+option go_package = "github.com/studsch/cool-app/backend/pkg/genproto/rec";
 
 message PredictPostsForOneUserRequest {
   string user_id = 1;

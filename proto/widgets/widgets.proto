@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package widgets;
 
+option go_package = "github.com/studsch/cool-app/backend/pkg/genproto/rec";
+
 message MiniUserInfo {
     string id = 1;
     string firstName = 2;

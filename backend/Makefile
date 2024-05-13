@@ -27,7 +27,7 @@ migrate:
 	docker-compose -f docker-compose.dev.yaml --profile tools run --rm migrate up
 
 generate:
-	protoc -I ../proto ../proto/rec/rec.proto \
+	protoc -I ../proto ../proto/$(name)/$(name).proto \
 	--go_out=./pkg/genproto \
 	--go_opt=paths=source_relative \
 	--go-grpc_out=./pkg/genproto \
