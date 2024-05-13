@@ -2,48 +2,48 @@ syntax = "proto3";
 
 package widgets;
 
-option go_package = "github.com/studsch/cool-app/backend/pkg/genproto/rec";
+option go_package = "github.com/studsch/cool-app/backend/pkg/genproto/widgets";
 
 message MiniUserInfo {
-    string id = 1;
-    string firstName = 2;
-    string lastName = 3;
-    string login = 4;
-    string avatar = 5;
+  string id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string login = 4;
+  string avatar = 5;
 }
 
 message GetMostLikedUserInfoByUserIdRequest {
-    string currentUserId = 1;
+  string currentUserId = 1;
 }
 
 message GetMostLikedUserInfoByUserIdResponse {
-    MiniUserInfo userInfo = 1;
+  MiniUserInfo userInfo = 1;
 }
 
 message TagInfo {
-    string id = 1;
-    string title = 2;
-    int32 count = 3;
+  string id = 1;
+  string title = 2;
+  int32 count = 3;
 }
 
 message GetMostLikedTagByUserIdRequest {
-    string currentUserId = 1;
+  string currentUserId = 1;
 }
 
 message GetMostLikedTagByUserIdResponse {
-    TagInfo tagInfo = 1;
+  TagInfo tagInfo = 1;
 }
 
 message GetMostViewedUserInfoByUserIdRequest {
-    string currentUserId = 1;
+  string currentUserId = 1;
 }
 
 message GetMostViewedUserInfoByUserIdResponse {
-    MiniUserInfo userInfo = 1;
+  MiniUserInfo userInfo = 1;
 }
 
 service WidgetsService {
-    rpc GetMostLikedUserInfoByUserId(GetMostLikedUserInfoByUserIdRequest) returns (GetMostLikedUserInfoByUserIdResponse);
-    rpc GetMostLikedTagByUserId(GetMostLikedTagByUserIdRequest) returns (GetMostLikedTagByUserIdResponse);
-    rpc GetMostViewedUserInfoByUserId(GetMostViewedUserInfoByUserIdRequest) returns (GetMostViewedUserInfoByUserIdResponse);
+  rpc GetMostLikedUserInfoByUserId(GetMostLikedUserInfoByUserIdRequest) returns (GetMostLikedUserInfoByUserIdResponse);
+  rpc GetMostLikedTagByUserId(GetMostLikedTagByUserIdRequest) returns (GetMostLikedTagByUserIdResponse);
+  rpc GetMostViewedUserInfoByUserId(GetMostViewedUserInfoByUserIdRequest) returns (GetMostViewedUserInfoByUserIdResponse);
 }

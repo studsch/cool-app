@@ -24,6 +24,9 @@ import (
 	userHttp "github.com/studsch/cool-app/backend/internal/user/delivery/http"
 	userRepository "github.com/studsch/cool-app/backend/internal/user/repository"
 	userUseCase "github.com/studsch/cool-app/backend/internal/user/usecase"
+	widgetsHttp "github.com/studsch/cool-app/backend/internal/widgets/deliver/http"
+	widgetsRepository "github.com/studsch/cool-app/backend/internal/widgets/repository"
+	widgetsUseCase "github.com/studsch/cool-app/backend/internal/widgets/usecase"
 )
 
 // MapHandlers Map server handlers
@@ -39,6 +42,7 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	postRedisRepo := postRepository.NewPostRedisRepo(s.redisClient)
 	authRedisRepo := authRepository.NewAuthRedisRepo(s.redisClient)
 	msgRepo := msgRepository.NewPsqlRepo(s.db)
+	widgetsRepo := widgetsRepository.NewGrpcRepo(s.widgetsConn, s.logger)
 
 	// Init useCases
 	authUC := authUseCase.NewAuthUC(
@@ -49,6 +53,7 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	likeUC := likeUseCase.NewLikeUC(s.cfg, likeRepo, s.logger)
 	userUC := userUseCase.NewUserUC(s.cfg, userRepo, s.logger)
 	msgUC := msgUseCase.NewChatUC(s.cfg, s.logger, msgRepo, userRepo)
+	widgetsUC := widgetsUseCase.NewWidgetsUC(widgetsRepo, s.logger)
 
 	// Init handlers
 	authHandlers := authHttp.NewAuthHandlers(s.cfg, authUC, s.logger)
@@ -57,6 +62,7 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	likeHandlers := likeHttp.NewLikeHandlers(s.cfg, likeUC, s.logger)
 	userHandlers := userHttp.NewUserHandlers(s.cfg, userUC, s.logger)
 	msgHandlers := msgHttp.NewMsgHandlers(s.cfg, s.logger, msgUC)
+	widgetsHandlers := widgetsHttp.NewWidgetsHandlers(widgetsUC, s.logger)
 
 	mw := apiMiddlewares.NewMiddlewareManager(authUC, s.cfg, []string{"*"}, s.logger)
 
@@ -85,6 +91,7 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	likeGroup := v1.Group("/like")
 	userGroup := v1.Group("/user")
 	msgGroup := v1.Group("/msg")
+	widgetsGroup := v1.Group("/widgets")
 
 	authHttp.MapAuthRoutes(authGroup, authHandlers, mw)
 	postHttp.MapPostRoutes(postGroup, postHandlers, mw)
@@ -92,6 +99,7 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	likeHttp.MapLikeRoutes(likeGroup, likeHandlers, mw)
 	userHttp.MapUserRoutes(userGroup, userHandlers, mw)
 	msgHttp.MapMsgRoutes(msgGroup, msgHandlers, mw)
+	widgetsHttp.MapWidgetsRoutes(widgetsGroup, widgetsHandlers, mw)
 
 	health.Get("", func(c *fiber.Ctx) error {
 		s.logger.Info("Health check")
