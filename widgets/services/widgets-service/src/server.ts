@@ -20,7 +20,7 @@ export function getWidgetServer(): WidgetsServiceServer {
       GetMostLikedUserInfoByUserIdRequest,
       GetMostLikedUserInfoByUserIdResponse
     >,
-    callback: sendUnaryData<GetMostLikedUserInfoByUserIdResponse>
+    callback: sendUnaryData<GetMostLikedUserInfoByUserIdResponse>,
   ) {
     const req = call.request;
     const log = logger.child({
@@ -35,7 +35,7 @@ export function getWidgetServer(): WidgetsServiceServer {
         log.error(error);
         callback(
           { code: status.INVALID_ARGUMENT, message: error.message },
-          null
+          null,
         );
         log.error(error);
         return null;
@@ -72,7 +72,7 @@ export function getWidgetServer(): WidgetsServiceServer {
       GetMostLikedTagByUserIdRequest,
       GetMostLikedTagByUserIdResponse
     >,
-    callback: sendUnaryData<GetMostLikedTagByUserIdResponse>
+    callback: sendUnaryData<GetMostLikedTagByUserIdResponse>,
   ) {
     const req = call.request;
     const log = logger.child({
@@ -87,7 +87,7 @@ export function getWidgetServer(): WidgetsServiceServer {
         log.error(error);
         callback(
           { code: status.INVALID_ARGUMENT, message: error.message },
-          null
+          null,
         );
         log.error(error);
         return null;
@@ -122,7 +122,7 @@ export function getWidgetServer(): WidgetsServiceServer {
       GetMostViewedUserInfoByUserIdRequest,
       GetMostViewedUserInfoByUserIdResponse
     >,
-    callback: sendUnaryData<GetMostViewedUserInfoByUserIdResponse>
+    callback: sendUnaryData<GetMostViewedUserInfoByUserIdResponse>,
   ) {
     const req = call.request;
     const log = logger.child({
@@ -137,7 +137,7 @@ export function getWidgetServer(): WidgetsServiceServer {
         log.error(error);
         callback(
           { code: status.INVALID_ARGUMENT, message: error.message },
-          null
+          null,
         );
         log.error(error);
         return null;
