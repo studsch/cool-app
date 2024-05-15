@@ -9,7 +9,7 @@ import {
   MiniUserInfo,
   TagInfo,
   WidgetsServiceServer,
-} from "@widgets/protos/dist/widgets";
+} from "./protos/widgets";
 import * as db from "./db/postgres/queries";
 import { validate } from "uuid";
 import logger from "./logger";

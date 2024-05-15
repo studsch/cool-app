@@ -45,5 +45,5 @@ redis:
   DB: 0
 
 grpcServices:
-  WidgetsHost: localhost
+  WidgetsHost: widgets
   WidgetsPort: 50052

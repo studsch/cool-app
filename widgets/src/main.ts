@@ -1,5 +1,5 @@
 import { Server, ServerCredentials } from "@grpc/grpc-js";
-import { WidgetsServiceService } from "@widgets/protos/dist/widgets";
+import { WidgetsServiceService } from "./protos/widgets";
 import { getWidgetServer } from "./server";
 import { config } from "./config";
 import logger from "./logger";
