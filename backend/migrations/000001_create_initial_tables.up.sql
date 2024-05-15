@@ -65,7 +65,7 @@ CREATE TABLE tags
     title VARCHAR(16) NOT NULL
 );
 
-CREATE UNIQUE INDEX CONCURRENTLY tags_title
+CREATE UNIQUE INDEX tags_title
 ON tags (title);
 
 ALTER TABLE tags
