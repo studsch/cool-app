@@ -43,3 +43,7 @@ redis:
   PoolTimeout: 240
   Password: ""
   DB: 0
+
+grpcServices:
+  WidgetsHost: widgets
+  WidgetsPort: 50052

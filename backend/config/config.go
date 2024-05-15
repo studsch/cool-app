@@ -10,12 +10,13 @@ import (
 
 // Config app config struct
 type Config struct {
-	Postgres PostgresConfig
-	Redis    RedisConfig
-	AWS      AWS
-	Server   ServerConfig
-	Logger   Logger
-	JWT      JWT
+	Postgres     PostgresConfig
+	Redis        RedisConfig
+	AWS          AWS
+	Server       ServerConfig
+	Logger       Logger
+	JWT          JWT
+	GRPCServices GRPCServices
 }
 
 // ServerConfig server config
@@ -25,6 +26,11 @@ type ServerConfig struct {
 	Port        string
 	Mode        string
 	ReadTimeout time.Duration
+}
+
+type GRPCServices struct {
+	WidgetsHost string
+	WidgetsPort string
 }
 
 // JWT json web tokens config

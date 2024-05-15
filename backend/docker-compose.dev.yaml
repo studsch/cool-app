@@ -106,6 +106,18 @@ services:
       - web_api
     restart: always
 
+  widgets:
+    container_name: widgets
+    build:
+      context: ../widgets
+      dockerfile: Dockerfile
+    ports:
+      - "50052:50052"
+    depends_on:
+      - postgresql
+    networks:
+      - web_api
+
 networks:
   web_api:
     driver: bridge
