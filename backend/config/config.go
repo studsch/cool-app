@@ -31,6 +31,8 @@ type ServerConfig struct {
 type GRPCServices struct {
 	WidgetsHost string
 	WidgetsPort string
+	RecHost     string
+	RecPort     string
 }
 
 // JWT json web tokens config

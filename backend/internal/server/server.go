@@ -34,6 +34,7 @@ type Server struct {
 	awsClient   *minio.Client
 	redisClient *redis.Client
 	widgetsConn *grpc.ClientConn
+	recConn     *grpc.ClientConn
 }
 
 // NewServer New server constructor
@@ -52,12 +53,13 @@ func NewServer(
 
 // Run Start server
 func (s *Server) Run() error {
-	target := fmt.Sprintf(
+	// widgets
+	widgetsTarget := fmt.Sprintf(
 		"%s:%s", s.cfg.GRPCServices.WidgetsHost,
 		s.cfg.GRPCServices.WidgetsPort,
 	)
-	conn, err := grpc.Dial(
-		target, grpc.WithTransportCredentials(
+	widgetsConn, err := grpc.Dial(
+		widgetsTarget, grpc.WithTransportCredentials(
 			insecure.NewCredentials(),
 		),
 	)
@@ -65,14 +67,37 @@ func (s *Server) Run() error {
 		s.logger.Errorf("widgets client error: %s", err.Error())
 		os.Exit(1)
 	}
-	defer conn.Close()
+	defer widgetsConn.Close()
 
-	s.widgetsConn = conn
+	s.widgetsConn = widgetsConn
 	s.logger.Infof(
 		"Widgets client is connected to PORT: %s",
 		s.cfg.GRPCServices.WidgetsPort,
 	)
 
+	// recommendations
+	recTarget := fmt.Sprintf(
+		"%s:%s", s.cfg.GRPCServices.RecHost,
+		s.cfg.GRPCServices.RecPort,
+	)
+	recConn, err := grpc.Dial(
+		recTarget, grpc.WithTransportCredentials(
+			insecure.NewCredentials(),
+		),
+	)
+	if err != nil {
+		s.logger.Errorf("rec client error: %s", err.Error())
+		os.Exit(1)
+	}
+	defer recConn.Close()
+
+	s.recConn = recConn
+	s.logger.Infof(
+		"rec client is connected to PORT: %s",
+		s.cfg.GRPCServices.RecPort,
+	)
+
+	// API server
 	s.fiber = fiber.New(
 		fiber.Config{
 			ReadTimeout: time.Second * s.cfg.Server.ReadTimeout,
