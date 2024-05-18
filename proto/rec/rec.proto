@@ -8,11 +8,9 @@ message PredictPostsForOneUserRequest {
   string user_id = 1;
 }
 
-
 message GetAllModelNamesOfFilesResponse {
   repeated string names = 1;
 }
-
 
 message SetModelRequest {
   string name = 1;

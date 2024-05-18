@@ -47,3 +47,8 @@ redis:
 grpcServices:
   WidgetsHost: widgets
   WidgetsPort: 50052
+  RecHost: rec_sys
+  RecPort: 50051
+
+msgServerConfig:
+  Port: 8001

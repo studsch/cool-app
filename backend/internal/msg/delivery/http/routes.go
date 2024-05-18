@@ -10,5 +10,8 @@ func MapMsgRoutes(
 	msgGroup fiber.Router, h msg.Handlers,
 	mw *middleware.MiddlewareManager,
 ) {
-	msgGroup.Post("/chat/:user2Id", mw.AuthJWTMiddleware(), h.CreateChat())
+	msgGroup.Post("/chat/:user2ID", mw.AuthJWTMiddleware(), h.CreateChat())
+	msgGroup.Get("/chat/:chatID", mw.AuthJWTMiddleware(), h.GetChatByID())
+	msgGroup.Get("/chat", mw.AuthJWTMiddleware(), h.GetChats())
+	msgGroup.Get("/", mw.AuthJWTMiddleware(), h.GetMessages())
 }

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -10,6 +11,8 @@ import (
 
 	"github.com/studsch/cool-app/backend/internal/models"
 )
+
+var messagesSize = 30
 
 type msgRepo struct {
 	db *pgxpool.Pool
@@ -35,7 +38,7 @@ INSERT INTO chats(
 	if err := r.db.QueryRow(
 		ctx, query, user1ID, user2ID,
 	).Scan(
-		&chat.ID, &chat.User1ID, &chat.User2ID, &chat.CreatedAt,
+		&chat.ID, &chat.User1ID, &chat.User2.ID, &chat.CreatedAt,
 	); err != nil {
 		return nil, errors.Wrap(err, "msgRepo.CreateChat.Scan")
 	}
@@ -56,7 +59,7 @@ WHERE user1_id = $1 AND user2_id = $2;
 	if err := r.db.QueryRow(
 		ctx, query, user1ID, user2ID,
 	).Scan(
-		&chat.ID, &chat.User1ID, &chat.User2ID, &chat.CreatedAt,
+		&chat.ID, &chat.User1ID, &chat.User2.ID, &chat.CreatedAt,
 	); err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, nil
@@ -73,33 +76,123 @@ func (r *msgRepo) CreateMessage(
 ) (*models.Message, error) {
 	query := `
 INSERT INTO messages(
-	id, body, read_status, sender_user_id, recipient_user_id, chat_id, time
+	id, chat_id, sender_id, body, time
 ) VALUES (
-	DEFAULT, $1, DEFAULT, $2, $3, $4, DEFAULT
-)
+	DEFAULT, $1, $2, $3, DEFAULT
+) RETURNING id, chat_id, sender_id, body, time
 `
-	var outMessage models.Message
+	outMessage := &models.Message{}
 
 	if err := r.db.QueryRow(
-		ctx, query, &inMessage.Body, &inMessage.SenderUserID,
-		&inMessage.RecipientUserID, &inMessage.ChatID,
-	).Scan(); err != nil {
+		ctx, query, &inMessage.ChatID, &inMessage.SenderID, &inMessage.Body,
+	).Scan(
+		&outMessage.ID, &outMessage.ChatID, &outMessage.SenderID,
+		&outMessage.Body, &outMessage.Time,
+	); err != nil {
 		return nil, errors.Wrap(err, "msgRepo.CreateMessage.Scan")
 	}
 
-	return &outMessage, nil
+	return outMessage, nil
 }
 
-// TODO: pagination for messages and chats
-// TODO: need model for list of messages and chats
-// TODO: pagination want be last 30 message after `date`
 func (r *msgRepo) GetMessages(
-	ctx context.Context, chatID uuid.UUID,
-) (interface{}, interface{}) {
-	return nil, nil
+	ctx context.Context, chatID uuid.UUID, lastMsgTime time.Time,
+) ([]*models.Message, error) {
+	query := `
+SELECT id, chat_id, sender_id, body, time
+FROM messages
+WHERE chat_id = $1 AND time < $2
+ORDER BY time DESC LIMIT $3;
+`
+
+	rows, err := r.db.Query(ctx, query, chatID, lastMsgTime, messagesSize)
+	if err != nil {
+		return nil, errors.Wrap(err, "msgRepo.GetMessages.Query")
+	}
+	defer rows.Close()
+
+	msgsList := make([]*models.Message, 0)
+
+	for rows.Next() {
+		m := &models.Message{}
+		if err := rows.Scan(
+			&m.ID, &m.ChatID, &m.SenderID, &m.Body, &m.Time,
+		); err != nil {
+			return nil, errors.Wrap(err, "msgRepo.GetMessages.Scan")
+		}
+		msgsList = append(msgsList, m)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "msgRepo.GetMessages.Err")
+	}
+
+	return msgsList, nil
 }
 
-func (r *msgRepo) GetChatIDsByUserID(
+func (r *msgRepo) GetChatsByUserID(
 	ctx context.Context, userID uuid.UUID,
-) {
+) ([]*models.Chat, error) {
+	query := `
+SELECT c.id, c.user1_id, u.id AS user2_id, u.login,
+	u.first_name, u.last_name, u.avatar, c.created_at
+FROM chats AS c
+LEFT JOIN users u ON c.user2_id = u.id
+WHERE c.user1_id = $1
+`
+
+	rows, err := r.db.Query(ctx, query, userID)
+	if err != nil {
+		return nil, errors.Wrap(err, "msgRepo.GetChatByUserID.Query")
+	}
+	defer rows.Close()
+
+	chatsList := make([]*models.Chat, 0)
+
+	for rows.Next() {
+		c := &models.Chat{}
+		if err := rows.Scan(
+			&c.ID, &c.User1ID, &c.User2.ID, &c.User2.Login,
+			&c.User2.FirstName, &c.User2.LastName,
+			&c.User2.Avatar, &c.CreatedAt,
+		); err != nil {
+			return nil, errors.Wrap(err, "msgRepo.GetChatByUserID.Scan")
+		}
+		chatsList = append(chatsList, c)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "msgRepo.GetChatByUserID.Err")
+	}
+
+	return chatsList, nil
+}
+
+func (r *msgRepo) GetChatByID(
+	ctx context.Context, chatID uuid.UUID,
+) (*models.Chat, error) {
+	query := `
+SELECT c.id, c.user1_id, u.id AS user2_id, u.login,
+	u.first_name, u.last_name, u.avatar, c.created_at
+FROM chats AS c
+LEFT JOIN users u ON c.user2_id = u.id
+WHERE c.id = $1
+`
+	var chat models.Chat
+
+	if err := r.db.QueryRow(
+		ctx, query, chatID,
+	).Scan(
+		&chat.ID, &chat.User1ID, &chat.User2.ID, &chat.User2.Login,
+		&chat.User2.FirstName, &chat.User2.LastName,
+		&chat.User2.Avatar, &chat.CreatedAt,
+	); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
+
+		return nil, errors.Wrap(err, "msgRepo.GetChatByIDPairs.Scan")
+	}
+
+	return &chat, nil
 }
