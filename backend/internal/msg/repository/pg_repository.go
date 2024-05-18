@@ -35,7 +35,7 @@ INSERT INTO chats(
 	if err := r.db.QueryRow(
 		ctx, query, user1ID, user2ID,
 	).Scan(
-		&chat.ID, &chat.User1ID, &chat.User2ID, &chat.CreatedAt,
+		&chat.ID, &chat.User1ID, &chat.User2.ID, &chat.CreatedAt,
 	); err != nil {
 		return nil, errors.Wrap(err, "msgRepo.CreateChat.Scan")
 	}
@@ -56,7 +56,7 @@ WHERE user1_id = $1 AND user2_id = $2;
 	if err := r.db.QueryRow(
 		ctx, query, user1ID, user2ID,
 	).Scan(
-		&chat.ID, &chat.User1ID, &chat.User2ID, &chat.CreatedAt,
+		&chat.ID, &chat.User1ID, &chat.User2.ID, &chat.CreatedAt,
 	); err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, nil
@@ -99,7 +99,40 @@ func (r *msgRepo) GetMessages(
 	return nil, nil
 }
 
-func (r *msgRepo) GetChatIDsByUserID(
+func (r *msgRepo) GetChatsByUserID(
 	ctx context.Context, userID uuid.UUID,
-) {
+) ([]*models.Chat, error) {
+	query := `
+SELECT c.id, c.user1_id, u.id AS user2_id, u.login,
+	u.first_name, u.last_name, u.avatar, c.created_at
+FROM chats AS c
+LEFT JOIN users u ON c.user2_id = u.id
+WHERE c.user1_id = $1
+`
+
+	rows, err := r.db.Query(ctx, query, userID)
+	if err != nil {
+		return nil, errors.Wrap(err, "msgRepo.GetChatByUserID.Query")
+	}
+	defer rows.Close()
+
+	chatsList := make([]*models.Chat, 0)
+
+	for rows.Next() {
+		c := &models.Chat{}
+		if err := rows.Scan(
+			&c.ID, &c.User1ID, &c.User2.ID, &c.User2.Login,
+			&c.User2.FirstName, &c.User2.LastName,
+			&c.User2.Avatar, &c.CreatedAt,
+		); err != nil {
+			return nil, errors.Wrap(err, "msgRepo.GetChatByUserID.Scan")
+		}
+		chatsList = append(chatsList, c)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "msgRepo.GetChatByUserID.Err")
+	}
+
+	return chatsList, nil
 }

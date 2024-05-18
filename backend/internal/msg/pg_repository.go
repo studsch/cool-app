@@ -17,4 +17,7 @@ type PSQLRepository interface {
 	CreateMessage(
 		ctx context.Context, inMessage *models.Message,
 	) (*models.Message, error)
+	GetChatsByUserID(
+		ctx context.Context, userID uuid.UUID,
+	) ([]*models.Chat, error)
 }

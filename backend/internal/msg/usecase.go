@@ -9,7 +9,7 @@ import (
 
 type UseCase interface {
 	CreateChat(
-		ctx context.Context, user1ID uuid.UUID, user2ID uuid.UUID,
+		ctx context.Context, user2ID uuid.UUID,
 	) (*models.Chat, error)
 	GetChatByIDPairs(
 		ctx context.Context, user1ID uuid.UUID, user2ID uuid.UUID,
@@ -17,4 +17,5 @@ type UseCase interface {
 	CreateMessage(
 		ctx context.Context, inMessage *models.Message,
 	) (*models.Message, error)
+	GetChatsByUserID(ctx context.Context) ([]*models.Chat, error)
 }
