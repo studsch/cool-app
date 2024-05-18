@@ -20,11 +20,9 @@ type Chat struct {
 }
 
 type Message struct {
-	Time            time.Time
-	Body            string
-	ID              uuid.UUID
-	SenderUserID    uuid.UUID
-	RecipientUserID uuid.UUID
-	ChatID          uuid.UUID
-	ReadStatus      bool
+	Time     time.Time `json:"time"`
+	Body     string    `json:"body"`
+	ID       uuid.UUID `json:"id"`
+	SenderID uuid.UUID `json:"senderId"`
+	ChatID   uuid.UUID `json:"chatId"`
 }

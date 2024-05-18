@@ -3,30 +3,25 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
-	"github.com/studsch/cool-app/backend/config"
 	"github.com/studsch/cool-app/backend/internal/models"
 	"github.com/studsch/cool-app/backend/internal/msg"
 	"github.com/studsch/cool-app/backend/internal/user"
-	"github.com/studsch/cool-app/backend/pkg/logger"
 	"github.com/studsch/cool-app/backend/pkg/utils"
 )
 
 type msgUC struct {
-	cfg      *config.Config
-	log      logger.Logger
 	chatRepo msg.PSQLRepository
 	userRepo user.Repository
 }
 
 func NewChatUC(
-	cfg *config.Config, log logger.Logger, chatRepo msg.PSQLRepository,
+	chatRepo msg.PSQLRepository,
 	userRepo user.Repository,
 ) *msgUC {
 	return &msgUC{
-		cfg:      cfg,
-		log:      log,
 		chatRepo: chatRepo,
 		userRepo: userRepo,
 	}
@@ -74,7 +69,6 @@ func (u *msgUC) CreateChat(
 	}
 
 	if !canChatting {
-		fmt.Println("you need to be friends, for chatting")
 		return nil, fmt.Errorf("you need to be friends, for chatting")
 	}
 
@@ -131,4 +125,40 @@ func (u *msgUC) GetChatByID(
 	}
 
 	return chat, nil
+}
+
+func (u *msgUC) GetMessages(
+	ctx context.Context, chatID uuid.UUID, lastMsgTime time.Time,
+) ([]*models.Message, error) {
+	userCtx, err := utils.GetUserFromCtx(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	isUserChat, err := u.CheckIsUserChat(ctx, chatID, userCtx.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if !isUserChat {
+		return nil, fmt.Errorf("you do not have access to this chat")
+	}
+
+	return u.chatRepo.GetMessages(ctx, chatID, lastMsgTime)
+}
+
+func (u *msgUC) CheckIsUserChat(
+	ctx context.Context, chatID uuid.UUID, userID uuid.UUID,
+) (bool, error) {
+	chat, err := u.chatRepo.GetChatByID(ctx, chatID)
+	if err != nil {
+		return false, err
+	}
+
+	// check if user not in chat
+	if userID != chat.User1ID && userID != chat.User2.ID {
+		return false, fmt.Errorf("you do not have access to this chat")
+	}
+
+	return true, nil
 }

@@ -58,7 +58,7 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	commUC := commUseCase.NewCommentUC(s.cfg, commRepo, s.logger)
 	likeUC := likeUseCase.NewLikeUC(s.cfg, likeRepo, s.logger)
 	userUC := userUseCase.NewUserUC(s.cfg, userRepo, s.logger)
-	msgUC := msgUseCase.NewChatUC(s.cfg, s.logger, msgRepo, userRepo)
+	msgUC := msgUseCase.NewChatUC(msgRepo, userRepo)
 	widgetsUC := widgetsUseCase.NewWidgetsUC(widgetsRepo, s.logger)
 	recUC := recUseCase.NewRecUC(recRepo, s.logger)
 

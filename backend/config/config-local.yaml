@@ -49,3 +49,6 @@ grpcServices:
   WidgetsPort: 50052
   RecHost: localhost
   RecPort: 50051
+
+msgServerConfig:
+  Port: 8001

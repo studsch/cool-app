@@ -13,4 +13,5 @@ func MapMsgRoutes(
 	msgGroup.Post("/chat/:user2ID", mw.AuthJWTMiddleware(), h.CreateChat())
 	msgGroup.Get("/chat/:chatID", mw.AuthJWTMiddleware(), h.GetChatByID())
 	msgGroup.Get("/chat", mw.AuthJWTMiddleware(), h.GetChats())
+	msgGroup.Get("/", mw.AuthJWTMiddleware(), h.GetMessages())
 }

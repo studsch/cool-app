@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -10,6 +11,8 @@ import (
 
 	"github.com/studsch/cool-app/backend/internal/models"
 )
+
+var messagesSize = 30
 
 type msgRepo struct {
 	db *pgxpool.Pool
@@ -73,30 +76,58 @@ func (r *msgRepo) CreateMessage(
 ) (*models.Message, error) {
 	query := `
 INSERT INTO messages(
-	id, body, read_status, sender_user_id, recipient_user_id, chat_id, time
+	id, chat_id, sender_id, body, time
 ) VALUES (
-	DEFAULT, $1, DEFAULT, $2, $3, $4, DEFAULT
-)
+	DEFAULT, $1, $2, $3, DEFAULT
+) RETURNING id, chat_id, sender_id, body, time
 `
-	var outMessage models.Message
+	outMessage := &models.Message{}
 
 	if err := r.db.QueryRow(
-		ctx, query, &inMessage.Body, &inMessage.SenderUserID,
-		&inMessage.RecipientUserID, &inMessage.ChatID,
-	).Scan(); err != nil {
+		ctx, query, &inMessage.ChatID, &inMessage.SenderID, &inMessage.Body,
+	).Scan(
+		&outMessage.ID, &outMessage.ChatID, &outMessage.SenderID,
+		&outMessage.Body, &outMessage.Time,
+	); err != nil {
 		return nil, errors.Wrap(err, "msgRepo.CreateMessage.Scan")
 	}
 
-	return &outMessage, nil
+	return outMessage, nil
 }
 
-// TODO: pagination for messages and chats
-// TODO: need model for list of messages and chats
-// TODO: pagination want be last 30 message after `date`
 func (r *msgRepo) GetMessages(
-	ctx context.Context, chatID uuid.UUID,
-) (interface{}, interface{}) {
-	return nil, nil
+	ctx context.Context, chatID uuid.UUID, lastMsgTime time.Time,
+) ([]*models.Message, error) {
+	query := `
+SELECT id, chat_id, sender_id, body, time
+FROM messages
+WHERE chat_id = $1 AND time < $2
+ORDER BY time DESC LIMIT $3;
+`
+
+	rows, err := r.db.Query(ctx, query, chatID, lastMsgTime, messagesSize)
+	if err != nil {
+		return nil, errors.Wrap(err, "msgRepo.GetMessages.Query")
+	}
+	defer rows.Close()
+
+	msgsList := make([]*models.Message, 0)
+
+	for rows.Next() {
+		m := &models.Message{}
+		if err := rows.Scan(
+			&m.ID, &m.ChatID, &m.SenderID, &m.Body, &m.Time,
+		); err != nil {
+			return nil, errors.Wrap(err, "msgRepo.GetMessages.Scan")
+		}
+		msgsList = append(msgsList, m)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "msgRepo.GetMessages.Err")
+	}
+
+	return msgsList, nil
 }
 
 func (r *msgRepo) GetChatsByUserID(

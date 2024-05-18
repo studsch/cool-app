@@ -10,9 +10,7 @@ CREATE TABLE IF NOT EXISTS messages
 (
     id                UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
     body              TEXT                     NOT NULL,
-    read_status       BOOL                     NOT NULL DEFAULT FALSE,
-    sender_user_id    UUID                     NOT NULL REFERENCES users (id),
-    recipient_user_id UUID                     NOT NULL REFERENCES users (id),
+    sender_id    UUID                     NOT NULL REFERENCES users (id),
     chat_id           UUID                     NOT NULL REFERENCES chats (id) ON DELETE CASCADE,
     time              TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
