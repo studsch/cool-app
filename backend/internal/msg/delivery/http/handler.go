@@ -26,7 +26,7 @@ func NewMsgHandlers(
 
 func (h *msgHandlers) CreateChat() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		user2ID, err := uuid.Parse(c.Params("user2Id"))
+		user2ID, err := uuid.Parse(c.Params("user2ID"))
 		if err != nil {
 			// TODO: change later
 			return c.SendStatus(fiber.StatusBadRequest)
@@ -51,5 +51,23 @@ func (h *msgHandlers) GetChats() fiber.Handler {
 		}
 
 		return c.Status(fiber.StatusOK).JSON(chatsList)
+	}
+}
+
+func (h *msgHandlers) GetChatByID() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		chatID, err := uuid.Parse(c.Params("chatID"))
+		if err != nil {
+			h.log.Error(err)
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
+		chatByID, err := h.msgUC.GetChatByID(c.UserContext(), chatID)
+		if err != nil {
+			h.log.Error(err)
+			return c.Status(fiber.StatusForbidden).JSON(err)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(chatByID)
 	}
 }

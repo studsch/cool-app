@@ -136,3 +136,32 @@ WHERE c.user1_id = $1
 
 	return chatsList, nil
 }
+
+func (r *msgRepo) GetChatByID(
+	ctx context.Context, chatID uuid.UUID,
+) (*models.Chat, error) {
+	query := `
+SELECT c.id, c.user1_id, u.id AS user2_id, u.login,
+	u.first_name, u.last_name, u.avatar, c.created_at
+FROM chats AS c
+LEFT JOIN users u ON c.user2_id = u.id
+WHERE c.id = $1
+`
+	var chat models.Chat
+
+	if err := r.db.QueryRow(
+		ctx, query, chatID,
+	).Scan(
+		&chat.ID, &chat.User1ID, &chat.User2.ID, &chat.User2.Login,
+		&chat.User2.FirstName, &chat.User2.LastName,
+		&chat.User2.Avatar, &chat.CreatedAt,
+	); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
+
+		return nil, errors.Wrap(err, "msgRepo.GetChatByIDPairs.Scan")
+	}
+
+	return &chat, nil
+}

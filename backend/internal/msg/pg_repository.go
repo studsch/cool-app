@@ -20,4 +20,7 @@ type PSQLRepository interface {
 	GetChatsByUserID(
 		ctx context.Context, userID uuid.UUID,
 	) ([]*models.Chat, error)
+	GetChatByID(
+		ctx context.Context, chatID uuid.UUID,
+	) (*models.Chat, error)
 }

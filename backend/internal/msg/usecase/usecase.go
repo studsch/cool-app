@@ -111,3 +111,24 @@ func (u *msgUC) GetChatsByUserID(
 
 	return u.chatRepo.GetChatsByUserID(ctx, userCtx.ID)
 }
+
+func (u *msgUC) GetChatByID(
+	ctx context.Context, chatID uuid.UUID,
+) (*models.Chat, error) {
+	userCtx, err := utils.GetUserFromCtx(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	chat, err := u.chatRepo.GetChatByID(ctx, chatID)
+	if err != nil {
+		return nil, err
+	}
+
+	// check if user not in chat
+	if userCtx.ID != chat.User1ID && userCtx.ID != chat.User2.ID {
+		return nil, fmt.Errorf("you do not have access to this chat")
+	}
+
+	return chat, nil
+}

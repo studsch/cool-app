@@ -18,4 +18,7 @@ type UseCase interface {
 		ctx context.Context, inMessage *models.Message,
 	) (*models.Message, error)
 	GetChatsByUserID(ctx context.Context) ([]*models.Chat, error)
+	GetChatByID(
+		ctx context.Context, chatID uuid.UUID,
+	) (*models.Chat, error)
 }
