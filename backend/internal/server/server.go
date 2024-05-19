@@ -11,9 +11,13 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/minio/minio-go/v7"
 	"github.com/redis/go-redis/v9"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
 	"github.com/studsch/cool-app/backend/pkg/logger"
 
 	"github.com/gofiber/fiber/v2"
+
 	"github.com/studsch/cool-app/backend/config"
 )
 
@@ -29,10 +33,15 @@ type Server struct {
 	logger      logger.Logger
 	awsClient   *minio.Client
 	redisClient *redis.Client
+	widgetsConn *grpc.ClientConn
+	recConn     *grpc.ClientConn
 }
 
 // NewServer New server constructor
-func NewServer(cfg *config.Config, db *pgxpool.Pool, logger logger.Logger, awsS3Client *minio.Client, redisClient *redis.Client) *Server {
+func NewServer(
+	cfg *config.Config, db *pgxpool.Pool, logger logger.Logger,
+	awsS3Client *minio.Client, redisClient *redis.Client,
+) *Server {
 	return &Server{
 		cfg:         cfg,
 		db:          db,
@@ -44,9 +53,56 @@ func NewServer(cfg *config.Config, db *pgxpool.Pool, logger logger.Logger, awsS3
 
 // Run Start server
 func (s *Server) Run() error {
-	s.fiber = fiber.New(fiber.Config{
-		ReadTimeout: time.Second * s.cfg.Server.ReadTimeout,
-	})
+	// widgets
+	widgetsTarget := fmt.Sprintf(
+		"%s:%s", s.cfg.GRPCServices.WidgetsHost,
+		s.cfg.GRPCServices.WidgetsPort,
+	)
+	widgetsConn, err := grpc.Dial(
+		widgetsTarget, grpc.WithTransportCredentials(
+			insecure.NewCredentials(),
+		),
+	)
+	if err != nil {
+		s.logger.Errorf("widgets client error: %s", err.Error())
+		os.Exit(1)
+	}
+	defer widgetsConn.Close()
+
+	s.widgetsConn = widgetsConn
+	s.logger.Infof(
+		"Widgets client is connected to PORT: %s",
+		s.cfg.GRPCServices.WidgetsPort,
+	)
+
+	// recommendations
+	recTarget := fmt.Sprintf(
+		"%s:%s", s.cfg.GRPCServices.RecHost,
+		s.cfg.GRPCServices.RecPort,
+	)
+	recConn, err := grpc.Dial(
+		recTarget, grpc.WithTransportCredentials(
+			insecure.NewCredentials(),
+		),
+	)
+	if err != nil {
+		s.logger.Errorf("rec client error: %s", err.Error())
+		os.Exit(1)
+	}
+	defer recConn.Close()
+
+	s.recConn = recConn
+	s.logger.Infof(
+		"rec client is connected to PORT: %s",
+		s.cfg.GRPCServices.RecPort,
+	)
+
+	// API server
+	s.fiber = fiber.New(
+		fiber.Config{
+			ReadTimeout: time.Second * s.cfg.Server.ReadTimeout,
+		},
+	)
 
 	if err := s.MapHandlers(s.fiber); err != nil {
 		return err
@@ -70,7 +126,9 @@ func (s *Server) Run() error {
 
 	<-quit
 
-	ctx, shutdown := context.WithTimeout(context.Background(), ctxTimeout*time.Second)
+	ctx, shutdown := context.WithTimeout(
+		context.Background(), ctxTimeout*time.Second,
+	)
 	defer shutdown()
 
 	s.logger.Info("server Exited Properly")

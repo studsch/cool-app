@@ -123,7 +123,6 @@ const PostCard: React.FC<PostCardProps> = ({
 
     fetchComments();
   }, []);
-  console.log(comments);
   return (
     <div className={cn("grid place-content-center mt-4 mb-4", className)}>
       <span className="align-middle">

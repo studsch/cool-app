@@ -2,6 +2,7 @@ package msg
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/studsch/cool-app/backend/internal/models"
@@ -9,7 +10,7 @@ import (
 
 type UseCase interface {
 	CreateChat(
-		ctx context.Context, user1ID uuid.UUID, user2ID uuid.UUID,
+		ctx context.Context, user2ID uuid.UUID,
 	) (*models.Chat, error)
 	GetChatByIDPairs(
 		ctx context.Context, user1ID uuid.UUID, user2ID uuid.UUID,
@@ -17,4 +18,14 @@ type UseCase interface {
 	CreateMessage(
 		ctx context.Context, inMessage *models.Message,
 	) (*models.Message, error)
+	GetChatsByUserID(ctx context.Context) ([]*models.Chat, error)
+	GetChatByID(
+		ctx context.Context, chatID uuid.UUID,
+	) (*models.Chat, error)
+	GetMessages(
+		ctx context.Context, chatID uuid.UUID, lastMsgTime time.Time,
+	) ([]*models.Message, error)
+	CheckIsUserChat(
+		ctx context.Context, chatID uuid.UUID, userID uuid.UUID,
+	) (bool, error)
 }

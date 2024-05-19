@@ -19,7 +19,7 @@ const RecentAvatarBlock = (props: RecentAvatarBlockProps) => {
         </AvatarFallback>
       </Avatar>
       <p
-        className={`text-center text-text-primary-color truncate ...  my-1 mx-1 ${classNames?.text?.base}`}
+        className={`text-center text text-primary-color ml-2  my-1 mx-1 ${classNames?.text?.base}`}
       >
         {props.text}
       </p>

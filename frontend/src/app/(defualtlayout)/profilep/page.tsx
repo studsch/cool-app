@@ -15,7 +15,6 @@ export default function Home() {
   const [firstName, setFirstName] = useState<string | null>(null);
 
   const { data: session, status, update } = useSession();
-  console.log("Session data:", session);
 
   if (!session) {
     return <div>Loading...</div>;
@@ -29,7 +28,6 @@ export default function Home() {
   };
 
   const handleCreatePost = (photo: File, description: string) => {
-    console.log("Created Post:", photo, description);
     const reader = new FileReader();
     reader.readAsDataURL(photo);
     reader.onloadend = () => {

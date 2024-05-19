@@ -2,6 +2,7 @@ package msg
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/studsch/cool-app/backend/internal/models"
@@ -17,4 +18,13 @@ type PSQLRepository interface {
 	CreateMessage(
 		ctx context.Context, inMessage *models.Message,
 	) (*models.Message, error)
+	GetChatsByUserID(
+		ctx context.Context, userID uuid.UUID,
+	) ([]*models.Chat, error)
+	GetChatByID(
+		ctx context.Context, chatID uuid.UUID,
+	) (*models.Chat, error)
+	GetMessages(
+		ctx context.Context, chatID uuid.UUID, lastMsgTime time.Time,
+	) ([]*models.Message, error)
 }

@@ -43,3 +43,12 @@ redis:
   PoolTimeout: 240
   Password: ""
   DB: 0
+
+grpcServices:
+  WidgetsHost: localhost
+  WidgetsPort: 50052
+  RecHost: localhost
+  RecPort: 50051
+
+msgServerConfig:
+  Port: 8001
