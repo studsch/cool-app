@@ -153,7 +153,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
       >
         <div className="flex flex-col">
           <div className="bg-white min-h-[281px] w-[90%] my-5 md:w-[512px] rounded-md flex flex-col gap-0 xl:w-[768px] mx-auto">
-            <div className="rounded-md px-7 pt-7 relative z-10 bg-white h-[184px] overflow-hidden">
+            <div className="rounded-md px-7 pt-7 relative z-10 bg-white xl:h-[184px] overflow-hidden">
               <h2 className="text-lg font-medium text-text-primary-color mb-4">
                 Global search
               </h2>
@@ -238,7 +238,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                 control={form.control}
                 name="type"
                 render={({ field }) => (
-                  <FormItem className="space-y-1 mt-4 ">
+                  <FormItem className="space-y-1 mt-4 md:mb-6 xl:mb-0">
                     <FormControl>
                       <RadioGroup
                         className="mb-4"
