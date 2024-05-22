@@ -11,31 +11,31 @@ import (
 )
 
 const (
-	ErrBadRequest               = "Bad request"
-	ErrLoginAlreadyExists       = "User with given login already exists"
-	ErrPhoneNumberAlreadyExists = "User with given phone number already exists"
-	ErrNoSuchUser               = "User not found"
-	ErrWrongCredentials         = "Wrong Credentials"
-	ErrNotFound                 = "Not Found"
-	ErrUnauthorized             = "Unauthorized"
-	ErrForbidden                = "Forbidden"
-	ErrBadQueryParams           = "Invalid query params"
+	ErrBadRequest               = "uad request"
+	ErrLoginAlreadyExists       = "user with given login already exists"
+	ErrPhoneNumberAlreadyExists = "user with given phone number already exists"
+	ErrNoSuchUser               = "user not found"
+	ErrWrongCredentials         = "wrong Credentials"
+	ErrNotFound                 = "not found"
+	ErrUnauthorized             = "unauthorized"
+	ErrForbidden                = "forbidden"
+	ErrBadQueryParams           = "invalid query params"
 )
 
 var (
 	BadRequest            = errors.New("bad request")
-	WrongCredentials      = errors.New("wrong Credentials")
-	NotFound              = errors.New("not Found")
+	WrongCredentials      = errors.New("wrong credentials")
+	NotFound              = errors.New("not found")
 	Unauthorized          = errors.New("unauthorized")
 	Forbidden             = errors.New("forbidden")
-	PermissionDenied      = errors.New("permission Denied")
+	PermissionDenied      = errors.New("permission denied")
 	ExpiredCSRFError      = errors.New("expired CSRF token")
 	WrongCSRFToken        = errors.New("wrong CSRF token")
 	CSRFNotPresented      = errors.New("CSRF not presented")
 	NotRequiredFields     = errors.New("no such required fields")
 	BadQueryParams        = errors.New("invalid query params")
 	InternalServerError   = errors.New("internal Server Error")
-	RequestTimeoutError   = errors.New("request Timeout")
+	RequestTimeoutError   = errors.New("request timeout")
 	ExistsEmailError      = errors.New("user with given email already exists")
 	ExistsFollowError     = errors.New("user already followed")
 	InvalidJWTToken       = errors.New("invalid JWT token")
@@ -153,6 +153,10 @@ func ParseErrors(err error) RestErr {
 		return NewRestError(http.StatusNotFound, NotFound.Error(), err)
 	case errors.Is(err, context.DeadlineExceeded):
 		return NewRestError(http.StatusRequestTimeout, RequestTimeoutError.Error(), err)
+	case strings.Contains(err.Error(), "no rows in result set"):
+		return NewRestError(http.StatusNotFound, NotFound.Error(), err)
+	case strings.Contains(err.Error(), "follow not found"):
+		return NewRestError(http.StatusNotFound, NotFound.Error(), err)
 	case strings.Contains(err.Error(), "SQLSTATE"):
 		return parseSqlErrors(err)
 	case strings.Contains(err.Error(), "Field validation"):
