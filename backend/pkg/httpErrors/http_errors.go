@@ -157,6 +157,10 @@ func ParseErrors(err error) RestErr {
 		return NewRestError(http.StatusNotFound, NotFound.Error(), err)
 	case strings.Contains(err.Error(), "follow not found"):
 		return NewRestError(http.StatusNotFound, NotFound.Error(), err)
+	case strings.Contains(err.Error(), "you need to be friends, for chatting"):
+		return NewRestError(http.StatusForbidden, "you need to be friends, for chatting", err)
+	case strings.Contains(err.Error(), "chat already exists"):
+		return NewRestError(http.StatusBadRequest, "chat already exists", err)
 	case strings.Contains(err.Error(), "SQLSTATE"):
 		return parseSqlErrors(err)
 	case strings.Contains(err.Error(), "Field validation"):
