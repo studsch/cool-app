@@ -303,6 +303,7 @@ func (u *authUC) UpdatePasswordByPhone(
 ) error {
 	userWithPhone := &models.User{
 		PhoneNumber: &recPas.PhoneNumber,
+		Password:    recPas.Password,
 	}
 	if err := userWithPhone.PrepareCreate(); err != nil {
 		return err
