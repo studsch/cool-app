@@ -26,19 +26,26 @@ func (r *msgRepo) CreateChat(
 	ctx context.Context, user1ID uuid.UUID, user2ID uuid.UUID,
 ) (*models.Chat, error) {
 	query := `
-INSERT INTO chats(
-	id, user1_id, user2_id, created_at
-) VALUES (
-	default, $1, $2, default
-) RETURNING
-	id, user1_id, user2_id, created_at
+WITH inserted_chat AS (
+	INSERT INTO chats (
+		id, user1_id, user2_id, created_at
+	) VALUES (
+		default, $1, $2, default
+	) RETURNING id, user1_id, user2_id, created_at
+) SELECT
+	inserted_chat.id, inserted_chat.user1_id, inserted_chat.created_at,
+	u.id AS user2_id, u.login, u.first_name, u.last_name, u.avatar
+FROM inserted_chat
+LEFT JOIN users u ON u.id = inserted_chat.user2_id
 `
 	var chat models.Chat
 
 	if err := r.db.QueryRow(
 		ctx, query, user1ID, user2ID,
 	).Scan(
-		&chat.ID, &chat.User1ID, &chat.User2.ID, &chat.CreatedAt,
+		&chat.ID, &chat.User1ID, &chat.CreatedAt,
+		&chat.User2.ID, &chat.User2.Login, &chat.User2.FirstName,
+		&chat.User2.LastName, &chat.User2.Avatar,
 	); err != nil {
 		return nil, errors.Wrap(err, "msgRepo.CreateChat.Scan")
 	}
@@ -188,7 +195,7 @@ WHERE c.id = $1
 		&chat.User2.Avatar, &chat.CreatedAt,
 	); err != nil {
 		if err == pgx.ErrNoRows {
-			return nil, nil
+			return nil, errors.Wrap(err, "msgRepo.GetChatByIDPairs.Scan")
 		}
 
 		return nil, errors.Wrap(err, "msgRepo.GetChatByIDPairs.Scan")
