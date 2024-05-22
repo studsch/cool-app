@@ -182,8 +182,8 @@ func (h *userHandlers) GetSubscribersCount() fiber.Handler {
 
 		return c.Status(fiber.StatusOK).JSON(
 			fiber.Map{
-				"errors":             false,
-				"countSubscriptions": count,
+				"errors":           false,
+				"countSubscribers": count,
 			},
 		)
 	}
@@ -430,6 +430,5 @@ func (h *userHandlers) CheckSubscribeExists() fiber.Handler {
 				"isSubscribed": out,
 			},
 		)
-
 	}
 }
