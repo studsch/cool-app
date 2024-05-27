@@ -2,28 +2,38 @@
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
 import { useSession } from "next-auth/react";
 import { RenewToken, RenewWrapper } from "@/fetch/token";
 import { Like, UnLike } from "@/fetch/post";
 import { tokenUpdateStateGlobal } from "@/fetch/token";
+import { useFavorites } from "@/store";
+import { GetLikesFromPost } from "@/fetch/post";
 
 export function LikeButton({
-  likesCount,
   isLikedPost,
   postId,
+  currentIndex,
 }: {
-  likesCount: string;
   isLikedPost: boolean;
   postId: string;
+  currentIndex: number;
 }) {
-  const [isLiked, setIsLiked] = useState(isLikedPost);
+  const [likesCount, setLikesCount] = useState<number | undefined>(undefined);
+  const updateIsLiked = useFavorites(state => state.updateIsLiked);
+  useEffect(() => {
+    GetLikesFromPost(postId).then(val => {
+      console.log(val);
+      setLikesCount(val.likeCount);
+    });
+  });
+  console.log(isLikedPost);
   const { data: session, status, update } = useSession();
   const onClick = async () => {
     if (session?.user?.tokens?.access) {
-      if (!isLiked) {
+      if (!isLikedPost) {
         const res = await RenewWrapper(
           Like,
           [session.user.tokens.access, postId],
@@ -34,7 +44,10 @@ export function LikeButton({
         );
         if (res == 201) {
           console.log(res);
-          setIsLiked(true);
+          if (typeof likesCount != "undefined") {
+            setLikesCount(likesCount + 1);
+            updateIsLiked(currentIndex, true);
+          }
         }
       } else {
         const res = await RenewWrapper(
@@ -47,7 +60,10 @@ export function LikeButton({
         );
         if (res == 200) {
           console.log(res);
-          setIsLiked(false);
+          if (likesCount) {
+            setLikesCount(likesCount - 1);
+            updateIsLiked(currentIndex, false);
+          }
         }
       }
     }
@@ -64,7 +80,7 @@ export function LikeButton({
         }}
       >
         <div className="flex gap-2 justify-center items-center">
-          {isLiked ? (
+          {isLikedPost ? (
             <FontAwesomeIcon
               icon={faHeart}
               size="lg"

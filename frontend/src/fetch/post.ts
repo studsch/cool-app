@@ -41,3 +41,21 @@ export async function UnLike(token: string, id: string) {
     return response.status;
   }
 }
+
+export async function GetLikesFromPost(id: string) {
+  if (
+    process.env.NEXT_PUBLIC_DOMEN_URL &&
+    process.env.NEXT_PUBLIC_URL_GET_LIKE_COUNT
+  ) {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_DOMEN_URL +
+        process.env.NEXT_PUBLIC_URL_GET_LIKE_COUNT +
+        id,
+      {
+        method: "GET",
+      },
+    );
+    const json = await response.json();
+    return json;
+  }
+}

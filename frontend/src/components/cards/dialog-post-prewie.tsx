@@ -30,6 +30,7 @@ import Geolocation from "./geolocation";
 import Comment from "../comments/comment";
 import Tags from "./tags";
 import Comments from "../comments/comments";
+
 const MIN_WIDTH = 300;
 const MIN_HEIGHT = 300;
 const INCREASE_KOEF = 1.2;
@@ -52,6 +53,7 @@ export function DialogPostPrewie({
   const [height, setHeight] = useState(0);
   const [lastScreenWidth, setLastScreenWidth] = useState(0);
   const [lastScreenHeight, setLastScreenHeight] = useState(0);
+
   return (
     <Dialog open={isOpen}>
       {/* Закидываю все как один тригер, а контент буду менять через state, чтобы не создавать миллион объектов */}
@@ -69,9 +71,8 @@ export function DialogPostPrewie({
                     key={index}
                     post={post}
                     className="p-1"
-                    onClick={() => {
+                    onClick={async () => {
                       setIsOpenedIndex(index);
-                      console.log(index);
                     }}
                   ></Prewie>
                 ) : (
@@ -274,12 +275,12 @@ export function DialogPostPrewie({
                         )}
                         <div className="flex gap-1 md:ml-[1%]">
                           <LikeButton
-                            likesCount="0"
-                            isLikedPost={true}
+                            isLikedPost={posts[isOpenedIndex].isLiked}
                             postId={posts[isOpenedIndex].id}
+                            currentIndex={isOpenedIndex}
                           />
                           <ShareButton shareCount="0" />
-                          <CommentButton commentCount="0" />
+                          <CommentButton />
                         </div>
                       </div>
                       <div>
@@ -314,6 +315,7 @@ export function DialogPostPrewie({
                 if (typeof isOpenedIndex != "undefined") {
                   console.log(isOpenedIndex);
                   if (isOpenedIndex + 1 < posts.length) {
+                    console.log(posts[isOpenedIndex]);
                     setIsOpenedIndex(isOpenedIndex + 1);
                   } else {
                     const error = await loadMore();

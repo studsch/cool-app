@@ -4,9 +4,11 @@ import React, { useEffect, useState } from "react";
 import { FetchComments } from "@/fetch/comment";
 import Comment from "./comment";
 import AddArea from "./add-area";
+import { useCountOfComments } from "@/store";
 
 export default function Comments({ post }: { post: any }) {
   const [page, setPage] = useState(1);
+  const updateCount = useCountOfComments(state => state.updateCount);
   const [totalPages, setTotalPages] = useState(0);
   const size = 3;
   const [comments, setComments] = useState([]);
@@ -16,8 +18,10 @@ export default function Comments({ post }: { post: any }) {
     setPage(1);
     FetchComments(`?page=${1}&size=${size}`, post.id)
       .then(val => {
+        console.log(val);
         setComments(val.comments);
         setTotalPages(val.totalPages);
+        updateCount(val.totalCount);
       })
       .catch(msg => console.log(msg));
   }, [post]);

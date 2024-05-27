@@ -1,7 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment } from "@fortawesome/free-regular-svg-icons";
+import { useCountOfComments } from "@/store";
 
-export function CommentButton({ commentCount }: { commentCount: string }) {
+export function CommentButton() {
+  const count = useCountOfComments(state => state.count);
   return (
     <>
       <button className="hover:bg-slate-50 p-2 rounded-md" type="button">
@@ -12,7 +14,7 @@ export function CommentButton({ commentCount }: { commentCount: string }) {
             className="text-text-primary-color"
           ></FontAwesomeIcon>
           <p className="text-sm font-medium text-text-primary-color">
-            {commentCount} Comments
+            {count} Comments
           </p>
         </div>
       </button>

@@ -289,6 +289,7 @@ interface FavoritesState {
   updatePage: (page: number) => void;
   updateSize: (size: number) => void;
   updateError: (error: () => void) => void;
+  updateIsLiked: (currentIndex: number, isLiked: boolean) => void;
   nextPosts: (
     token: string,
     refreshToken: string,
@@ -311,6 +312,11 @@ export const useFavorites = create<FavoritesState>()(
     updatePage: (page: number) => set({ page: page }),
     updateSize: (size: number) => set({ size: size }),
     updateError: (error: () => void) => set({ error: error }),
+    updateIsLiked: (currentIndex: number, isLiked: boolean) => {
+      set(state => {
+        state.posts[currentIndex].isLiked = isLiked;
+      });
+    },
     nextPosts: async (
       token: string,
       refreshToken: string,
@@ -397,3 +403,13 @@ export const useSubComments = create<SubCommentsState>()(
     },
   })),
 );
+
+interface CountOfComments {
+  count: number | undefined;
+  updateCount: Function;
+}
+
+export const useCountOfComments = create<CountOfComments>(set => ({
+  count: undefined,
+  updateCount: (count: number) => set({ count: count }),
+}));
