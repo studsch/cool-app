@@ -7,6 +7,7 @@ import { RadioGroup, Radio } from "@nextui-org/react";
 import { Spinner } from "@nextui-org/react";
 import Button from "../ui/button/Button";
 import RegError from "../errors/reg-error";
+import { ServerAction } from "./server";
 import {
   Form,
   FormControl,
@@ -21,10 +22,7 @@ import Input from "../ui/input/Input";
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-import { useCallback } from "react";
-import { SelectDatepicker } from "react-select-datepicker";
-import { type } from "os";
+import { useToast } from "../ui/use-toast";
 import { useConfirmCodeRecovery } from "@/store";
 
 function RecPassForm({
@@ -41,6 +39,8 @@ function RecPassForm({
   const startTime = useConfirmCodeRecovery(state => state.startTime);
   const [isError, setIsError] = useState(false);
   const timeLimit = 60;
+  const { toast } = useToast();
+
   useEffect(() => {
     const checkAuthState = async () => {
       await auth.authStateReady();
@@ -56,35 +56,41 @@ function RecPassForm({
   }, []);
 
   const router = useRouter();
-  const formSchema = z.object({
-    password: z
-      .string()
-      .min(5, { message: "Логин должен быть длинее 5 символов" }),
-    rePassword: z.string(),
-    // .optional()
-    name: z.string(),
-    surname: z.string(),
-    birthDay: z.date(),
-    gender: z.enum(["any", "female", "male"]),
-  });
+  const formSchema = z
+    .object({
+      password: z
+        .string()
+        .min(8, { message: "Пароль должен содержать больше 7 символов" })
+        .max(250, { message: "Пароль не должен превышать 250 символов" }),
+      rePassword: z.string(),
+      // .optional()
+    })
+    .refine(obj => obj.password === obj.rePassword, {
+      message: "Пароли не совпадают",
+      path: ["rePassword"],
+    });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       password: "",
       rePassword: "",
-      name: "",
-      surname: "",
-      birthDay: undefined,
     },
   });
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("dasdas");
-    console.log(values.birthDay);
+    const res = await ServerAction(number, values.password);
+    if (res == 204) {
+      router.push("/enter");
+    } else {
+      toast({
+        title: "Something went wrong",
+        description: "Repass error, please try one more later",
+        duration: 2000,
+      });
+    }
   }
 
   return isAuthReady && isLoaded ? (
-    (console.log(auth.currentUser),
     auth.currentUser &&
     number &&
     !isError &&
@@ -138,7 +144,7 @@ function RecPassForm({
       </>
     ) : (
       <RegError></RegError>
-    ))
+    )
   ) : (
     <Spinner className="flex mt-4" />
   );
