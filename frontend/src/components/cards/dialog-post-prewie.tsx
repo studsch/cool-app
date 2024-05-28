@@ -54,7 +54,6 @@ export function DialogPostPrewie({
   const [height, setHeight] = useState<number[]>([]);
   const [lastScreenWidth, setLastScreenWidth] = useState(0);
   const [lastScreenHeight, setLastScreenHeight] = useState(0);
-  const [changeByArrow, setChangeByArrow] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(true);
   // console.log(height);
   useEffect(() => {
@@ -113,7 +112,7 @@ export function DialogPostPrewie({
           }
         });
     }
-  }, [isOpenedIndex]);
+  }, [isOpenedIndex, screenHeight, screenWidth]);
   return (
     <Dialog open={isOpen}>
       {/* Закидываю все как один тригер, а контент буду менять через state, чтобы не создавать миллион объектов */}
@@ -122,7 +121,6 @@ export function DialogPostPrewie({
         className="w-full grid sm:grid-cols-3 xl:grid-cols-3 md:grid-cols-2 grid-cols-2"
         onClick={() => {
           setIsOpen(true);
-          setChangeByArrow(false);
         }}
       >
         <div>
@@ -256,6 +254,8 @@ export function DialogPostPrewie({
                               width: `${maxWidth}px`,
                               height: `${maxHeight}px`,
                               borderRadius: "14px",
+                              minHeight: `${MIN_HEIGHT}px`,
+                              minWidth: `${MIN_WIDTH}px`,
                             }}
                             pagination={{
                               clickable: true,
@@ -275,6 +275,8 @@ export function DialogPostPrewie({
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
+                                    minHeight: `${MIN_HEIGHT}px`,
+                                    minWidth: `${MIN_WIDTH}px`,
                                   }}
                                   key={idx}
                                 >
