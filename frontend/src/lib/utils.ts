@@ -50,6 +50,7 @@ export function getMeta(url: any, cb: any) {
   img.onload = () => cb(null, img);
   img.onerror = err => cb(err);
   img.src = url;
+  return img;
 }
 
 export function toYyyyMmDdDateTime(date: Date) {

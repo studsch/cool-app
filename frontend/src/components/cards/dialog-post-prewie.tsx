@@ -30,6 +30,7 @@ import Geolocation from "./geolocation";
 import Comment from "../comments/comment";
 import Tags from "./tags";
 import Comments from "../comments/comments";
+import { Skeleton } from "../ui/skeleton";
 
 const MIN_WIDTH = 300;
 const MIN_HEIGHT = 300;
@@ -49,18 +50,80 @@ export function DialogPostPrewie({
   const [maxWidth, setMaxWidth] = useState(0);
   const [screenWidth, screenHeight] = useResize();
   const [maxHeight, setMaxHeight] = useState(0);
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
+  const [width, setWidth] = useState<number[]>([]);
+  const [height, setHeight] = useState<number[]>([]);
   const [lastScreenWidth, setLastScreenWidth] = useState(0);
   const [lastScreenHeight, setLastScreenHeight] = useState(0);
+  const [changeByArrow, setChangeByArrow] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(true);
+  // console.log(height);
+  useEffect(() => {
+    const heights: number[] = [];
+    const widths: number[] = [];
+    if (isOpenedIndex) {
+      posts[isOpenedIndex].imageURLs &&
+        posts[isOpenedIndex].imageURLs.map((val: any, index: any) => {
+          if (process.env.MINIO_PUBLIC_DOMEN_URL) {
+            getMeta(
+              process.env.MINIO_PUBLIC_DOMEN_URL + val,
+              (err: any, img: any) => {
+                const maxScreenRatioWidth =
+                  (screenWidth * 2) / 3 / img.naturalWidth;
+                const maxScreenRatioHeight =
+                  (screenHeight * 2) / 3 / img.naturalHeight;
+                const maxScaleRatio = INCREASE_KOEF; // Максимальное увеличение до 1.2 от исходного размера
 
+                // Выбираем наименьшее значение из максимальных отношений ширины и высоты экрана и 1.2-кратного масштаба
+                let scale = Math.min(
+                  maxScreenRatioWidth,
+                  maxScreenRatioHeight,
+                  maxScaleRatio,
+                );
+
+                // Вычисляем новые размеры изображения с учетом масштаба
+                let newWidth = Math.floor(img.naturalWidth * scale);
+                let newHeight = Math.floor(img.naturalHeight * scale);
+                // Обновляем ширину и высоту в состоянии компонента
+                heights.push(newHeight);
+                widths.push(newWidth);
+                // Проверяем, нужно ли обновить максимальные значения ширины и высоты
+                if (
+                  screenHeight != lastScreenHeight ||
+                  screenWidth != lastScreenWidth
+                ) {
+                  setMaxHeight(newHeight);
+                  setMaxWidth(newWidth);
+                } else {
+                  if (newWidth > maxWidth) {
+                    setMaxWidth(newWidth); // Записываем текущую ширину как максимально возможную
+                  }
+                  if (newHeight > maxHeight) {
+                    setMaxHeight(newHeight); // Записываем текущую высоту как максимально возможную
+                  }
+                }
+                setLastScreenHeight(screenHeight);
+                setLastScreenWidth(screenWidth);
+                // setMaxHeight(heights[0]);
+                // setMaxWidth(widths[0]);
+                setWidth(widths);
+                setHeight(heights);
+                setIsImageLoaded(true);
+              },
+            );
+          }
+        });
+    }
+  }, [isOpenedIndex]);
   return (
     <Dialog open={isOpen}>
       {/* Закидываю все как один тригер, а контент буду менять через state, чтобы не создавать миллион объектов */}
       <DialogTrigger
         asChild
         className="w-full grid sm:grid-cols-3 xl:grid-cols-3 md:grid-cols-2 grid-cols-2"
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setIsOpen(true);
+          setChangeByArrow(false);
+        }}
       >
         <div>
           {posts && posts.length != 0
@@ -81,7 +144,6 @@ export function DialogPostPrewie({
                     key={index}
                     onClick={() => {
                       setIsOpenedIndex(index);
-                      console.log(index);
                     }}
                   >
                     <div className="aspect-[3/4] relative overflow-hidden rounded-lg cursor-pointer">
@@ -104,9 +166,10 @@ export function DialogPostPrewie({
               side="left"
               size="4x"
               onClick={() => {
-                typeof isOpenedIndex != "undefined" &&
-                  isOpenedIndex > 0 &&
+                if (typeof isOpenedIndex != "undefined" && isOpenedIndex > 0) {
+                  setIsImageLoaded(false);
                   setIsOpenedIndex(isOpenedIndex - 1);
+                }
               }}
               classNames={{
                 base: " cursor-pointer w-[14vw] transition hover:text-[rgba(36,15,33,0.5)] text-[rgba(36,15,33,0.2)] flex justify-center items-center bg-transparent hover:bg-[rgba(36,15,33,0.03)]",
@@ -166,10 +229,33 @@ export function DialogPostPrewie({
                       {posts[isOpenedIndex].imageURLs ? (
                         <>
                           <Swiper
+                            defaultValue={0}
+                            // onSlideChange={swiper => {
+                            //   let idx = swiper.activeIndex;
+                            //   if (
+                            //     screenHeight != lastScreenHeight ||
+                            //     screenWidth != lastScreenWidth
+                            //   ) {
+                            //     setMaxHeight(height[idx]);
+                            //     setMaxWidth(width[idx]);
+                            //   } else {
+                            //     if (width[idx] > maxWidth) {
+                            //       setMaxWidth(width[idx]); // Записываем текущую ширину как максимально возможную
+                            //     }
+                            //     if (height[idx] > maxHeight) {
+                            //       setMaxHeight(height[idx]); // Записываем текущую высоту как максимально возможную
+                            //     }
+                            //   }
+                            //   setLastScreenHeight(screenHeight);
+                            //   setLastScreenWidth(screenWidth);
+                            // }}
                             style={{
                               // @ts-ignore
-                              "--swiper-navigation-color": "#fff",
-                              "--swiper-pagination-color": "#fff",
+                              "--swiper-navigation-color": "#000",
+                              "--swiper-pagination-color": "#000",
+                              width: `${maxWidth}px`,
+                              height: `${maxHeight}px`,
+                              borderRadius: "14px",
                             }}
                             pagination={{
                               clickable: true,
@@ -178,87 +264,42 @@ export function DialogPostPrewie({
                             modules={[Pagination, Navigation]}
                             className="w-fit h-fit my-3"
                           >
-                            {posts[isOpenedIndex].imageURLs.map(
-                              (val: any, index: any) => {
-                                if (process.env.MINIO_PUBLIC_DOMEN_URL) {
-                                  getMeta(
-                                    process.env.MINIO_PUBLIC_DOMEN_URL + val,
-                                    (err: any, img: any) => {
-                                      const maxScreenRatioWidth =
-                                        (screenWidth * 2) /
-                                        3 /
-                                        img.naturalWidth;
-                                      const maxScreenRatioHeight =
-                                        (screenHeight * 2) /
-                                        3 /
-                                        img.naturalHeight;
-                                      const maxScaleRatio = INCREASE_KOEF; // Максимальное увеличение до 1.2 от исходного размера
-
-                                      // Выбираем наименьшее значение из максимальных отношений ширины и высоты экрана и 1.2-кратного масштаба
-                                      let scale = Math.min(
-                                        maxScreenRatioWidth,
-                                        maxScreenRatioHeight,
-                                        maxScaleRatio,
-                                      );
-
-                                      // Вычисляем новые размеры изображения с учетом масштаба
-                                      let newWidth = Math.floor(
-                                        img.naturalWidth * scale,
-                                      );
-                                      let newHeight = Math.floor(
-                                        img.naturalHeight * scale,
-                                      );
-
-                                      // Обновляем ширину и высоту в состоянии компонента
-                                      setWidth(newWidth);
-                                      setHeight(newHeight);
-
-                                      // Проверяем, нужно ли обновить максимальные значения ширины и высоты
-                                      if (
-                                        screenHeight != lastScreenHeight ||
-                                        screenWidth != lastScreenWidth
-                                      ) {
-                                        setMaxHeight(newHeight);
-                                        setMaxWidth(newWidth);
-                                      } else {
-                                        if (newWidth > maxWidth) {
-                                          setMaxWidth(newWidth); // Записываем текущую ширину как максимально возможную
-                                        }
-                                        if (newHeight > maxHeight) {
-                                          setMaxHeight(newHeight); // Записываем текущую высоту как максимально возможную
-                                        }
-                                      }
-                                      setLastScreenHeight(screenHeight);
-                                      setLastScreenWidth(screenWidth);
-                                    },
-                                  );
-                                }
-                                return (
-                                  <SwiperSlide
-                                    className="bg-[#2c1d47f5]"
-                                    style={{
-                                      width: `${maxWidth}px`,
-                                      height: `${maxHeight}px`,
-                                      borderRadius: "14px",
-                                    }}
-                                    key={index}
-                                  >
+                            {posts[isOpenedIndex].imageURLs &&
+                              width.map((val, idx) => (
+                                <SwiperSlide
+                                  className="bg-slate-50"
+                                  style={{
+                                    width: `${maxWidth}px`,
+                                    height: `${maxHeight}px`,
+                                    borderRadius: "14px",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                  }}
+                                  key={idx}
+                                >
+                                  {isImageLoaded ? (
                                     <Image
                                       src={
                                         process.env.MINIO_PUBLIC_DOMEN_URL
                                           ? process.env.MINIO_PUBLIC_DOMEN_URL +
-                                            val
+                                            posts[isOpenedIndex].imageURLs[idx]
                                           : ""
                                       }
                                       alt="kitten"
-                                      height={height}
-                                      width={width}
+                                      height={height[idx]}
+                                      width={width[idx]}
                                       className="rounded-md object-contain absolute"
                                     ></Image>
-                                  </SwiperSlide>
-                                );
-                              },
-                            )}
+                                  ) : (
+                                    <Skeleton
+                                      className={`h-[${height[idx]}px]`}
+                                    >
+                                      {" "}
+                                    </Skeleton>
+                                  )}
+                                </SwiperSlide>
+                              ))}
                           </Swiper>
                         </>
                       ) : null}
@@ -313,13 +354,11 @@ export function DialogPostPrewie({
             <Arrow
               onClick={async () => {
                 if (typeof isOpenedIndex != "undefined") {
-                  console.log(isOpenedIndex);
                   if (isOpenedIndex + 1 < posts.length) {
-                    console.log(posts[isOpenedIndex]);
+                    setIsImageLoaded(false);
                     setIsOpenedIndex(isOpenedIndex + 1);
                   } else {
                     const error = await loadMore();
-                    console.log(error);
                   }
                 }
               }}
