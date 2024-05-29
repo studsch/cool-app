@@ -31,6 +31,8 @@ import Comment from "../comments/comment";
 import Tags from "./tags";
 import Comments from "../comments/comments";
 import { Skeleton } from "../ui/skeleton";
+import { useFavorites } from "@/store";
+import { useSession } from "next-auth/react";
 
 const MIN_WIDTH = 300;
 const MIN_HEIGHT = 300;
@@ -46,6 +48,7 @@ export function DialogPostPrewie({
   const [isOpenedIndex, setIsOpenedIndex] = useState<number | undefined>(
     undefined,
   );
+  const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [maxWidth, setMaxWidth] = useState(0);
   const [screenWidth, screenHeight] = useResize();
@@ -55,11 +58,15 @@ export function DialogPostPrewie({
   const [lastScreenWidth, setLastScreenWidth] = useState(0);
   const [lastScreenHeight, setLastScreenHeight] = useState(0);
   const [isImageLoaded, setIsImageLoaded] = useState(true);
+  const page = useFavorites(state => state.page);
+  const size = useFavorites(state => state.size);
+  const flagFirstEnd = useFavorites(state => state.flagFirstEnd);
+  const isLoading = useFavorites(state => state.isLoading);
   // console.log(height);
   useEffect(() => {
     const heights: number[] = [];
     const widths: number[] = [];
-    if (isOpenedIndex) {
+    if (typeof isOpenedIndex !== "undefined") {
       posts[isOpenedIndex].imageURLs &&
         posts[isOpenedIndex].imageURLs.map((val: any, index: any) => {
           if (process.env.MINIO_PUBLIC_DOMEN_URL) {
@@ -118,14 +125,21 @@ export function DialogPostPrewie({
       {/* Закидываю все как один тригер, а контент буду менять через state, чтобы не создавать миллион объектов */}
       <DialogTrigger
         asChild
-        className="w-full grid sm:grid-cols-3 xl:grid-cols-3 md:grid-cols-2 grid-cols-2"
+        className={cn(
+          "w-full grid sm:grid-cols-3 xl:grid-cols-3 md:grid-cols-2 grid-cols-2",
+        )}
         onClick={() => {
-          setIsOpen(true);
+          if (!isLoading && posts.length > 0) setIsOpen(true);
         }}
       >
         <div>
-          {posts && posts.length != 0
-            ? posts.map((post: any, index: number) =>
+          {typeof flagFirstEnd == "undefined" || isLoading
+            ? Array.from({ length: page * size }).map((_, index) => (
+                <div className="p-1" key={index}>
+                  <Skeleton className="aspect-[3/4] w-full relative overflow-hidden rounded-lg bg-[#f5f5f5]" />
+                </div>
+              ))
+            : posts.map((post: any, index: number) =>
                 post.imageURLs ? (
                   // превью для
                   <Prewie
@@ -152,8 +166,7 @@ export function DialogPostPrewie({
                     </div>
                   </div>
                 ),
-              )
-            : null}
+              )}
         </div>
       </DialogTrigger>
       {/* Добавляю стрелки для перелистывания постов */}

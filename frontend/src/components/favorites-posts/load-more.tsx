@@ -6,7 +6,7 @@ import { Spinner } from "@nextui-org/react";
 import { useFavorites } from "@/store";
 import { useSession } from "next-auth/react";
 import { DialogPostPrewie } from "../cards/dialog-post-prewie";
-import Arrow from "../cards/arrow";
+import { cn } from "@/lib/utils";
 
 export function LoadMore() {
   const nextPosts = useFavorites(state => state.nextPosts);
@@ -65,12 +65,21 @@ export function LoadMore() {
   }, [inView]);
   return (
     <>
-      <DialogPostPrewie
-        posts={posts}
-        loadMore={loadMorePosts}
-      ></DialogPostPrewie>
-      <div ref={ref}>
-        {isLoading && page != 1 && <Spinner className="flex mt-4 " />}
+      <div
+        className={cn(
+          "bg-white rounded-md p-7 mb-5 h-[80vh] overflow-y-hidden",
+          posts.length != 0 && "h-fit overflow-y-auto",
+        )}
+      >
+        <DialogPostPrewie
+          posts={posts}
+          loadMore={loadMorePosts}
+        ></DialogPostPrewie>
+        <div ref={ref}>
+          {isLoading && page != 1 && posts.length > 0 && (
+            <Spinner className="flex mt-4 " />
+          )}
+        </div>
       </div>
     </>
   );

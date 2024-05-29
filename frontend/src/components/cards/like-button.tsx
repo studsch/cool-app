@@ -25,11 +25,9 @@ export function LikeButton({
   const updateIsLiked = useFavorites(state => state.updateIsLiked);
   useEffect(() => {
     GetLikesFromPost(postId).then(val => {
-      console.log(val);
       setLikesCount(val.likeCount);
     });
   });
-  console.log(isLikedPost);
   const { data: session, status, update } = useSession();
   const onClick = async () => {
     if (session?.user?.tokens?.access) {
@@ -43,7 +41,6 @@ export function LikeButton({
           tokenUpdateStateGlobal,
         );
         if (res == 201) {
-          console.log(res);
           if (typeof likesCount != "undefined") {
             setLikesCount(likesCount + 1);
             updateIsLiked(currentIndex, true);
@@ -59,7 +56,6 @@ export function LikeButton({
           tokenUpdateStateGlobal,
         );
         if (res == 200) {
-          console.log(res);
           if (likesCount) {
             setLikesCount(likesCount - 1);
             updateIsLiked(currentIndex, false);

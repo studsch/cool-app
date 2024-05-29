@@ -279,6 +279,7 @@ export const useWhoToFollow = create<WhoToFollowState>()(
 interface FavoritesState {
   posts: any[];
   page: number;
+  flagFirstEnd: number | undefined;
   size: number;
   args: string;
   isLoading: boolean;
@@ -302,6 +303,7 @@ export const useFavorites = create<FavoritesState>()(
   immer(set => ({
     posts: [],
     page: 1,
+    flagFirstEnd: undefined,
     size: 18,
     hasMore: false,
     args: "",
@@ -349,7 +351,7 @@ export const useFavorites = create<FavoritesState>()(
           state.totalPages = res.totalPages;
         });
       }
-      set({ isLoading: false });
+      set({ isLoading: false, flagFirstEnd: 1 });
       return 0;
     },
   })),
