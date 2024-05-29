@@ -1,5 +1,3 @@
-"use server";
-
 export async function FetchFavorites(token: string, args: string) {
   if (
     process.env.NEXT_PUBLIC_DOMEN_URL &&
