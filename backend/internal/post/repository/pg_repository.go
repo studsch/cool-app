@@ -572,7 +572,6 @@ WHERE user_id = $1 AND post_id = $2
 		return false, errors.Wrap(err, "postRepo.CheckLikeOnPostByID.Scan")
 	}
 	return out, nil
-
 }
 
 func (r *postRepo) SavePostViewed(
@@ -592,4 +591,88 @@ INSERT INTO viewed_posts (
 		return errors.Wrap(err, "postRepo.SavePostViewed.Scan")
 	}
 	return nil
+}
+
+func (r *postRepo) GetPopularPosts(
+	ctx context.Context, pq *utils.PaginationQuery,
+) (*models.PostList, error) {
+	var totalCount int
+	if err := r.db.QueryRow(
+		ctx, getTotalCountQuery,
+	).Scan(&totalCount); err != nil {
+		return nil, errors.Wrap(err, "postRepo.GetPopularPosts.Scan")
+	}
+
+	if totalCount == 0 {
+		return &models.PostList{
+			TotalCount: totalCount,
+			TotalPages: utils.GetTotalPages(totalCount, pq.GetSize()),
+			Page:       pq.GetPage(),
+			Size:       pq.GetSize(),
+			HasMore: utils.GetHasMore(
+				pq.GetPage(), totalCount, pq.GetSize(),
+			),
+			Posts: make([]*models.Post, 0),
+		}, nil
+	}
+
+	postsList := make([]*models.Post, 0, pq.GetSize())
+	query := `
+SELECT
+	p.id, p.user_id, p.description, p.location, p.created_at, p.image_urls,
+	u.first_name, u.last_name, u.login, u.avatar,
+    COALESCE(likes_count, 0) AS likes_count,
+    COALESCE(comments_count, 0) AS comments_count,
+    COALESCE(views_count, 0) AS views_count,
+    (COALESCE(likes_count, 0) * 2 + COALESCE(comments_count, 0) * 2 + COALESCE(views_count, 0)) AS total_score
+FROM post AS p
+LEFT JOIN users AS u ON p.user_id = u.id
+LEFT JOIN (
+    SELECT post_id, COUNT(*) AS likes_count
+    FROM like_post
+    GROUP BY post_id
+) AS l ON p.id = l.post_id
+LEFT JOIN (
+    SELECT post_id, COUNT(*) AS comments_count
+    FROM comment
+    GROUP BY post_id
+) AS c ON p.id = c.post_id
+LEFT JOIN (
+    SELECT post_id, COUNT(*) AS views_count
+    FROM viewed_posts
+    GROUP BY post_id
+) AS v ON p.id = v.post_id
+WHERE p.deleted = FALSE AND p.archived = FALSE
+ORDER BY total_score DESC OFFSET $1 LIMIT $2
+`
+	rows, err := r.db.Query(ctx, query, pq.GetOffset(), pq.GetLimit())
+	if err != nil {
+		return nil, errors.Wrap(err, "postRepo.GetPopularPosts.Query")
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		p := &models.Post{}
+		if err := rows.Scan(
+			&p.ID, &p.UserID, &p.Description, &p.Location,
+			&p.CreatedAt, &p.ImageURLs, &p.UserFirstName, &p.UserLastName,
+			&p.UserLogin, &p.UserAvatar, &p.LikeCount, &p.CommentCount,
+			nil, nil,
+		); err != nil {
+			return nil, errors.Wrap(err, "postRepo.GetPopularPosts.Scan")
+		}
+		postsList = append(postsList, p)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "postRepo.GetPopularPosts.Err")
+	}
+
+	return &models.PostList{
+		Posts:      postsList,
+		TotalPages: utils.GetTotalPages(totalCount, pq.GetSize()),
+		Page:       pq.GetPage(),
+		Size:       pq.GetSize(),
+		HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
+	}, nil
 }

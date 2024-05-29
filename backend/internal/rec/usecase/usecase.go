@@ -12,16 +12,18 @@ import (
 )
 
 type recUC struct {
-	recRepo rec.GrpcRepository
-	log     logger.Logger
+	recRepo   rec.GrpcRepository
+	recPgRepo rec.Repository
+	log       logger.Logger
 }
 
 func NewRecUC(
-	recRepo rec.GrpcRepository, log logger.Logger,
+	recRepo rec.GrpcRepository, recPgRepo rec.Repository, log logger.Logger,
 ) rec.UseCase {
 	return &recUC{
-		recRepo: recRepo,
-		log:     log,
+		recRepo:   recRepo,
+		recPgRepo: recPgRepo,
+		log:       log,
 	}
 }
 
@@ -108,17 +110,28 @@ func (u *recUC) PrepareRecs() {
 
 func (u *recUC) PredictPostsByUserID(
 	ctx context.Context,
-) error {
+) (models.OutRecMap, error) {
 	userCtx, err := utils.GetUserFromCtx(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	predict, err := u.recRepo.PredictPostsForOneUser(ctx, userCtx.ID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	fmt.Println(predict)
-	return nil
+	outMap := make(models.OutRecMap)
+
+	for key, value := range predict {
+		fmt.Println(key)
+		posts, err := u.recPgRepo.GetPostsByIDs(ctx, value.PostsIDs)
+		if err != nil {
+			u.log.Errorf("Error with getting post info: %v", err)
+		}
+
+		outMap[key] = posts
+	}
+
+	return outMap, nil
 }

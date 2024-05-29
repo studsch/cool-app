@@ -533,3 +533,43 @@ func (u *postUC) GetLikedPostsByUserID(
 func (u *postUC) getKeyWithPrefix(postID string) string {
 	return fmt.Sprintf("%s: %s", basePrefix, postID)
 }
+
+func (u *postUC) GetPopularPosts(
+	ctx context.Context, pq *utils.PaginationQuery,
+) (*models.PostList, error) {
+	user, err := utils.GetUserFromCtx(ctx)
+	if err != nil {
+		return nil, httpErrors.NewUnauthorizedError(
+			errors.WithMessage(
+				err, "postUC.GetPopularPosts.GetUserFromCtx",
+			),
+		)
+	}
+
+	pl, err := u.postRepo.GetPopularPosts(ctx, pq)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, p := range pl.Posts {
+		tags, err := u.postRepo.GetTagsOnPost(ctx, p.ID)
+		if err != nil {
+			return nil, err
+		}
+		p.Tags = tags
+
+		liked, err := u.postRepo.CheckLikeOnPostByID(ctx, user.ID, p.ID)
+		if err != nil {
+			return nil, err
+		}
+		p.IsLiked = liked
+
+		if err := u.postRepo.SavePostViewed(
+			ctx, user.ID, p.ID,
+		); err != nil {
+			u.logger.Debugf("Error saving post viewed post: %v", err)
+		}
+	}
+
+	return pl, err
+}

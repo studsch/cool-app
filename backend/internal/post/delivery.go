@@ -16,4 +16,5 @@ type Handlers interface {
 	Search() fiber.Handler
 	GetLikedPostsByUserID() fiber.Handler
 	// AddTagsByTitles() fiber.Handler
+	GetPopularPosts() fiber.Handler
 }

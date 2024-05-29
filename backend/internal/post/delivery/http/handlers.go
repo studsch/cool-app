@@ -377,6 +377,26 @@ func (h *postHandlers) GetLikedPostsByUserID() fiber.Handler {
 	}
 }
 
+func (h *postHandlers) GetPopularPosts() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		pq, err := utils.GetPaginationFromCtx(c)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		postsList, err := h.postUC.GetPopularPosts(c.UserContext(), pq)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			status, msg := httpErrors.ErrorResponse(err)
+			return c.Status(status).JSON(msg)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(postsList)
+	}
+}
+
 //
 // func (h *postHandlers) AddTagsByTitles() fiber.Handler {
 // 	return func(c *fiber.Ctx) error {

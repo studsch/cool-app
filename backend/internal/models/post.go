@@ -31,6 +31,8 @@ type Post struct {
 	UserLogin     string    `json:"login,omitempty" validate:"omitempty"`
 	UserAvatar    *string   `json:"userAvatar,omitempty" validate:"omitempty"`
 	IsLiked       bool      `json:"isLiked,omitempty" validate:"omitempty"`
+	LikeCount     int       `json:"likeCount,omitempty" validate:"omitempty"`
+	CommentCount  int       `json:"commentCount,omitempty" validate:"omitempty"`
 }
 
 // PostBase Post base
