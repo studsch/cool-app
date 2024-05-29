@@ -44,4 +44,7 @@ type Repository interface {
 	SavePostViewed(
 		ctx context.Context, userID uuid.UUID, postID uuid.UUID,
 	) error
+	GetPopularPosts(
+		ctx context.Context, pq *utils.PaginationQuery,
+	) (*models.PostList, error)
 }
