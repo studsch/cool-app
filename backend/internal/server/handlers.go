@@ -24,6 +24,7 @@ import (
 	postRepository "github.com/studsch/cool-app/backend/internal/post/repository"
 	postUseCase "github.com/studsch/cool-app/backend/internal/post/usecase"
 	recHttp "github.com/studsch/cool-app/backend/internal/rec/delivery/http"
+	recPgRepository "github.com/studsch/cool-app/backend/internal/rec/repository"
 	recRepository "github.com/studsch/cool-app/backend/internal/rec/repository"
 	recUseCase "github.com/studsch/cool-app/backend/internal/rec/usecase"
 	userHttp "github.com/studsch/cool-app/backend/internal/user/delivery/http"
@@ -49,6 +50,7 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	msgRepo := msgRepository.NewPsqlRepo(s.db)
 	widgetsRepo := widgetsRepository.NewGrpcRepo(s.widgetsConn, s.logger)
 	recRepo := recRepository.NewGrpcRepo(s.recConn)
+	recPgRepo := recPgRepository.NewRecPgRepo(s.db)
 
 	// Init useCases
 	authUC := authUseCase.NewAuthUC(
@@ -60,7 +62,7 @@ func (s *Server) MapHandlers(a *fiber.App) error {
 	userUC := userUseCase.NewUserUC(s.cfg, userRepo, s.logger)
 	msgUC := msgUseCase.NewChatUC(msgRepo, userRepo)
 	widgetsUC := widgetsUseCase.NewWidgetsUC(widgetsRepo, s.logger)
-	recUC := recUseCase.NewRecUC(recRepo, s.logger)
+	recUC := recUseCase.NewRecUC(recRepo, recPgRepo, s.logger)
 
 	// Init handlers
 	authHandlers := authHttp.NewAuthHandlers(s.cfg, authUC, s.logger)

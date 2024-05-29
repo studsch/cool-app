@@ -13,5 +13,5 @@ type GrpcRepository interface {
 	TrainModel(context.Context, *models.RecModel) error
 	ValidateModel(context.Context, string) error
 	SetModel(context.Context, *models.RecModel) error
-	PredictPostsForOneUser(context.Context, uuid.UUID) (interface{}, error)
+	PredictPostsForOneUser(context.Context, uuid.UUID) (models.DataMap, error)
 }

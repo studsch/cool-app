@@ -2,9 +2,11 @@ package rec
 
 import (
 	"context"
+
+	"github.com/studsch/cool-app/backend/internal/models"
 )
 
 type UseCase interface {
 	PrepareRecs()
-	PredictPostsByUserID(context.Context) error
+	PredictPostsByUserID(ctx context.Context) (models.OutRecMap, error)
 }

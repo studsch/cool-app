@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/studsch/cool-app/backend/internal/models"
@@ -80,7 +79,7 @@ func (r *grpcRepo) SetModel(ctx context.Context, m *models.RecModel) error {
 
 func (r *grpcRepo) PredictPostsForOneUser(
 	ctx context.Context, userID uuid.UUID,
-) (interface{}, error) {
+) (models.DataMap, error) {
 	predict, err := r.client.PredictPostsForOneUser(
 		ctx, &pb.PredictPostsForOneUserRequest{
 			UserId: userID.String(),
@@ -89,6 +88,13 @@ func (r *grpcRepo) PredictPostsForOneUser(
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(predict.Data)
-	return nil, nil
+
+	data := make(models.DataMap)
+
+	for key, value := range predict.Data {
+		data[key] = models.Values{
+			PostsIDs: value.Values,
+		}
+	}
+	return data, nil
 }
