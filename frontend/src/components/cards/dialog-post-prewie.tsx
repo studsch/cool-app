@@ -133,7 +133,7 @@ export function DialogPostPrewie({
         }}
       >
         <div>
-          {typeof flagFirstEnd == "undefined" || isLoading
+          {typeof flagFirstEnd == "undefined"
             ? Array.from({ length: page * size }).map((_, index) => (
                 <div className="p-1" key={index}>
                   <Skeleton className="aspect-[3/4] w-full relative overflow-hidden rounded-lg bg-[#f5f5f5]" />
