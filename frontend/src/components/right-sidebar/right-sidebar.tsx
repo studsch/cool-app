@@ -20,7 +20,7 @@ interface SidebarProps {
 }
 
 export function RightSidebar({ className }: SidebarProps) {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const GetContacts = useWhoToFollow(state => state.GetContacts);
   const contacts = useWhoToFollow(state => state.contacts);
   const isLoading = useWhoToFollow(state => state.isLoading);
@@ -30,6 +30,7 @@ export function RightSidebar({ className }: SidebarProps) {
         session.user.tokens.access,
         session.user.tokens.refresh,
         session.user.id,
+        update,
       );
     }
   }, [status]);
