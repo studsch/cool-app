@@ -6,11 +6,10 @@ import { useEffect, useState } from "react";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
 import { useSession } from "next-auth/react";
-import { RenewToken, RenewWrapper } from "@/fetch/token";
 import { Like, UnLike } from "@/fetch/post";
-import { tokenUpdateStateGlobal } from "@/fetch/token";
 import { useFavorites } from "@/store";
 import { GetLikesFromPost } from "@/fetch/post";
+import { FetchWithTokenRefresh } from "@/fetch/token";
 
 export function LikeButton({
   isLikedPost,
@@ -32,13 +31,11 @@ export function LikeButton({
   const onClick = async () => {
     if (session?.user?.tokens?.access) {
       if (!isLikedPost) {
-        const res = await RenewWrapper(
+        const res = await FetchWithTokenRefresh(
           Like,
-          [session.user.tokens.access, postId],
-          RenewToken,
-          [session.user.id, session.user.tokens.refresh],
+          session.user.tokens.access,
+          postId,
           update,
-          tokenUpdateStateGlobal,
         );
         if (res == 201) {
           if (typeof likesCount != "undefined") {
@@ -47,13 +44,13 @@ export function LikeButton({
           }
         }
       } else {
-        const res = await RenewWrapper(
+        const res = await FetchWithTokenRefresh(
           UnLike,
-          [session.user.tokens.access, postId],
-          RenewToken,
-          [session.user.id, session.user.tokens.refresh],
+          session.user.tokens.access,
+          postId,
+          session.user.id,
+          session.user.tokens.refresh,
           update,
-          tokenUpdateStateGlobal,
         );
         if (res == 200) {
           if (likesCount) {

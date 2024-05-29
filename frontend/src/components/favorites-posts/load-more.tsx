@@ -25,17 +25,11 @@ export function LoadMore() {
     if (session) {
       updatePage(1);
       updatePosts([]);
-      nextPosts(
-        session.user.tokens.access,
-        session.user.tokens.refresh,
-        session.user.id,
-        update,
-      );
+      nextPosts(session.user.tokens.access, update);
       updatePage(2);
     }
     setReloadPage(false);
   }, [status, reloadPage]);
-  console.log(posts);
   let error = 0;
   const { ref, inView } = useInView();
   const loadMorePosts = async () => {
@@ -46,12 +40,7 @@ export function LoadMore() {
       !error &&
       session?.user?.tokens?.access
     ) {
-      error = await nextPosts(
-        session.user.tokens.access,
-        session.user.tokens.refresh,
-        session.user.id,
-        update,
-      );
+      error = await nextPosts(session.user.tokens.access, update);
       updatePage(page + 1);
     }
     return error;

@@ -77,8 +77,8 @@ export default function Feed() {
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [pageSize, setPageSize] = useState<number>(30);
-  const [comments, setComments] = useState<Comment[]>([]);
-  console.log(comments);
+  // const [comments, setComments] = useState<Comment[]>([]);
+  // console.log(comments);
 
   useEffect(() => {
     const fetchPosts = async () => {

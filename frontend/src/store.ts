@@ -3,11 +3,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { FetchUsers, FetchPosts } from "./fetch/search";
 import { FetchFriends, FetchWhoToFollow } from "./fetch/friends";
-import {
-  RenewWrapper,
-  RenewToken,
-  tokenUpdateStateGlobal,
-} from "./fetch/token";
+import { FetchWithTokenRefresh } from "./fetch/token";
 import { FetchFavorites } from "./fetch/favorites";
 import { FetchReplyComments } from "./fetch/comment";
 
@@ -142,13 +138,11 @@ export const useSearch = create<SearchState>()(
       if (type == "users") {
         set({ isLoading: true });
         // await new Promise(r => setTimeout(r, 2000)); для теста кружка
-        const res = await RenewWrapper(
+        const res = await FetchWithTokenRefresh(
           FetchUsers,
-          [args, token],
-          RenewToken,
-          [userId, refreshToken],
+          token,
+          args,
           update,
-          tokenUpdateStateGlobal,
         );
         if (res.error) {
           error();
@@ -164,13 +158,11 @@ export const useSearch = create<SearchState>()(
       } else {
         // await new Promise(r => setTimeout(r, 2000)); для теста кружка
         set({ isLoading: true });
-        const res = await RenewWrapper(
+        const res = await FetchWithTokenRefresh(
           FetchPosts,
-          [args, token],
-          RenewToken,
-          [userId, refreshToken],
+          token,
+          args,
           update,
-          tokenUpdateStateGlobal,
         );
         if (res.error) {
           error();
@@ -192,12 +184,7 @@ export const useSearch = create<SearchState>()(
 
 interface MyContactsState {
   contacts: any[] | null;
-  GetContacts: (
-    token: string,
-    refreshToken: string,
-    userId: string,
-    update: Function,
-  ) => void;
+  GetContacts: (token: string, update: Function) => void;
   updateContacts: (contacts: any[] | null) => void;
   isLoading: boolean;
   updateLoading: (isLoading: boolean) => void;
@@ -206,22 +193,10 @@ interface MyContactsState {
 export const useMyContacts = create<MyContactsState>()(
   immer(set => ({
     contacts: null,
-    isLoading: false,
-    GetContacts: async (
-      token: string,
-      refreshToken: string,
-      userId: string,
-      update: Function,
-    ) => {
+    isLoading: true,
+    GetContacts: async (token: string, update: Function) => {
       set({ isLoading: true });
-      const res = await RenewWrapper(
-        FetchFriends,
-        [token],
-        RenewToken,
-        [userId, refreshToken],
-        update,
-        tokenUpdateStateGlobal,
-      );
+      const res = await FetchWithTokenRefresh(FetchFriends, token, update);
       let users = null;
       if (res.errors == false && res.friendsCount != 0) {
         users = res.users.slice(0, 4);
@@ -235,12 +210,7 @@ export const useMyContacts = create<MyContactsState>()(
 
 interface WhoToFollowState {
   contacts: any[] | null;
-  GetContacts: (
-    token: string,
-    refreshToken: string,
-    userId: string,
-    update: Function,
-  ) => void;
+  GetContacts: (token: string, update: Function) => void;
   updateContacts: (contacts: any[] | null) => void;
   isLoading: boolean;
   updateLoading: (isLoading: boolean) => void;
@@ -250,21 +220,9 @@ export const useWhoToFollow = create<WhoToFollowState>()(
   immer(set => ({
     contacts: null,
     isLoading: false,
-    GetContacts: async (
-      token: string,
-      refreshToken: string,
-      userId: string,
-      update: Function,
-    ) => {
+    GetContacts: async (token: string, update: Function) => {
       set({ isLoading: true });
-      const res = await RenewWrapper(
-        FetchWhoToFollow,
-        [token],
-        RenewToken,
-        [userId, refreshToken],
-        update,
-        tokenUpdateStateGlobal,
-      );
+      const res = await FetchWithTokenRefresh(FetchWhoToFollow, token, update);
       let users = null;
       if (res.errors == false && res.recs != null) {
         users = res.recs.slice(0, 8);
@@ -291,12 +249,7 @@ interface FavoritesState {
   updateSize: (size: number) => void;
   updateError: (error: () => void) => void;
   updateIsLiked: (currentIndex: number, isLiked: boolean) => void;
-  nextPosts: (
-    token: string,
-    refreshToken: string,
-    userId: string,
-    update: Function,
-  ) => Promise<number>;
+  nextPosts: (token: string, update: Function) => Promise<number>;
 }
 
 export const useFavorites = create<FavoritesState>()(
@@ -319,27 +272,19 @@ export const useFavorites = create<FavoritesState>()(
         state.posts[currentIndex].isLiked = isLiked;
       });
     },
-    nextPosts: async (
-      token: string,
-      refreshToken: string,
-      userId: string,
-      update: Function,
-    ) => {
+    nextPosts: async (token: string, update: Function) => {
       let args = "";
       let error = () => {};
       set(state => {
         args = `page=${state.page}&size=${state.size}`;
       });
       set({ isLoading: true });
-      const res = await RenewWrapper(
+      const res = await FetchWithTokenRefresh(
         FetchFavorites,
-        [args, token],
-        RenewToken,
-        [userId, refreshToken],
+        token,
+        args,
         update,
-        tokenUpdateStateGlobal,
       );
-
       if (res.error) {
         error();
         return 1;

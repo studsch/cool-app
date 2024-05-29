@@ -20,15 +20,11 @@ const MyContacts: React.FC<Props | any> = ({
   const contacts = useMyContacts(state => state.contacts);
   const isLoading = useMyContacts(state => state.isLoading);
   const { data: session, status, update } = useSession();
+  console.log(isLoading);
   // GetContacts(session?.user?.tokens?.access as string);
   useEffect(() => {
     if (status == "authenticated") {
-      GetContacts(
-        session.user.tokens.access,
-        session.user.tokens.refresh,
-        session.user.id,
-        update,
-      );
+      GetContacts(session.user.tokens.access, update);
     }
   }, [status]);
   const skeleton_ids = [1, 2, 3, 4];
@@ -48,6 +44,8 @@ const MyContacts: React.FC<Props | any> = ({
             </div>
           ))
         ) : status == "authenticated" ? (
+          (console.log(isLoading),
+          console.log(contacts),
           contacts == null ? (
             <p
               className={`pl-4 text-sm font-light text-text-secondary-color h-14`}
@@ -65,7 +63,7 @@ const MyContacts: React.FC<Props | any> = ({
                 />
               </Link>
             ))
-          )
+          ))
         ) : (
           <p
             className={`pl-4 text-sm font-light text-text-secondary-color h-14`}

@@ -90,6 +90,7 @@ export const authConfig: AuthOptions = {
         process.env.NEXT_PUBLIC_URL_UPDATE
       ) {
         console.log("JESTKII TRIGGER");
+        console.log(session.user);
         if (session.needUpdateTokens) {
           console.log(session.tokens);
           return { ...token, tokens: session.tokens };

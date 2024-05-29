@@ -5,11 +5,7 @@ import Button from "../ui/button/Button";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { FollowTo, UnFollowFrom } from "@/fetch/user";
-import {
-  RenewToken,
-  RenewWrapper,
-  tokenUpdateStateGlobal,
-} from "@/fetch/token";
+import { FetchWithTokenRefresh } from "@/fetch/token";
 type Props = {
   className?: string;
   classNames?: {};
@@ -24,25 +20,21 @@ const SubscribeButton: React.FC<Props | any> = props => {
   const onClick = async () => {
     if (session?.user?.tokens?.access) {
       if (!isSubscribed) {
-        const res = await RenewWrapper(
+        const res = await FetchWithTokenRefresh(
           FollowTo,
-          [session.user.tokens.access, userId],
-          RenewToken,
-          [session.user.id, session.user.tokens.refresh],
+          session.user.tokens.access,
+          userId,
           update,
-          tokenUpdateStateGlobal,
         );
         if (res == 201) {
           setIsSubscribed(true);
         }
       } else {
-        const res = await RenewWrapper(
+        const res = await FetchWithTokenRefresh(
           UnFollowFrom,
-          [session.user.tokens.access, userId],
-          RenewToken,
-          [session.user.id, session.user.tokens.refresh],
+          session.user.tokens.access,
+          userId,
           update,
-          tokenUpdateStateGlobal,
         );
         if (res == 200) {
           setIsSubscribed(false);

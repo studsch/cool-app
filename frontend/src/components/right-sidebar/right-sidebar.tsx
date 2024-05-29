@@ -26,12 +26,7 @@ export function RightSidebar({ className }: SidebarProps) {
   const isLoading = useWhoToFollow(state => state.isLoading);
   useEffect(() => {
     if (status == "authenticated") {
-      GetContacts(
-        session.user.tokens.access,
-        session.user.tokens.refresh,
-        session.user.id,
-        update,
-      );
+      GetContacts(session.user.tokens.access, update);
     }
   }, [status]);
   const skeleton_ids = [1, 2, 3];

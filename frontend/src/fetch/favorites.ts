@@ -1,6 +1,6 @@
 "use server";
 
-export async function FetchFavorites(args: string, token: string) {
+export async function FetchFavorites(token: string, args: string) {
   if (
     process.env.NEXT_PUBLIC_DOMEN_URL &&
     process.env.NEXT_PUBLIC_URL_FAVORITES
