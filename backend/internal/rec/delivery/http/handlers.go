@@ -24,12 +24,13 @@ func NewRecHandlers(
 
 func (h *recHandlers) GetRecPosts() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		if err := h.recUC.PredictPostsByUserID(c.UserContext()); err != nil {
+		out, err := h.recUC.PredictPostsByUserID(c.UserContext())
+		if err != nil {
 			utils.LogResponseError(c, h.log, err)
 			status, msg := httpErrors.ErrorResponse(err)
 			return c.Status(status).JSON(msg)
 		}
 
-		return c.Status(fiber.StatusOK).JSON("")
+		return c.Status(fiber.StatusOK).JSON(out)
 	}
 }

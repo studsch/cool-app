@@ -38,4 +38,7 @@ type UseCase interface {
 	GetLikedPostsByUserID(
 		ctx context.Context, pq *utils.PaginationQuery,
 	) (*models.PostList, error)
+	GetPopularPosts(
+		ctx context.Context, pq *utils.PaginationQuery,
+	) (*models.PostList, error)
 }
