@@ -61,7 +61,7 @@ export default async function FavoriteWidget({
           <h2 className="text-text-primary-color font-semibold">
             Favorite tag
           </h2>
-          <p className="link p-1">{item.mostLikedTag.title}</p>
+          <p className="link p-1">#{item.mostLikedTag.title}</p>
         </div>
       );
   }
