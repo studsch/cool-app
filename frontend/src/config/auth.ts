@@ -33,7 +33,7 @@ export const authConfig: AuthOptions = {
         );
         const responeJson = await response.json();
         const { user, error, tokens } = responeJson;
-        console.log(user);
+        // console.log(user);
         if (error) return { msg: error, error: error } as User;
         return {
           ...user,
@@ -90,9 +90,9 @@ export const authConfig: AuthOptions = {
         process.env.NEXT_PUBLIC_URL_UPDATE
       ) {
         console.log("JESTKII TRIGGER");
-        console.log(session.user);
+        // console.log(session.user);
         if (session.needUpdateTokens) {
-          console.log(session.tokens);
+          // console.log(session.tokens);
           return { ...token, tokens: session.tokens };
         }
         if (session.user) {
@@ -120,13 +120,9 @@ export const authConfig: AuthOptions = {
             },
           );
           const responeJson = await response.json();
-          console.log(responeJson);
+          // console.log(responeJson);
           const { error } = responeJson;
-          if (!error)
-            return {
-              ...token,
-              ...session,
-            };
+          if (!error) return { ...token, ...session.user };
           // console.log("dasdasdas")
           // return {...token, tokens: session.user.tokens}
         }
