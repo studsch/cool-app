@@ -55,11 +55,11 @@ function SearchForm({ children }: { children: React.ReactNode }) {
       filter: z.string(),
       startAge: z
         .string()
-        .min(0, { message: "min 0" })
+        .min(2, { message: "min 10" })
         .max(100, { message: "max 100" }),
       endAge: z
         .string()
-        .min(0, { message: "min 0" })
+        .min(2, { message: "min 10" })
         .max(100, { message: "max 100" }),
       gender: z.enum(["any", "female", "male"]),
       type: z.string(),
@@ -96,7 +96,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
   } = {
     search: "",
     filter: "0",
-    startAge: "20",
+    startAge: "12",
     endAge: "100",
     gender: "male",
     type: type,
