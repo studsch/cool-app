@@ -18,7 +18,7 @@ export default async function FavoriteWidget({
     if (typeof item.error == "undefined")
       return (
         <div className={cn(className)}>
-          <h2 className="text-text-primary-color font-semibold ">Most liked</h2>
+          <h2 className="text-text-primary-color font-medium ">Most liked</h2>
           <Link href={item.mostLikedUserInfo.login} className="p-1">
             <AvatarBlock
               src={
@@ -38,7 +38,7 @@ export default async function FavoriteWidget({
               avatarPosition="other"
             />
           </Link>
-          <h2 className="text-text-primary-color font-semibold">Most viewed</h2>
+          <h2 className="text-text-primary-color font-medium">Most viewed</h2>
           <Link href={item.mostViewedUserInfo.login} className="p-1">
             <AvatarBlock
               src={
@@ -58,9 +58,7 @@ export default async function FavoriteWidget({
               avatarPosition="other"
             />
           </Link>
-          <h2 className="text-text-primary-color font-semibold">
-            Favorite tag
-          </h2>
+          <h2 className="text-text-primary-color font-medium">Favorite tag</h2>
           <p className="link p-1">#{item.mostLikedTag.title}</p>
         </div>
       );
