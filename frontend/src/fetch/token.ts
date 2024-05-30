@@ -1,7 +1,7 @@
 // import { signOut } from "next-auth/react";
 // import { getSession } from "next-auth/react";
 // import { Mutex } from "async-mutex";
-import { getSession } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
 import { v4 as uuidv4 } from "uuid";
 // export async function RenewToken(userId: string, refreshToken: string) {
 //   if (
@@ -110,13 +110,13 @@ export async function FetchWithTokenRefresh(func: Function, ...args: any) {
   const session = await getSession();
   const uuid = uuidv4();
   args[0] = session?.user.tokens.access;
-  console.log("pre");
   let res = await func(...args);
   if (res.status == 401 || res == 401) {
     await acquireTokenRefreshSemaphore(uuid, func, args);
     if (typeof maptmp[uuid] == "undefined") {
       const resRefresh = await refreshToken(update);
       if (resRefresh.status == 422) {
+        signOut();
         console.log("signout");
       } else {
         await update({
@@ -127,14 +127,12 @@ export async function FetchWithTokenRefresh(func: Function, ...args: any) {
           },
         });
         const sessionO = await getSession();
-        console.log(sessionO);
       }
       args[0] = resRefresh.tokens.access;
       for (const key in maptmp) {
         if (maptmp.hasOwnProperty(key)) {
           maptmp[key][1][0] = resRefresh.tokens.access;
           maptmp[key] = maptmp[key][0](maptmp[key][1]);
-          console.log(maptmp[key]);
         }
       }
       releaseTokenRefreshSemaphore();
@@ -144,13 +142,11 @@ export async function FetchWithTokenRefresh(func: Function, ...args: any) {
       res = await maptmp[uuid];
     }
   }
-  console.log(res);
   return res;
 }
 
 async function refreshToken(update: Function) {
   const session = await getSession();
-  console.log(session);
   if (session?.user?.id) {
     if (
       process.env.NEXT_PUBLIC_DOMEN_URL &&
@@ -171,7 +167,7 @@ async function refreshToken(update: Function) {
         },
       );
       const json = await result.json();
-      console.log(json);
+
       return json;
     }
   }
@@ -182,16 +178,13 @@ async function acquireTokenRefreshSemaphore(
   func: Function,
   ...args: any
 ) {
-  console.log("start");
   if (tokenRefreshSemaphore <= 0) {
-    console.log(tokenRefreshSemaphore);
     maptmp[uuid] = [func, args];
     await new Promise(resolve => setTimeout(resolve, 100));
     while (maptmp[uuid].length > 1) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
   }
-  console.log("end");
   tokenRefreshSemaphore--;
 }
 
