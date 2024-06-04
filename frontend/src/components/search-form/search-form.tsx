@@ -34,10 +34,10 @@ import Input from "../ui/input/Input";
 
 import { useState } from "react";
 import { useToast } from "../ui/use-toast";
-import { useRouter } from "next/router";
-import { json } from "stream/consumers";
+import { useTranslations } from "next-intl";
 
 function SearchForm({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("Search");
   const { toast } = useToast();
   const updateError = useSearch(state => state.updateError);
   const updateSeachs = useSearch(state => state.updateSearchs);
@@ -155,7 +155,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
           <div className="bg-white min-h-[281px] w-[90%] my-5 md:w-[512px] rounded-md flex flex-col gap-0 xl:w-[768px] mx-auto">
             <div className="rounded-md px-7 pt-7 relative z-10 bg-white xl:h-[184px] overflow-hidden">
               <h2 className="text-lg font-medium text-text-primary-color mb-4">
-                Global search
+                {t("title")}
               </h2>
               <div className="flex gap-2 flex-wrap xl:flex-nowrap">
                 <FormField
@@ -165,7 +165,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                     <FormItem className="space-y-1 my-1 w-full">
                       <FormControl>
                         <Input
-                          placeholder="Search seomthing here..."
+                          placeholder={t("searchPlaceholder")}
                           className="input input-primary"
                           type="search"
                           field={field}
@@ -178,7 +178,7 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                 <Button
                   type="submit"
                   className="btn btn-primary w-[80px] space-y-1 my-1"
-                  text="Search"
+                  text={t("searchButtonTitle")}
                 />
 
                 <Button
@@ -191,12 +191,12 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                   }}
                   type="reset"
                   className="btn btn-secondary w-[80px] space-y-1 my-1 md:block hidden"
-                  text="Reset"
+                  text={t("resetButtonTitle")}
                 />
                 <div className="block md:hidden">
                   <Drawer>
                     <DrawerTrigger className="btn btn-secondary w-[80px] space-y-1 my-1 ">
-                      More
+                      {t("moreButtonTitle")}
                     </DrawerTrigger>
                     {width < 768 && (
                       <DrawerContent>
@@ -218,13 +218,13 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                               }}
                               type="reset"
                               className="btn btn-secondary space-y-1 my-1 "
-                              text="Reset"
+                              text={t("resetButtonTitle")}
                             />
                             <DrawerClose asChild>
                               <Button
                                 className="btn btn-secondary mb-6"
                                 type="button"
-                                text="Close"
+                                text={t("closeButtonTitle")}
                               ></Button>
                             </DrawerClose>
                           </DrawerFooter>
@@ -288,18 +288,18 @@ function SearchForm({ children }: { children: React.ReactNode }) {
                             wrapper: "hidden",
                           }}
                         >
-                          Posts
+                          {t("radioPostsTitle")}
                         </Radio>
                         <Radio
                           value="users"
                           size="sm"
                           classNames={{
                             label:
-                              " text-base hover:text-button-primary-color under__line",
+                              " text-base hover:text-button-primary-color text-text-primary-color under__line",
                             wrapper: "hidden",
                           }}
                         >
-                          Accounts
+                          {t("radioAccountsTitle")}
                         </Radio>
                       </RadioGroup>
                     </FormControl>

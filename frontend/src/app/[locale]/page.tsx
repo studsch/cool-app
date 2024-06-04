@@ -3,9 +3,7 @@ import { DialogPostPrewie } from "@/components/cards/dialog-post-prewie";
 export default function Home() {
   return (
     <>
-      <div className="overflow-auto relative">
-        <DialogPostPrewie></DialogPostPrewie>
-      </div>
+      <div className="overflow-auto relative"></div>
     </>
   );
 }

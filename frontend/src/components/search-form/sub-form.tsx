@@ -44,6 +44,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 type Props = {
   className?: string;
@@ -76,6 +77,7 @@ type Props = {
 import DatePickerField from "../form-fields/datepicker-field";
 
 export default function SubForm(props: Props) {
+  const t = useTranslations("SubForm");
   const [openCountries, setOpenCountries] = useState<boolean>(false);
   const [openCities, setOpenCities] = useState<boolean>(false);
   const [width, height] = useResize();
@@ -93,7 +95,7 @@ export default function SubForm(props: Props) {
                     label: "mb-3 text-text-primary-color text-base font-medium",
                     wrapper: "gap-3 ml-1 text-white",
                   }}
-                  label="Filters"
+                  label={t("filtersTitle")}
                   orientation="horizontal"
                   color="primary"
                   {...field}
@@ -105,7 +107,7 @@ export default function SubForm(props: Props) {
                       label: " text-text-primary-color",
                     }}
                   >
-                    Relevance
+                    {t("relevanceTitle")}
                   </Radio>
                   <Radio
                     value="1"
@@ -114,7 +116,7 @@ export default function SubForm(props: Props) {
                       label: " text-text-primary-color",
                     }}
                   >
-                    By rating
+                    {t("byRatingsTitle")}
                   </Radio>
                   <Radio
                     value="2"
@@ -123,7 +125,7 @@ export default function SubForm(props: Props) {
                       label: " text-text-primary-color",
                     }}
                   >
-                    By popular
+                    {t("byPopularTitle")}
                   </Radio>
                 </RadioGroup>
               </FormControl>
@@ -136,13 +138,13 @@ export default function SubForm(props: Props) {
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger className="text-text-primary-color text-base font-medium">
-              Other settings
+              {t("title")}
             </AccordionTrigger>
             {props.minWidth && width >= props.minWidth && (
               <AccordionContent className="ml-1">
                 {props.form.getValues("type") == "users" ? (
                   <>
-                    <h3 className="mb-5">Age</h3>
+                    <h3 className="mb-5">{t("ageTitle")}</h3>
                     <div className="flex">
                       {" "}
                       <FormField
@@ -191,7 +193,7 @@ export default function SubForm(props: Props) {
                                 label: "mb-3 text-text-primary-color ",
                                 wrapper: "gap-3 ml-1 text-white",
                               }}
-                              label="Filters"
+                              label={t("filtersTitle")}
                               orientation="horizontal"
                               color="primary"
                               {...field}
@@ -203,7 +205,7 @@ export default function SubForm(props: Props) {
                                   label: " text-text-primary-color md:mr-7",
                                 }}
                               >
-                                Male
+                                {t("maleTitle")}
                               </Radio>
                               <Radio
                                 value="female"
@@ -212,7 +214,7 @@ export default function SubForm(props: Props) {
                                   label: " text-text-primary-color",
                                 }}
                               >
-                                Female
+                                {t("femaleTitle")}
                               </Radio>
                               <Radio
                                 value="any"
@@ -221,7 +223,7 @@ export default function SubForm(props: Props) {
                                   label: " text-text-primary-color",
                                 }}
                               >
-                                Any
+                                {t("anyTitle")}
                               </Radio>
                             </RadioGroup>
                           </FormControl>
@@ -232,13 +234,13 @@ export default function SubForm(props: Props) {
                 ) : (
                   <>
                     {" "}
-                    <h3 className="mt-4 mb-5">Date range</h3>
+                    <h3 className="mt-4 mb-5">{t("dateRangeTitle")}</h3>
                     <DatePickerField
                       classNames={{
                         content: props.classNames?.datepickerStart,
                       }}
                       name="startDate"
-                      placeholder="Pick a start"
+                      placeholder={t("dateRangeStartPlaceholder")}
                       control={props.form.control}
                     ></DatePickerField>
                     <DatePickerField
@@ -247,11 +249,11 @@ export default function SubForm(props: Props) {
                       className="mt-2"
                       name="endDate"
                       control={props.form.control}
-                      placeholder="Pick a end"
+                      placeholder={t("dateRangeEndPlaceholder")}
                     ></DatePickerField>
                   </>
                 )}
-                <h3 className="mt-4 mb-5">Place</h3>
+                <h3 className="mt-4 mb-5">{t("placeTitle")}</h3>
                 <FormField
                   control={props.form.control}
                   name="country"
@@ -391,7 +393,7 @@ export default function SubForm(props: Props) {
                     </FormItem>
                   )}
                 />
-                <h3 className="mt-4 mb-5">Different</h3>
+                <h3 className="mt-4 mb-5">{t("differentTitle")}</h3>
                 <FormField
                   control={props.form.control}
                   name="useHashtegs"
@@ -415,7 +417,7 @@ export default function SubForm(props: Props) {
                           color="secondary"
                           size="sm"
                         >
-                          Use hashtegs
+                          {t("useHashtagsTitle")}
                         </Checkbox>
                       </FormControl>
                     </FormItem>

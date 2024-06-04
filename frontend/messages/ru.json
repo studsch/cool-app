@@ -1,0 +1,126 @@
+{
+    "Index": {
+      "title": "Привет мир!"
+    },
+    "NavMenu": {
+      "feed": "Новости",
+      "explore": "Поиск",
+      "myFavorites": "Мое любимое",
+      "messages": "Сообщения",
+      "settings": "Настройки"
+    },
+    "MyContacts": {
+      "title": "Мои контакты",
+      "nonAuthTitle": "Для просмотра контактов, нужно войти",
+      "noContactsTitle": "Заводите больше взаимных подписок"
+
+    },
+    "Search": {
+      "title": "Общий поиск",
+      "searchPlaceholder": "Введите что-нибудь для поиска...",
+      "searchButtonTitle": "Поиск",
+      "resetButtonTitle": "Сброс",
+      "moreButtonTitle": "Больше",
+      "closeButtonTitle": "Закрыть",
+      "radioPostsTitle": "Посты",
+      "radioAccountsTitle": "Аккаунты"
+    },
+    "SubForm": {
+      "title": "Другие настройки",
+      "ageTitle": "Возраст",
+      "filtersTitle": "Фильтры",
+      "maleTitle": "Мужчина",
+      "femaleTitle": "Женщина",
+      "anyTitle": "Боевой вертолет",
+      "placeTitle": "Местонахождение",
+      "differentTitle": "Остальное",
+      "useHashtagsTitle": "Использовать теги",
+      "relevanceTitle": "По актуальности",
+      "byRatingsTitle": "По рейтингу",
+      "byPopularTitle": "По популярности",
+      "dateRangeTitle": "Временная давность",
+      "dateRangeStartPlaceholder": "Начало",
+      "dateRangeEndPlaceholder": "Конец"
+    },
+    "SearchCard": {
+      "notFoundTitle": "Нет данных по этому запросу"
+    },
+    "WhoToFollow": {
+      "title": "Стоит подписаться",
+      "noFollowDataTitle": "Заводите больше подписок для этого",
+      "showLessTitle": "Скрыть",
+      "showMoreTitle": "Развернуть"
+    },
+    "FavoriteWidget": {
+      "mostLikedTitle": "Больше всего лайков",
+      "mostViewedTitle": "Популярный",
+      "favoriteTagTitle": "Любимый тег"
+    },
+    "EnterPage": {
+      "title": "Memories",
+      "enterSubTitle": "Рады вас снова видеть",
+      "enterTitle": "Добро пожаловать!",
+      "forgotPasswotdTitle": "Забыли пароль?",
+      "signInWithPhoneTitle": "Войти по номеру",
+      "registerSubTitle": "Зарегистрируйтесь, чтобы иметь больше возможностей",
+      "registerTitle": "Создайте аккаунт!",
+      "checkBoxTitle": "Принимаю условия рабства",
+      "enterToggleTitle": "Войти",
+      "registerToggleTitle": "Создать аккаунт"
+    },
+    "LogForm": {
+      "enterLoginPlaceholder": "Войти",
+      "enterPasswordPlaceHolder": "Пароль",
+      "sighInButtonTitle": "Войти"
+    },
+    "RegForm": {
+      "registerLoginPlaceholder": "Войти",
+      "signUpButtonTitle": "Зарегистрироваться"
+    },
+    "EnterPhonePage": {
+      "subTitle": "Войти с телефоном",
+      "title": "Добро пожаловать!"
+    },
+    "LogFormPhone": {
+      "passwordPlaceholder": "Пароль"
+    },
+    "EnterRecovery": {
+      "subTitle": "Введите номер чтобы сбросить пароль",
+      "title": "Восстановление пароля"
+    },
+    "CaptchaConfirmation": {
+      "title": "Подтверждение каптчи",
+      "infoTitle": "Докажите что вы не робот, чтобы продолжить дальнейшие действия.",
+      "footerTitle": "После этого вам придет смс на номер телефона."
+    },
+    "EnterRecoveryNumberPage": {
+      "subTitle": "Проверьте наличия смс",
+      "title": "Подтверждение номера"
+    },
+    "OtpForm": {
+      "exampleTaskTitle": "Код состоит из 6 цифр (XXXXXX)",
+      "exampleTitle": "Пример: 123121"
+    },
+    "RegError": {
+      "title": "Что-то пошло не так! Попробуйте это",
+      "toMainButtonTitle": "На главную",
+      "toEnterButtonTitle": "На вход",
+      "footerTitle": "В любое время вы можете сообщить о ошибке или баге",
+      "supportTitle": "Поддержка"
+    },
+    "PhoneForm": {
+      "nextButtonTitle": "Далее"
+    },
+    "OtpFormWrapper": {
+      "didNotRecieveTitle": "Не пришло",
+      "acceptButtonTitle": "Принять"
+    },
+    "Completionist": {
+      "resentButtonTitle": "Отправить повторно"
+    },
+    "EnterRecoveryRepass": {
+      "subTitle": "Введите новый пароль и хорошо запомните его.",
+      "title": "Новый пароль",
+      "updateButtonTitle": "Обновить пароль"
+    }
+  }

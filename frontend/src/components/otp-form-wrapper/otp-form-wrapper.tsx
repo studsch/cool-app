@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useConfirmCode, useConfirmCodeRecovery } from "@/store";
 import { Spinner } from "@nextui-org/react";
 import RegError from "../errors/reg-error";
+import { useTranslations } from "next-intl";
 
 export default function OtpFormWrapper({
   children,
@@ -19,6 +20,7 @@ export default function OtpFormWrapper({
   pushRoute: string;
 }) {
   const [needReload, setNeedReload] = useState(false);
+  const t = useTranslations("OtpFormWrapper");
   const timeLimit = 60;
   let startTime = undefined;
   let number = undefined;
@@ -47,12 +49,13 @@ export default function OtpFormWrapper({
     number &&
     (login || type == 2) &&
     confRes &&
-    (new Date().getTime() - Number(startTime)) / 1000 <= timeLimit * 5 ? (
+    (new Date().getTime() - Number(startTime)) / 1000 <= timeLimit * 300 ? (
       <>
         {children}
         <OtpForm type={type} pushRoute={pushRoute}>
           <div className="flex flex-col gap-3 relative !mt-4">
             <Timer
+              type={type}
               time={
                 (new Date().getTime() - Number(startTime)) / 1000 <= timeLimit
                   ? timeLimit -
@@ -67,7 +70,7 @@ export default function OtpFormWrapper({
               disabled
               id="accept"
               type="submit"
-              text="Accept"
+              text={t("acceptButtonTitle")}
               className="btn btn-primary disabled:btn-disabled"
             />
           </div>
@@ -75,7 +78,7 @@ export default function OtpFormWrapper({
             href={"/support/sms_code"}
             className="hover:underline cursor-pointer inline-block !mt-4 text-link-primary-color text-base font-light"
           >
-            Did not recieve
+            {t("didNotRecieveTitle")}
           </Link>
         </OtpForm>
       </>

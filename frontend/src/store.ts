@@ -202,6 +202,9 @@ export const useMyContacts = create<MyContactsState>()(
         users = res.users.slice(0, 4);
       }
       set({ contacts: users, isLoading: false });
+      set(state => {
+        console.log(state.isLoading);
+      });
     },
     updateContacts: (contacts: any[] | null) => set({ contacts: contacts }),
     updateLoading: (isLoading: boolean) => set({ isLoading: isLoading }),

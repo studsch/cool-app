@@ -21,10 +21,11 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 import { ReactNode } from "react";
 import { useToast } from "../ui/use-toast";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { authConfig } from "@/config/auth";
+import { useTranslations } from "next-intl";
 
 function LogForm({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const t = useTranslations("LogForm");
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/feed";
   const { toast } = useToast();
@@ -84,7 +85,7 @@ function LogForm({ children }: { children: React.ReactNode }) {
                 <Input
                   className="input input-primary"
                   type="text"
-                  placeholder="Login"
+                  placeholder={t("enterLoginPlaceholder")}
                   field={field}
                   required
                 ></Input>
@@ -102,7 +103,7 @@ function LogForm({ children }: { children: React.ReactNode }) {
                 <Input
                   className="input input-primary"
                   type="password"
-                  placeholder="Password"
+                  placeholder={t("enterPasswordPlaceHolder")}
                   field={field}
                   required
                 ></Input>
@@ -112,7 +113,11 @@ function LogForm({ children }: { children: React.ReactNode }) {
           )}
         />
         {children}
-        <Button type="submit" text="Sign in" className="btn btn-primary" />
+        <Button
+          type="submit"
+          text={t("sighInButtonTitle")}
+          className="btn btn-primary"
+        />
       </form>
     </Form>
   );

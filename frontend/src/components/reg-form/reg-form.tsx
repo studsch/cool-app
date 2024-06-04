@@ -40,6 +40,7 @@ import DialogCaptchaSignup from "../dialog-captcha-signup/dialog-captcha-signup"
 // import { isValidPhoneNumber } from "react-phone-number-input";
 import { useConfirmCode } from "@/store";
 import { CheckLogin, CheckPhone } from "@/fetch/auth";
+import { useTranslations } from "next-intl";
 
 declare global {
   interface Window {
@@ -50,6 +51,7 @@ declare global {
 }
 
 function RegForm({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("RegForm");
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
   const confCode = useConfirmCode();
@@ -168,7 +170,7 @@ function RegForm({ children }: { children: React.ReactNode }) {
                   <Input
                     className="input input-secondary"
                     type="text"
-                    placeholder="Login"
+                    placeholder={t("registerLoginPlaceholder")}
                     field={field}
                     required
                   ></Input>
@@ -195,7 +197,11 @@ function RegForm({ children }: { children: React.ReactNode }) {
             )}
           />
           {children}
-          <Button type="submit" text="Sign up" className="btn btn-secondary" />
+          <Button
+            type="submit"
+            text={t("signUpButtonTitle")}
+            className="btn btn-secondary"
+          />
         </form>
       </Form>
     </NextUIProvider>

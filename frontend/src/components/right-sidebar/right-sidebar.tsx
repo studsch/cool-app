@@ -14,6 +14,7 @@ import AvatarBlock from "../avatarblock/avatarblock";
 import { useWhoToFollow } from "@/store";
 import { useSession } from "next-auth/react";
 import { Skeleton } from "../ui/skeleton";
+import { useTranslations } from "next-intl";
 
 interface SidebarProps {
   className?: string;
@@ -21,6 +22,7 @@ interface SidebarProps {
 
 export function RightSidebar({ className }: SidebarProps) {
   const { data: session, status, update } = useSession();
+  const t = useTranslations("WhoToFollow");
   const GetContacts = useWhoToFollow(state => state.GetContacts);
   const contacts = useWhoToFollow(state => state.contacts);
   const isLoading = useWhoToFollow(state => state.isLoading);
@@ -37,7 +39,7 @@ export function RightSidebar({ className }: SidebarProps) {
       <Card className={`border-none shadow-none ${className}`}>
         <CardHeader className="p-0">
           <CardTitle className="text-text-primary-color text-base">
-            Who to Follow
+            {t("title")}
           </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-3 p-0">
@@ -59,7 +61,7 @@ export function RightSidebar({ className }: SidebarProps) {
             <p
               className={`pl-1 text-sm font-light text-text-secondary-color h-14`}
             >
-              Find more subscriptors for this.
+              {t("noFollowDataTitle")}
             </p>
           ) : (
             itemsForDisplay?.map((item, index) => (
@@ -89,7 +91,7 @@ export function RightSidebar({ className }: SidebarProps) {
               onClick={() => setExpanded(!expanded)}
               className="p-0 h-3"
             >
-              {expanded ? "Show Less" : "Show More"}
+              {expanded ? t("showLessTitle") : t("showMoreTitle")}
             </Button>
           </CardFooter>
         )}

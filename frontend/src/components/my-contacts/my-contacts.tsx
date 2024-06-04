@@ -5,6 +5,7 @@ import { useMyContacts } from "@/store";
 import { useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 type Props = {
   className?: string;
 };
@@ -16,8 +17,10 @@ const MyContacts: React.FC<Props | any> = ({
   props: React.FC<Props | any>;
   children: React.ReactNode;
 }) => {
+  const t = useTranslations("MyContacts");
   const GetContacts = useMyContacts(state => state.GetContacts);
   const contacts = useMyContacts(state => state.contacts);
+  const updateIsLoading = useMyContacts(state => state.updateLoading);
   const isLoading = useMyContacts(state => state.isLoading);
   const { data: session, status, update } = useSession();
   console.log(isLoading);
@@ -25,6 +28,8 @@ const MyContacts: React.FC<Props | any> = ({
   useEffect(() => {
     if (status == "authenticated") {
       GetContacts(session.user.tokens.access, update);
+    } else {
+      updateIsLoading(false);
     }
   }, [status]);
   const skeleton_ids = [1, 2, 3, 4];
@@ -50,7 +55,7 @@ const MyContacts: React.FC<Props | any> = ({
             <p
               className={`pl-4 text-sm font-light text-text-secondary-color h-14`}
             >
-              Make more friends who subscribe to you too
+              {t("noContactsTitle")}
             </p>
           ) : (
             contacts.map((user, index) => (
@@ -68,7 +73,7 @@ const MyContacts: React.FC<Props | any> = ({
           <p
             className={`pl-4 text-sm font-light text-text-secondary-color h-14`}
           >
-            You need auth to get this info
+            {t("nonAuthTitle")}
           </p>
         )}
       </div>

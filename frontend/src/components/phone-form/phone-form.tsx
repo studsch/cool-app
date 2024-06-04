@@ -39,6 +39,7 @@ import { Spinner } from "@nextui-org/react";
 import DialogCaptchaSignup from "../dialog-captcha-signup/dialog-captcha-signup";
 // import { isValidPhoneNumber } from "react-phone-number-input";
 import { useConfirmCodeRecovery } from "@/store";
+import { useTranslations } from "next-intl";
 
 declare global {
   interface Window {
@@ -49,6 +50,7 @@ declare global {
 }
 
 function PhoneForm({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("PhoneForm");
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
   const confCode = useConfirmCodeRecovery();
@@ -154,7 +156,11 @@ function PhoneForm({ children }: { children: React.ReactNode }) {
             )}
           />
           {children}
-          <Button type="submit" text="Next" className="btn btn-primary" />
+          <Button
+            type="submit"
+            text={t("nextButtonTitle")}
+            className="btn btn-primary"
+          />
         </form>
       </Form>
     </NextUIProvider>
