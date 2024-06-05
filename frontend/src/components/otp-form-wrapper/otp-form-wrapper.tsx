@@ -49,7 +49,7 @@ export default function OtpFormWrapper({
     number &&
     (login || type == 2) &&
     confRes &&
-    (new Date().getTime() - Number(startTime)) / 1000 <= timeLimit * 300 ? (
+    (new Date().getTime() - Number(startTime)) / 1000 <= timeLimit * 5 ? (
       <>
         {children}
         <OtpForm type={type} pushRoute={pushRoute}>

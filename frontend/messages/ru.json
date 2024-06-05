@@ -122,5 +122,46 @@
       "subTitle": "Введите новый пароль и хорошо запомните его.",
       "title": "Новый пароль",
       "updateButtonTitle": "Обновить пароль"
+    },
+    "RegisterPage": {
+      "subTitle": "Проверьте наличия смс",
+      "title": "Подтверждение номера"
+    },
+    "RegisterBasePage": {
+      "subTitle": "Введите дополнительную информацию, по которой вас станет проще искать.",
+      "title": "Дополнительная информация",
+      "createAccountButtonTitle": "Создать аккаунт"
+    },
+    "RegDataForm": {
+      "passwordPlaceholder": "Пароль",
+      "repeatPasswordPlaceholder": "Повторный пароль",
+      "namePlaceholder": "Имя",
+      "surnamePlaceholder": "Фамилия",
+      "dateOfBirthTitle": "Дата рождения",
+      "dateOfBirthExampleTitle": "Пример: 24 Январь 2002",
+      "selectGenderTitle": "Выберите свой пол",
+      "maleTitle": "Мужчина",
+      "femaleTitle": "Женщина",
+      "anyTitle": "Боевой вертолет",
+      "yearLabel": "Год",
+      "monthLabel": "Месяц",
+      "dayLabel": "День",
+      "yearPlaceholder": "Выберите год",
+      "monthPlaceholder": "Выберите месяц",
+      "dayPlaceholder": "Выберите день",
+      "months": {
+        "1": "Январь",
+        "2": "Февраль",
+        "3": "Март",
+        "4": "Апрель",
+        "5": "Май",
+        "6": "Июнь",
+        "7": "Июль",
+        "8": "Август",
+        "9": "Сентябрь",
+        "10": "Октябрь",
+        "11": "Ноябрь",
+        "12": "Декабрь"
+    }
     }
   }

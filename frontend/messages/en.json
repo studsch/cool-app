@@ -121,5 +121,46 @@
       "subTitle": "Enter new password, use your brain to remember it.",
       "title": "New password",
       "updateButtonTitle": "Update password"
+    },
+    "RegisterPage": {
+      "subTitle": "Check your phone for SMS",
+      "title": "Phone notification"
+    },
+    "RegisterBasePage": {
+      "subTitle": "Enter additional information, it will help other people to find you.",
+      "title": "Additional information",
+      "createAccountButtonTitle": "Create account"
+    },
+    "RegDataForm": {
+      "passwordPlaceholder": "Password",
+      "repeatPasswordPlaceholder": "Repeat Password",
+      "namePlaceholder": "Name",
+      "surnamePlaceholder": "Surname",
+      "dateOfBirthTitle": "Date of birth",
+      "dateOfBirthExampleTitle": "Example: 24 January 2002",
+      "selectGenderTitle": "Select your gender",
+      "maleTitle": "Male",
+      "femaleTitle": "Female",
+      "anyTitle": "Any",
+      "yearLabel": "Year",
+      "monthLabel": "Month",
+      "dayLabel": "Day",
+      "yearPlaceholder": "Select year",
+      "monthPlaceholder": "Select month",
+      "dayPlaceholder": "Select day",
+      "months": {
+        "1": "January",
+        "2": "February",
+        "3": "March",
+        "4": "April",
+        "5": "May",
+        "6": "June",
+        "7": "July",
+        "8": "August",
+        "9": "September",
+        "10": "October",
+        "11": "November",
+        "12": "December"
+    }
     }
   }
