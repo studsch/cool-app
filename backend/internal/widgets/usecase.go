@@ -7,5 +7,5 @@ import (
 )
 
 type UseCase interface {
-	GetWidgets(context.Context) (*models.AllWidgets, error)
+	GetWidgets(ctx context.Context, city, country string) (*models.AllWidgets, error)
 }
