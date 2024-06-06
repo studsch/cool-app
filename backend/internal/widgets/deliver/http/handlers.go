@@ -24,7 +24,10 @@ func NewWidgetsHandlers(
 
 func (h *widgetsHandlers) GetWidgets() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		allWidgets, err := h.widgetsUC.GetWidgets(c.UserContext())
+		city := c.Query("city")
+		country := c.Query("country")
+
+		allWidgets, err := h.widgetsUC.GetWidgets(c.UserContext(), city, country)
 		if err != nil {
 			utils.LogResponseError(c, h.log, err)
 			status, msg := httpErrors.ErrorResponse(err)
