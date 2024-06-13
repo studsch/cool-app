@@ -3,7 +3,9 @@ import Navbar from "@/components/nav-bar/nav-bar";
 import ServerList from "@/components/nav-bar/server-list";
 import MyContacts from "@/components/my-contacts/my-contacts";
 import { Toaster } from "@/components/ui/toaster";
+import { useTranslations } from "next-intl";
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("MyContacts");
   return (
     <>
       <header>
@@ -19,7 +21,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <MyContacts>
               <hr className="border-t-2 border-r-4 border-dashed w-[140px] mx-auto my-4" />
               <h2 className="text-text-primary-color text-base weigh mx-auto w-fit font-semibold pb-4">
+<<<<<<< HEAD:frontend/src/app/(defualtlayout)/layout.tsx
                 Мои контакты
+=======
+                {t("title")}
+>>>>>>> 1e3589219ccffa4fda297c555701542b02f6f9ef:frontend/src/app/[locale]/(defualtlayout)/layout.tsx
               </h2>
             </MyContacts>
           </div>

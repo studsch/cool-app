@@ -3,15 +3,14 @@ import { time } from "console";
 import Button from "../ui/button/Button";
 import { useEffect, useRef, useState } from "react";
 import Countdown from "react-countdown";
-import { render } from "react-dom";
-import { LegacyRef } from "react";
+import { useTranslations } from "next-intl";
 import {
   getAuth,
   RecaptchaVerifier,
   signInWithPhoneNumber,
   ConfirmationResult,
 } from "firebase/auth";
-import { useConfirmCode } from "@/store";
+import { useConfirmCode, useConfirmCodeRecovery } from "@/store";
 import { auth } from "@/config/firebase.config";
 import { any } from "zod";
 import { Spinner } from "@nextui-org/react";
@@ -20,6 +19,7 @@ interface ITimer {
   time: number;
   className?: string;
   needReload: boolean;
+  type: number;
   setNeedReload?: React.Dispatch<React.SetStateAction<boolean>>;
   ref?: any;
 }
@@ -38,6 +38,7 @@ interface IRenderer {
   seconds: number;
   completed: boolean;
   needReload: boolean;
+  type: number;
   setNeedReload?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -45,11 +46,15 @@ interface ICompletionist {
   completed: boolean;
   needReload: boolean;
   setNeedReload?: React.Dispatch<React.SetStateAction<boolean>>;
+  type: number;
 }
 
 const Completionist = (props: ICompletionist) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const number = useConfirmCode(state => state.number);
+  let number = "";
+  if (props.type == 1) number = useConfirmCode(state => state.number);
+  else number = useConfirmCodeRecovery(state => state.number);
+  const t = useTranslations("Completionist");
   function onCaptchaVerify() {
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(auth, "resent", {
@@ -89,10 +94,17 @@ const Completionist = (props: ICompletionist) => {
         // ...
       });
   }
-  const updateTime = useConfirmCode(state => state.updateStartTime);
-  const updateConfirmResult = useConfirmCode(
-    state => state.updateConfirmResult,
-  );
+  let updateTime = (startTime: any) => {};
+  let updateConfirmResult = (confirmResult: any) => {};
+  if (props.type == 1) {
+    updateTime = useConfirmCode(state => state.updateStartTime);
+    updateConfirmResult = useConfirmCode(state => state.updateConfirmResult);
+  } else {
+    updateTime = useConfirmCodeRecovery(state => state.updateStartTime);
+    updateConfirmResult = useConfirmCodeRecovery(
+      state => state.updateConfirmResult,
+    );
+  }
   const onSubmite = () => {
     if (props.setNeedReload && props.completed) {
       props.setNeedReload(true);
@@ -110,7 +122,7 @@ const Completionist = (props: ICompletionist) => {
       <Button
         id="resent"
         type="button"
-        text="Resent"
+        text={t("resentButtonTitle")}
         className="btn btn-secondary"
         onClick={onSubmite}
         disabled={loading}
@@ -162,11 +174,13 @@ const Renderer = ({
   completed,
   setNeedReload,
   needReload,
+  type,
 }: IRenderer) => {
   return (
     <>
       {completed && (
         <Completionist
+          type={type}
           setNeedReload={setNeedReload}
           completed={completed}
           needReload={needReload}
@@ -205,6 +219,7 @@ export default function Timer(props: ITimer) {
         renderer={args => {
           return (
             <Renderer
+              type={props.type}
               hours={args.hours}
               minutes={args.minutes}
               seconds={args.seconds}

@@ -1,10 +1,14 @@
+const createNextIntlPlugin = require('next-intl/plugin');
+ 
+const withNextIntl = createNextIntlPlugin();
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {};
 
 const localConfig = {
-    experimental: {
-        serverActions: true,
-      },
+    // experimental: {
+    //     serverActions: true,
+    //   },
     webpack(config) {
         config.module.rules.push({
           test: /\.svg$/,
@@ -23,5 +27,4 @@ const localConfig = {
     
 };
 
-module.exports = localConfig; 
-
+module.exports = withNextIntl(localConfig);

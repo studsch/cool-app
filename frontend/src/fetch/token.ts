@@ -1,8 +1,8 @@
 // import { signOut } from "next-auth/react";
 // import { getSession } from "next-auth/react";
 // import { Mutex } from "async-mutex";
-import { getSession } from "next-auth/react";
-
+import { getSession, signOut } from "next-auth/react";
+import { v4 as uuidv4 } from "uuid";
 // export async function RenewToken(userId: string, refreshToken: string) {
 //   if (
 //     process.env.NEXT_PUBLIC_DOMEN_URL &&
@@ -103,42 +103,50 @@ import { getSession } from "next-auth/react";
 //   return result;
 // }
 let tokenRefreshSemaphore = 1;
+let maptmp: any = {};
 
 export async function FetchWithTokenRefresh(func: Function, ...args: any) {
-  await acquireTokenRefreshSemaphore();
   const update: Function = args[args.length - 1];
   const session = await getSession();
+  const uuid = uuidv4();
   args[0] = session?.user.tokens.access;
-  console.log("pre");
   let res = await func(...args);
   if (res.status == 401 || res == 401) {
-    const resRefresh = await refreshToken(update);
-    if (resRefresh.status == 422) {
-      console.log("signout");
+    await acquireTokenRefreshSemaphore(uuid, func, args);
+    if (typeof maptmp[uuid] == "undefined") {
+      const resRefresh = await refreshToken(update);
+      if (resRefresh.status == 422) {
+        signOut();
+        console.log("signout");
+      } else {
+        await update({
+          needUpdateTokens: true,
+          tokens: {
+            access: resRefresh.tokens.access,
+            refresh: resRefresh.tokens.refresh,
+          },
+        });
+        const sessionO = await getSession();
+      }
+      args[0] = resRefresh.tokens.access;
+      for (const key in maptmp) {
+        if (maptmp.hasOwnProperty(key)) {
+          maptmp[key][1][0] = resRefresh.tokens.access;
+          maptmp[key] = maptmp[key][0](maptmp[key][1]);
+        }
+      }
+      releaseTokenRefreshSemaphore();
+      res = await func(...args);
     } else {
-      await update({
-        needUpdateTokens: true,
-        tokens: {
-          access: resRefresh.tokens.access,
-          refresh: resRefresh.tokens.refresh,
-        },
-      });
-      const sessionO = await getSession();
-      console.log(sessionO);
+      releaseTokenRefreshSemaphore();
+      res = await maptmp[uuid];
     }
-    args[0] = resRefresh.tokens.access;
-    res = await func(...args);
   }
-  releaseTokenRefreshSemaphore();
-
-  console.log(res);
   return res;
 }
 
 async function refreshToken(update: Function) {
-  console.log("2");
   const session = await getSession();
-  console.log(session);
   if (session?.user?.id) {
     if (
       process.env.NEXT_PUBLIC_DOMEN_URL &&
@@ -159,16 +167,23 @@ async function refreshToken(update: Function) {
         },
       );
       const json = await result.json();
-      console.log(json);
+
       return json;
     }
   }
 }
 
-async function acquireTokenRefreshSemaphore() {
-  console.log(tokenRefreshSemaphore);
-  while (tokenRefreshSemaphore <= 0) {
+async function acquireTokenRefreshSemaphore(
+  uuid: string,
+  func: Function,
+  ...args: any
+) {
+  if (tokenRefreshSemaphore <= 0) {
+    maptmp[uuid] = [func, args];
     await new Promise(resolve => setTimeout(resolve, 100));
+    while (maptmp[uuid].length > 1) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
   }
   tokenRefreshSemaphore--;
 }

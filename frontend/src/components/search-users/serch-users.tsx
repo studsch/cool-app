@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import SearchUser from "./search-user";
 import PostCard from "../card/card";
-import { toNormalDateTime } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 type Props = {
   className?: string;
   classNames?: { wrapper?: string };
@@ -11,6 +11,7 @@ type Props = {
   user_id?: string;
 };
 const Searchs: React.FC<Props | any> = props => {
+  const t = useTranslations("SearchCard");
   const { classNames, user_id, restProps } = props;
   return (
     <div className={`flex flex-col mt-3 ${classNames?.wrapper}`}>
@@ -56,7 +57,7 @@ const Searchs: React.FC<Props | any> = props => {
           </div>
         ))
       ) : (
-        <p className="h-14 px-7 py-2">No data available</p>
+        <p className="h-14 px-7 py-2">{t("notFoundTitle")}</p>
       )}
     </div>
   );

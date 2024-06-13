@@ -1,0 +1,166 @@
+{
+    "Index": {
+      "title": "Hello world!"
+    },
+    "NavMenu": {
+      "feed": "Feed",
+      "explore": "Explore",
+      "myFavorites": "My favorites",
+      "messages": "Messages",
+      "settings": "Settings"
+    },
+    "MyContacts": {
+      "title": "My contacts",
+      "nonAuthTitle": "You need auth to get this info",
+      "noContactsTitle": "Make more friends who subscribe to you too"
+    },
+    "Search": {
+      "title": "Global search",
+      "searchPlaceholder": "Search something here...",
+      "searchButtonTitle": "Search",
+      "resetButtonTitle": "Reset",
+      "moreButtonTitle": "More",
+      "closeButtonTitle": "Close",
+      "radioPostsTitle": "Posts",
+      "radioAccountsTitle": "Accounts"
+    },
+    "SubForm": {
+      "title": "Other settings",
+      "ageTitle": "Age",
+      "filtersTitle": "Filters",
+      "maleTitle": "Male",
+      "femaleTitle": "Female",
+      "anyTitle": "Any",
+      "placeTitle": "Place",
+      "differentTitle": "Different",
+      "useHashtagsTitle": "Use hashtags",
+      "relevanceTitle": "Relevance",
+      "byRatingsTitle": "By rating",
+      "byPopularTitle": "By popular",
+      "dateRangeTitle": "Date range",
+      "dateRangeStartPlaceholder": "Pick a start",
+      "dateRangeEndPlaceholder": "Pick a end"
+    },
+    "SearchCard": {
+      "notFoundTitle": "No data available"
+    },
+    "WhoToFollow": {
+      "title": "Who to follow",
+      "noFollowDataTitle": "Find more subscriptors fot this",
+      "showLessTitle": "Show Less",
+      "showMoreTitle": "Show More"
+    },
+    "FavoriteWidget": {
+      "mostLikedTitle": "Most liked",
+      "mostViewedTitle": "Most viewed",
+      "favoriteTagTitle": "Favorite tag"
+    },
+    "EnterPage": {
+      "title": "Memories",
+      "enterSubTitle": "Nice to see you again",
+      "enterTitle": "Welcome back!",
+      "forgotPasswotdTitle": "Forgot password?",
+      "signInWithPhoneTitle": "Sign in with phone",
+      "registerSubTitle": "Register to have more functionality and post photos",
+      "registerTitle": "Create account!",
+      "checkBoxTitle": "Accept confident will push to all people",
+      "enterToggleTitle": "Login",
+      "registerToggleTitle": "Create account"
+    },
+    "LogForm": {
+      "enterLoginPlaceholder": "Login",
+      "enterPasswordPlaceHolder": "Password",
+      "sighInButtonTitle": "Sign in"
+    },
+    "RegForm": {
+      "registerLoginPlaceholder": "Login",
+      "signUpButtonTitle": "Sign up"
+    },
+    "EnterPhonePage": {
+      "subTitle": "Enter with phone",
+      "title": "Welcome back"
+    },
+    "LogFormPhone": {
+      "passwordPlaceholder": "Password"
+    },
+    "EnterRecovery": {
+      "subTitle": "Take the phone to reset",
+      "title": "Password recovery"
+    },
+    "CaptchaConfirmation": {
+      "title": "Captcha Confirmation",
+      "infoTitle": "Please confirm that you are not a robot in order to continue further registration",
+      "footerTitle": "After that, we will send you a code to confirm the phone number."
+    },
+    "EnterRecoveryNumberPage": {
+      "subTitle": "Check your phone for SMS",
+      "title": "Phone notification"
+    },
+    "OtpForm": {
+      "exampleTaskTitle": "The code consists of 6 digits (XXXXXX)",
+      "exampleTitle": "Example: 123121"
+    },
+    "RegError": {
+      "title": "Something went wrong! Please try this",
+      "toMainButtonTitle": "To main",
+      "toEnterButtonTitle": "To enter",
+      "footerTitle": "In any time, you can report about error or bug",
+      "supportTitle": "Support"
+    },
+    "PhoneForm": {
+      "nextButtonTitle": "Next"
+    },
+    "OtpFormWrapper": {
+      "didNotRecieveTitle": "Did not recieve",
+      "acceptButtonTitle": "Accept"
+    },
+    "Completionist": {
+      "resentButtonTitle": "Resent"
+    },
+    "EnterRecoveryRepass": {
+      "subTitle": "Enter new password, use your brain to remember it.",
+      "title": "New password",
+      "updateButtonTitle": "Update password"
+    },
+    "RegisterPage": {
+      "subTitle": "Check your phone for SMS",
+      "title": "Phone notification"
+    },
+    "RegisterBasePage": {
+      "subTitle": "Enter additional information, it will help other people to find you.",
+      "title": "Additional information",
+      "createAccountButtonTitle": "Create account"
+    },
+    "RegDataForm": {
+      "passwordPlaceholder": "Password",
+      "repeatPasswordPlaceholder": "Repeat Password",
+      "namePlaceholder": "Name",
+      "surnamePlaceholder": "Surname",
+      "dateOfBirthTitle": "Date of birth",
+      "dateOfBirthExampleTitle": "Example: 24 January 2002",
+      "selectGenderTitle": "Select your gender",
+      "maleTitle": "Male",
+      "femaleTitle": "Female",
+      "anyTitle": "Any",
+      "yearLabel": "Year",
+      "monthLabel": "Month",
+      "dayLabel": "Day",
+      "yearPlaceholder": "Select year",
+      "monthPlaceholder": "Select month",
+      "dayPlaceholder": "Select day",
+      "months": {
+        "1": "January",
+        "2": "February",
+        "3": "March",
+        "4": "April",
+        "5": "May",
+        "6": "June",
+        "7": "July",
+        "8": "August",
+        "9": "September",
+        "10": "October",
+        "11": "November",
+        "12": "December"
+    }
+    }
+  }

@@ -16,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useTranslations } from "next-intl";
 
 import Input from "../ui/input/Input";
 
@@ -28,6 +29,7 @@ import { SelectDatepicker } from "react-select-datepicker";
 import { Spinner } from "@nextui-org/react";
 import { useConfirmCode } from "@/store";
 import RegError from "../errors/reg-error";
+import { Months } from "react-select-datepicker/dist/types/SelectDatepickerLabels";
 
 function RegDataForm({
   children,
@@ -38,6 +40,7 @@ function RegDataForm({
 }) {
   // для даты
   const [dateVal, setDateVal] = useState<Date | null>();
+  const t = useTranslations("RegDataForm");
   const [isAuthReady, setIsAuthReady] = useState<boolean>(false);
   const number = useConfirmCode(state => state.number);
   const login = useConfirmCode(state => state.login);
@@ -48,7 +51,12 @@ function RegDataForm({
   const onDateChange = useCallback((date: Date | null) => {
     setDateVal(date);
   }, []);
-
+  //@ts-ignore
+  const months: Months = {};
+  for (let month = 1; month <= 12; month++) {
+    //@ts-ignore
+    months[month] = t(`months.${month}`);
+  }
   const router = useRouter();
   const formSchema = z
     .object({
@@ -166,7 +174,7 @@ function RegDataForm({
                     <Input
                       className="input input-primary"
                       type="password"
-                      placeholder="Password"
+                      placeholder={t("passwordPlaceholder")}
                       field={field}
                       required
                     ></Input>
@@ -185,7 +193,7 @@ function RegDataForm({
                     <Input
                       className="input input-primary"
                       type="password"
-                      placeholder="Repeat Password"
+                      placeholder={t("repeatPasswordPlaceholder")}
                       field={field}
                       required
                     ></Input>
@@ -204,7 +212,7 @@ function RegDataForm({
                     <Input
                       className="input input-primary"
                       type="text"
-                      placeholder="Name"
+                      placeholder={t("namePlaceholder")}
                       field={field}
                       required
                     ></Input>
@@ -223,7 +231,7 @@ function RegDataForm({
                     <Input
                       className="input input-primary"
                       type="text"
-                      placeholder="Surname"
+                      placeholder={t("surnamePlaceholder")}
                       field={field}
                       required
                     ></Input>
@@ -241,14 +249,24 @@ function RegDataForm({
                   <FormControl>
                     <SelectDatepicker
                       order="day/month/year"
+                      labels={{
+                        yearLabel: t("yearLabel"),
+                        monthLabel: t("monthLabel"),
+                        dayLabel: t("dayLabel"),
+                        yearPlaceholder: t("yearPlaceholder"),
+                        monthPlaceholder: t("monthPlaceholder"),
+                        dayPlaceholder: t("dayPlaceholder"),
+                        // @ts-ignore
+                        months: months,
+                      }}
                       className={"gap-4"}
                       selectedDate={field.value}
                       onDateChange={field.onChange}
                     />
                   </FormControl>
                   <FormDescription className="pt-3 pb-1">
-                    Date of birth <br />
-                    Example: 24 January 2002
+                    {t("dateOfBirthTitle")} <br />
+                    {t("dateOfBirthExampleTitle")}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -262,19 +280,19 @@ function RegDataForm({
                   <FormControl>
                     <RadioGroup
                       classNames={{ label: "mb-3", wrapper: "gap-6" }}
-                      label="Select your gender"
+                      label={t("selectGenderTitle")}
                       orientation="horizontal"
                       color="primary"
                       {...field}
                     >
                       <Radio value="male" size="sm">
-                        Male
+                        {t("maleTitle")}
                       </Radio>
                       <Radio value="female" size="sm">
-                        Female
+                        {t("femaleTitle")}
                       </Radio>
                       <Radio value="any" size="sm">
-                        Any
+                        {t("anyTitle")}
                       </Radio>
                     </RadioGroup>
                   </FormControl>

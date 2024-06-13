@@ -41,7 +41,7 @@ export function LoadMore() {
       session?.user?.tokens?.access
     ) {
       error = await nextPosts(session.user.tokens.access, update);
-      updatePage(page + 1);
+      if (error == 0) updatePage(page + 1);
     }
     return error;
   };

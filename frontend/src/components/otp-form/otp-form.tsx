@@ -13,22 +13,14 @@ import {
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Input from "../ui/input/Input";
-import Button from "../ui/button/Button";
 import OtpInput from "react18-input-otp";
 import PhoneNumberInput from "../phone-number/phone-number";
-import { type } from "os";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useConfirmCode, useConfirmCodeRecovery } from "@/store";
 import { PhoneAuthProvider } from "firebase/auth";
 import { auth } from "@/config/firebase.config";
-import {
-  getAuth,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-  signInWithCredential,
-  ConfirmationResult,
-} from "firebase/auth";
+import { signInWithCredential } from "firebase/auth";
 import { useToast } from "../ui/use-toast";
 const formSchema = z.object({
   code: z
@@ -56,6 +48,7 @@ export default function OtpForm({
     }
   }, []);
   let confirm: any = undefined;
+  const t = useTranslations("OtpForm");
   const router = useRouter();
   const { toast } = useToast();
   let number = undefined;
@@ -122,9 +115,9 @@ export default function OtpForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-text-secondary-color pt-10 pb-4 flex items-center">
-                  The code consists of 6 digits (XXXXXX)
+                  {t("exampleTaskTitle")}
                   <br />
-                  Example: 123121
+                  {t("exampleTitle")}
                 </FormLabel>
                 <FormControl>
                   <OtpInput

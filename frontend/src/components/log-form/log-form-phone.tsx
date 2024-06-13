@@ -3,9 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { getSession, signIn, useSession } from "next-auth/react";
-
+import { useTranslations } from "next-intl";
 import Button from "../ui/button/Button";
+import { signIn } from "next-auth/react";
 import {
   Form,
   FormControl,
@@ -18,13 +18,12 @@ import {
 import Input from "../ui/input/Input";
 import PhoneNumberInput from "../phone-number/phone-number";
 import { isValidPhoneNumber } from "react-phone-number-input";
-import { ReactNode } from "react";
 import { useToast } from "../ui/use-toast";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { authConfig } from "@/config/auth";
 
 function LogFormPhone({ children }: { children?: React.ReactNode }) {
   const router = useRouter();
+  const t = useTranslations("LogFormPhone");
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/feed";
   const { toast } = useToast();
@@ -101,7 +100,7 @@ function LogFormPhone({ children }: { children?: React.ReactNode }) {
                 <Input
                   className="input input-primary"
                   type="password"
-                  placeholder="Password"
+                  placeholder={t("passwordPlaceholder")}
                   field={field}
                   required
                 ></Input>
