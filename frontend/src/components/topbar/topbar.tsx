@@ -35,9 +35,9 @@ export default function TopBar() {
           >
             <RecentAvatarBlock
               img={`http://localhost:9000/${session.user.avatar}`}
-              text={`@${session.user.login}`}
+              text={`@${session.user.firstName} ${session.user.lastName}`}
               classNames={{
-                text: { base: "sm:w-[150px]" },
+                text: { base: "sm:w-[200px]" },
               }}
             />
           </Link>

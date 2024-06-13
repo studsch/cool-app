@@ -112,7 +112,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onCreatePost }) => {
         className="text-white font-bold py-2 px-4 rounded w-full"
         onClick={handleCreatePostClick}
       >
-        Create Post
+        Создать пост
       </Button>
       {showPopup && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-[#9A9A9A] bg-opacity-50">
@@ -121,9 +121,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onCreatePost }) => {
               <div className="grid place-content-center mr-4">
                 <Avatar>
                   <AvatarImage
-                    src={
-                      "https://thypix.com/wp-content/uploads/2018/05/Sommerlandschaft-Bilder-11.jpg"
-                    }
+                    src={`http://localhost:9000/${session?.user.avatar}`}
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>

@@ -50,7 +50,7 @@ const MyContacts: React.FC<Props | any> = ({
             <p
               className={`pl-4 text-sm font-light text-text-secondary-color h-14`}
             >
-              Make more friends who subscribe to you too
+              Заведите больше друзей, которые тоже подпишутся на вас
             </p>
           ) : (
             contacts.map((user, index) => (

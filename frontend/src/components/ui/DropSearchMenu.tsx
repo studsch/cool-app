@@ -93,7 +93,7 @@ const DropSearchMenu: React.FC = () => {
         type="text"
         value={value}
         onChange={handleChange}
-        placeholder="Search something here..."
+        placeholder="Найди что-нибудь здесь..."
       />
       {isActive && filteredUsers.length > 0 && (
         <ul
@@ -107,7 +107,7 @@ const DropSearchMenu: React.FC = () => {
           {/* Photo */}
           <div className="mx-4 mb-6">
             <p className="text-lg font-medium text-text-primary-color my-4">
-              Posts
+              Посты
             </p>
           </div>
           {users.slice(0, 3).map(user => (

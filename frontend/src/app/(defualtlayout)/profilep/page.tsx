@@ -12,7 +12,6 @@ import React, { useState, useEffect } from "react";
 
 export default function Home() {
   const [photos, setPhotos] = useState<string[]>([]);
-  const [firstName, setFirstName] = useState<string | null>(null);
 
   const { data: session, status, update } = useSession();
 
@@ -55,9 +54,9 @@ export default function Home() {
     { id: 2, name: "Alice", lastName: "Johnson" },
     { id: 3, name: "Bob", lastName: "Brown" },
   ];
-
+  console.log(session);
   const { user } = session;
-  const { name, surname, about, city, country } = user;
+  const { firstName, lastName, about, city, country } = user;
   return (
     <>
       <div>
@@ -66,8 +65,8 @@ export default function Home() {
             info={{
               avatarImage: `http://localhost:9000/${session?.user.avatar}`,
               avatarFallback: "JD", // Инициалы пользователя, если нет изображения
-              name: name,
-              surname: surname,
+              name: firstName,
+              surname: lastName,
               description: about,
               city: city,
               country: country,

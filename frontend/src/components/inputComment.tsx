@@ -1,15 +1,19 @@
 import React, { useState } from "react";
-import Input from "./ui/input/Input";
-import { Smile } from "lucide-react";
-import { Image } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
+import Input from "./ui/input/Input";
+import { Smile, Image } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   photo: string;
   id: string;
-  addComment: (comment: string, name?: string, avatar?: string) => void; // Функция для добавления комментария в список
-  userName: string; // Добавлено новое поле для имени пользователя
+  addComment: (
+    comment: string,
+    name?: string,
+    avatar?: string,
+    createdAt?: string,
+  ) => void;
+  userName: string;
 };
 
 const CommentInput: React.FC<Props> = ({ photo, id, addComment }) => {
@@ -21,12 +25,17 @@ const CommentInput: React.FC<Props> = ({ photo, id, addComment }) => {
     event: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (event.key === "Enter" && event.shiftKey) {
-      event.preventDefault(); // Предотвращаем перенос строки
-      addComment(inputValue, session?.user.name, session?.user.avatar); // Добавляем комментарий в список
-      await sendComment(inputValue); // Отправляем комментарий
+      event.preventDefault();
+      addComment(
+        inputValue,
+        `${session?.user.name} ${session?.user.surname}`,
+        session?.user.avatar,
+        "Сейчас",
+      );
+      await sendComment(inputValue);
       setInputValue("");
     } else if (event.key === "Enter" && !event.shiftKey) {
-      setInputValue(prevValue => prevValue + "\n"); // Добавляем перенос строки
+      setInputValue(prevValue => prevValue + "\n");
     }
   };
 
@@ -45,7 +54,6 @@ const CommentInput: React.FC<Props> = ({ photo, id, addComment }) => {
 
   const sendComment = async (comment: string) => {
     try {
-      // Отправляем комментарий на сервер
       const response = await fetch("http://localhost:8000/api/v1/comment", {
         method: "POST",
         headers: {

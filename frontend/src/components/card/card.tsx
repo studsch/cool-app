@@ -37,6 +37,7 @@ import { Bookmark } from "lucide-react";
 import { AutoComplete } from "@/components/autocomplete/autocomplete";
 import CommentC from "../comment";
 import CommentInput from "../inputComment";
+import { useSession } from "next-auth/react";
 
 interface CommentProps {
   author: string;
@@ -76,11 +77,11 @@ const PostCard: React.FC<PostCardProps> = ({
   const handleSaveClick = () => {
     setIsSaved(!isSaved);
   };
-
+  const { data: session } = useSession();
   const handleAddComment = (comment: string) => {
     const newComment: CommentProps = {
-      author: "New User",
-      avatarURL: userPhoto,
+      author: `${session?.user.name} ${session?.user.surname}`,
+      avatarURL: session?.user.avatar,
       content: comment,
       createdAt: "Now",
     };

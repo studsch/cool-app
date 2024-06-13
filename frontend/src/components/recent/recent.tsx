@@ -17,7 +17,9 @@ export function Recent() {
   });
   return (
     <div className="w-[300px]">
-      <p className="text-lg font-medium text-text-primary-color m-4">Recent</p>
+      <p className="text-lg font-medium text-text-primary-color m-4">
+        Рекомендации
+      </p>
       <Slider
         slidesPerView={4}
         spaceBetween={0}

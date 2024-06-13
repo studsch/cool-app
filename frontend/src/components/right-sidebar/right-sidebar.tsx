@@ -37,7 +37,7 @@ export function RightSidebar({ className }: SidebarProps) {
       <Card className={`border-none shadow-none ${className}`}>
         <CardHeader className="p-0">
           <CardTitle className="text-text-primary-color text-base">
-            Who to Follow
+            Возможно интересные
           </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-3 p-0">
@@ -59,7 +59,7 @@ export function RightSidebar({ className }: SidebarProps) {
             <p
               className={`pl-1 text-sm font-light text-text-secondary-color h-14`}
             >
-              Find more subscriptors for this.
+              Найди больше подписок для себя
             </p>
           ) : (
             itemsForDisplay?.map((item, index) => (
@@ -89,7 +89,7 @@ export function RightSidebar({ className }: SidebarProps) {
               onClick={() => setExpanded(!expanded)}
               className="p-0 h-3"
             >
-              {expanded ? "Show Less" : "Show More"}
+              {expanded ? "Меньше" : "Больше"}
             </Button>
           </CardFooter>
         )}

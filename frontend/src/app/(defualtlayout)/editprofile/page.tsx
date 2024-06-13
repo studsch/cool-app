@@ -11,9 +11,11 @@ export default function EditProfile() {
   const [city, setCity] = useState(""); // Состояние для выбранного города
   const [cities, setCities] = useState<string[]>([]); // Состояние для списка городов
   const { data: session, status, update } = useSession();
-  const [firstName, setFirstName] = useState<string>(session?.user?.name || "");
+  const [firstName, setFirstName] = useState<string>(
+    session?.user?.firstName || "",
+  );
   const [lastName, setLastName] = useState<string>(
-    session?.user?.surname || "",
+    session?.user?.lastName || "",
   );
   const [about, setAbout] = useState<string>(session?.user?.about || "");
   const [avatar, setAvatar] = useState<string | ArrayBuffer | null>(
@@ -22,8 +24,8 @@ export default function EditProfile() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   useEffect(() => {
-    setFirstName(session?.user?.name || "");
-    setLastName(session?.user?.surname || "");
+    setFirstName(session?.user?.firstName || "");
+    setLastName(session?.user?.lastName || "");
     setAbout(session?.user?.about || "");
     setAvatar(`http://localhost:9000/${session?.user.avatar}` || null);
     setCountry(session?.user?.country || "");
@@ -71,6 +73,7 @@ export default function EditProfile() {
       return;
     }
 
+    let avatarUrl = avatar;
     if (avatarFile) {
       const formData = new FormData();
       formData.append("file", avatarFile);
@@ -91,30 +94,41 @@ export default function EditProfile() {
         }
 
         const result = await response.json();
-        setAvatar(`http://localhost:9000/${result.filePath}`);
+        avatarUrl = `http://localhost:9000/${result.filePath}`;
+        setAvatar(avatarUrl);
       } catch (error) {
         console.error("Failed to upload avatar.", error);
       }
     }
 
-    const updatedSession = {
-      ...session,
-      user: {
-        ...session.user,
-        name: firstName,
-        surname: lastName,
-        about: about,
-        image: avatar,
-        city: city,
-        country: country,
-      },
+    const updatedUser = {
+      ...session.user,
+      firstName: firstName,
+      lastName: lastName,
+      about: about,
+      image: avatarUrl,
+      city: city,
+      country: country,
     };
 
-    await update(updatedSession);
-    console.log("Profile updated successfully!");
+    await update({ ...session, user: updatedUser });
+    const res = await fetch("/api/auth/session?update", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.ok) {
+      const updatedSession = await res.json();
+      console.log("Profile updated successfully!", updatedSession);
+    } else {
+      console.error("Failed to re-fetch session.");
+    }
+
     window.location.href = "http://localhost:3000/profilep";
   };
-  console.log(session);
+
   return (
     <>
       <Card className="w-[600px] p-4 mt-5">

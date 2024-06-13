@@ -84,7 +84,7 @@ export default function Feed() {
     const fetchPosts = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/v1/post?size=10",
+          "http://localhost:8000/api/v1/post?size=40",
           {
             method: "GET",
             headers: {
@@ -116,13 +116,13 @@ export default function Feed() {
         <div className="flex gap-4 justify-end my-2">
           <Button
             type="button"
-            text="Followers"
+            text="Подписки"
             className="btn btn-disabled w-[20px]"
             disabled
           />
           <Button
             type="button"
-            text="Popular"
+            text="Популярные"
             className="btn btn-primary w-[20px]"
           />
         </div>

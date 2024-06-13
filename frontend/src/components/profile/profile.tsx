@@ -92,10 +92,10 @@ export function Profile({ info }: ProfileProps) {
           </div>
           <div className="grid gap-1 w-[200px]">
             <Button onClick={handleEditProfile} className="text-white">
-              Edit profile
+              Редактировать
             </Button>
 
-            <Button className="text-white">More action</Button>
+            <Button className="text-white">Больше</Button>
           </div>
         </div>
       </div>

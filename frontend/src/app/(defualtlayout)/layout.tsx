@@ -19,7 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <MyContacts>
               <hr className="border-t-2 border-r-4 border-dashed w-[140px] mx-auto my-4" />
               <h2 className="text-text-primary-color text-base weigh mx-auto w-fit font-semibold pb-4">
-                My Contacts
+                Мои контакты
               </h2>
             </MyContacts>
           </div>
